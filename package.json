@@ -1,0 +1,26 @@
+{
+  "name": "app",
+  "private": true,
+  "scripts": {
+    "build": "webpack --config webpack.config.js",
+    "build:css": "sass ./app/assets/stylesheets/application.sass.scss:./app/assets/builds/application.css --no-source-map --load-path=node_modules",
+    "e2e": "npx playwright test",
+    "e2e:headed": "npx playwright test --headed",
+    "e2e:ui": "npx playwright test --ui",
+    "e2e:report": "node scripts/generate-report.js",
+    "e2e:full": "npx playwright test && node scripts/generate-report.js",
+    "e2e:show": "npx playwright show-report e2e/reports/html",
+    "record": "node scripts/record-session.js",
+    "record:report": "node scripts/record-session.js && node scripts/generate-report.js"
+  },
+  "devDependencies": {
+    "@playwright/test": "^1.58.2",
+    "webpack": "^5.105.4",
+    "webpack-cli": "^7.0.2"
+  },
+  "dependencies": {
+    "@hotwired/stimulus": "^3.2.2",
+    "@hotwired/turbo-rails": "^8.0.23",
+    "sass": "^1.98.0"
+  }
+}

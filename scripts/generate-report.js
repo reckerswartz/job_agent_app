@@ -1,0 +1,169 @@
+#!/usr/bin/env node
+
+/**
+ * generate-report.js
+ *
+ * Reads Playwright test results (url-log.json + screenshots) and produces
+ * a Markdown report suitable for pushing to a GitHub wiki.
+ *
+ * Usage:
+ *   node scripts/generate-report.js [--output docs/wiki/Playwright-Report.md]
+ */
+
+const fs = require("fs");
+const path = require("path");
+
+/* ------------------------------------------------------------------ */
+/*  Paths                                                              */
+/* ------------------------------------------------------------------ */
+
+const RESULTS_DIR = path.resolve(__dirname, "../test-results");
+const SCREENSHOTS_DIR = path.join(RESULTS_DIR, "screenshots");
+const URL_LOG_PATH = path.join(RESULTS_DIR, "url-log.json");
+const JSON_REPORT_PATH = path.resolve(__dirname, "../e2e/reports/results.json");
+
+const outputArg = process.argv.indexOf("--output");
+const OUTPUT_PATH =
+  outputArg !== -1 && process.argv[outputArg + 1]
+    ? path.resolve(process.argv[outputArg + 1])
+    : path.resolve(__dirname, "../docs/wiki/Playwright-Report.md");
+
+/* ------------------------------------------------------------------ */
+/*  Helpers                                                            */
+/* ------------------------------------------------------------------ */
+
+function readJson(filePath) {
+  if (!fs.existsSync(filePath)) return null;
+  try {
+    return JSON.parse(fs.readFileSync(filePath, "utf-8"));
+  } catch {
+    return null;
+  }
+}
+
+function formatDate(iso) {
+  return new Date(iso).toLocaleString("en-US", {
+    dateStyle: "medium",
+    timeStyle: "short",
+  });
+}
+
+/* ------------------------------------------------------------------ */
+/*  Build the Markdown report                                          */
+/* ------------------------------------------------------------------ */
+
+function buildReport() {
+  const urlLog = readJson(URL_LOG_PATH) || [];
+  const jsonReport = readJson(JSON_REPORT_PATH);
+
+  const lines = [];
+
+  // --- Header ---
+  lines.push("# Playwright E2E Test Report");
+  lines.push("");
+  lines.push(`> **Generated:** ${new Date().toISOString()}`);
+  lines.push("");
+
+  // --- Summary from JSON report ---
+  if (jsonReport && jsonReport.stats) {
+    const s = jsonReport.stats;
+    lines.push("## Test Summary");
+    lines.push("");
+    lines.push("| Metric | Value |");
+    lines.push("|--------|-------|");
+    lines.push(`| Total tests | ${s.expected + (s.unexpected || 0) + (s.skipped || 0)} |`);
+    lines.push(`| Passed | ${s.expected || 0} |`);
+    lines.push(`| Failed | ${s.unexpected || 0} |`);
+    lines.push(`| Skipped | ${s.skipped || 0} |`);
+    lines.push(`| Duration | ${((s.duration || 0) / 1000).toFixed(1)}s |`);
+    lines.push("");
+  }
+
+  // --- URL Log Table ---
+  lines.push("## Captured URLs");
+  lines.push("");
+  if (urlLog.length === 0) {
+    lines.push("_No URLs captured. Run `yarn e2e` first._");
+  } else {
+    // Deduplicate by URL+method for the summary table
+    const unique = new Map();
+    for (const entry of urlLog) {
+      const key = `${entry.method} ${entry.url}`;
+      if (!unique.has(key)) {
+        unique.set(key, { ...entry, count: 1 });
+      } else {
+        unique.get(key).count++;
+      }
+    }
+
+    lines.push(`_${urlLog.length} total requests across ${unique.size} unique endpoints._`);
+    lines.push("");
+    lines.push("| Method | URL | Status | Hits | First Seen |");
+    lines.push("|--------|-----|--------|------|------------|");
+    for (const [, entry] of unique) {
+      lines.push(
+        `| \`${entry.method}\` | \`${entry.url}\` | ${entry.status} | ${entry.count} | ${formatDate(entry.timestamp)} |`
+      );
+    }
+  }
+  lines.push("");
+
+  // --- Screenshots Gallery ---
+  lines.push("## Screenshots");
+  lines.push("");
+  if (fs.existsSync(SCREENSHOTS_DIR)) {
+    const pngs = fs
+      .readdirSync(SCREENSHOTS_DIR)
+      .filter((f) => f.endsWith(".png"))
+      .sort();
+
+    if (pngs.length === 0) {
+      lines.push("_No screenshots found._");
+    } else {
+      lines.push(`_${pngs.length} screenshots captured._`);
+      lines.push("");
+      for (const png of pngs) {
+        const label = png.replace(/\.png$/, "").replace(/[-]+/g, " ");
+        // Relative path from the wiki page to the screenshot
+        lines.push(`### ${label}`);
+        lines.push("");
+        lines.push(`![${label}](../test-results/screenshots/${png})`);
+        lines.push("");
+      }
+    }
+  } else {
+    lines.push("_No screenshots directory found. Run `yarn e2e` first._");
+  }
+
+  // --- Full URL Log (collapsible) ---
+  lines.push("## Full URL Log");
+  lines.push("");
+  lines.push("<details>");
+  lines.push("<summary>Click to expand the full request log</summary>");
+  lines.push("");
+  lines.push("```json");
+  lines.push(JSON.stringify(urlLog, null, 2));
+  lines.push("```");
+  lines.push("");
+  lines.push("</details>");
+  lines.push("");
+
+  // --- Footer ---
+  lines.push("---");
+  lines.push("");
+  lines.push(
+    "_This report is auto-generated by `scripts/generate-report.js`. " +
+      "Do not edit manually._"
+  );
+
+  return lines.join("\n");
+}
+
+/* ------------------------------------------------------------------ */
+/*  Main                                                               */
+/* ------------------------------------------------------------------ */
+
+const report = buildReport();
+fs.mkdirSync(path.dirname(OUTPUT_PATH), { recursive: true });
+fs.writeFileSync(OUTPUT_PATH, report);
+console.log(`Report written to: ${OUTPUT_PATH}`);
