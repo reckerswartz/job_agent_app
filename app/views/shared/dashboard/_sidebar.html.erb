@@ -1,0 +1,46 @@
+<aside class="sidebar" data-sidebar-target="sidebar">
+  <%= link_to root_path, class: "sidebar__brand" do %>
+    <span class="sidebar__brand-icon">&#x1F4BC;</span>
+    Job Agent
+  <% end %>
+
+  <ul class="sidebar__nav">
+    <li class="sidebar__heading">Main</li>
+    <li>
+      <%= link_to dashboard_path, class: "sidebar__link #{current_page?(dashboard_path) ? 'sidebar__link--active' : ''}" do %>
+        <span class="sidebar__link-icon">&#x1F4CA;</span> Dashboard
+      <% end %>
+    </li>
+    <li>
+      <%= link_to "#", class: "sidebar__link" do %>
+        <span class="sidebar__link-icon">&#x1F50D;</span> Job Search
+      <% end %>
+    </li>
+    <li>
+      <%= link_to "#", class: "sidebar__link" do %>
+        <span class="sidebar__link-icon">&#x2B50;</span> Saved Jobs
+      <% end %>
+    </li>
+    <li>
+      <%= link_to "#", class: "sidebar__link" do %>
+        <span class="sidebar__link-icon">&#x1F4E8;</span> Applications
+      <% end %>
+    </li>
+
+    <li class="sidebar__heading">Settings</li>
+    <li>
+      <%= link_to "#", class: "sidebar__link" do %>
+        <span class="sidebar__link-icon">&#x1F464;</span> Profile
+      <% end %>
+    </li>
+    <li>
+      <%= link_to "#", class: "sidebar__link" do %>
+        <span class="sidebar__link-icon">&#x2699;</span> Preferences
+      <% end %>
+    </li>
+  </ul>
+
+  <div class="sidebar__footer">
+    Job Agent v1.0
+  </div>
+</aside>

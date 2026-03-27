@@ -3,4 +3,4 @@ import "@hotwired/turbo-rails"
 import "./controllers"
 
 // Bootstrap JS — only import components we use
-import { Collapse, Dropdown, Alert } from "bootstrap"
+import { Collapse, Dropdown, Alert, Tooltip } from "bootstrap"

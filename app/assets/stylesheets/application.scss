@@ -46,6 +46,12 @@
 @import "bootstrap/scss/dropdown";
 @import "bootstrap/scss/forms";
 @import "bootstrap/scss/transitions";
+@import "bootstrap/scss/tables";
+@import "bootstrap/scss/progress";
+@import "bootstrap/scss/list-group";
+@import "bootstrap/scss/helpers";
+@import "bootstrap/scss/tooltip";
+@import "bootstrap/scss/spinners";
 
 // Utilities API (generates responsive utility classes)
 @import "bootstrap/scss/utilities/api";
@@ -60,6 +66,17 @@
 @import "components/buttons";
 
 // --------------------------------------------------------------------------
-// 4. Page-specific Styles
+// 4. Dashboard Components
+// --------------------------------------------------------------------------
+@import "dashboard/sidebar";
+@import "dashboard/topbar";
+@import "dashboard/content";
+@import "dashboard/stats";
+@import "dashboard/tables";
+@import "dashboard/activity";
+
+// --------------------------------------------------------------------------
+// 5. Page-specific Styles
 // --------------------------------------------------------------------------
 @import "pages/home";
+@import "pages/dashboard";

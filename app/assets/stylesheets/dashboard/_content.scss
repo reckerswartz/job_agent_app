@@ -1,0 +1,58 @@
+// ==========================================================================
+// Dashboard Content Wrapper
+// ==========================================================================
+
+.dashboard-wrapper {
+  display: flex;
+  min-height: 100vh;
+}
+
+.dashboard-main {
+  flex: 1;
+  margin-left: 260px;
+  display: flex;
+  flex-direction: column;
+  min-height: 100vh;
+  background-color: #f4f6f9;
+  transition: margin-left 0.25s ease;
+
+  @media (max-width: 991.98px) {
+    margin-left: 0;
+  }
+}
+
+.dashboard-content {
+  flex: 1;
+  padding: 1.5rem;
+
+  @media (min-width: 992px) {
+    padding: 2rem;
+  }
+}
+
+.dashboard-footer {
+  padding: 1rem 1.5rem;
+  border-top: 1px solid rgba(0, 0, 0, 0.06);
+  font-size: 0.8rem;
+  color: rgba($dark, 0.45);
+  text-align: center;
+  background-color: #fff;
+}
+
+// Page header area
+.page-header {
+  margin-bottom: 1.5rem;
+
+  &__title {
+    font-size: 1.5rem;
+    font-weight: 800;
+    color: $dark;
+    margin: 0 0 0.25rem;
+  }
+
+  &__subtitle {
+    color: rgba($dark, 0.5);
+    font-size: 0.9rem;
+    margin: 0;
+  }
+}

@@ -1,0 +1,83 @@
+// ==========================================================================
+// Dashboard Tables
+// ==========================================================================
+
+.dash-table-card {
+  border: none;
+  box-shadow: $box-shadow-sm;
+  border-radius: $border-radius-lg;
+  overflow: hidden;
+
+  .card-header {
+    background-color: #fff;
+    border-bottom: 1px solid rgba(0, 0, 0, 0.06);
+    padding: 1rem 1.5rem;
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+
+    &__title {
+      font-weight: 700;
+      font-size: 1rem;
+      margin: 0;
+      color: $dark;
+    }
+  }
+
+  .table {
+    margin-bottom: 0;
+    font-size: 0.875rem;
+
+    thead th {
+      font-weight: 600;
+      font-size: 0.75rem;
+      text-transform: uppercase;
+      letter-spacing: 0.05em;
+      color: rgba($dark, 0.5);
+      border-bottom-width: 1px;
+      padding: 0.75rem 1.5rem;
+      white-space: nowrap;
+    }
+
+    tbody td {
+      padding: 0.875rem 1.5rem;
+      vertical-align: middle;
+      border-color: rgba(0, 0, 0, 0.04);
+    }
+
+    tbody tr {
+      transition: background-color 0.1s;
+
+      &:hover {
+        background-color: rgba($primary, 0.02);
+      }
+    }
+  }
+}
+
+// Job match score badge
+.match-score {
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  min-width: 40px;
+  padding: 0.2rem 0.5rem;
+  border-radius: $border-radius-sm;
+  font-size: 0.75rem;
+  font-weight: 700;
+  font-family: $font-family-monospace;
+
+  &--high   { background-color: rgba($success, 0.12); color: $success; }
+  &--medium { background-color: rgba($warning, 0.12); color: #b57a08; }
+  &--low    { background-color: rgba($danger, 0.12);  color: $danger; }
+}
+
+// Job source badge
+.source-badge {
+  font-size: 0.7rem;
+  font-weight: 600;
+  padding: 0.2rem 0.5rem;
+  border-radius: $border-radius-sm;
+  text-transform: uppercase;
+  letter-spacing: 0.03em;
+}

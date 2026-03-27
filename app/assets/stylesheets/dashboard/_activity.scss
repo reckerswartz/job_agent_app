@@ -1,0 +1,81 @@
+// ==========================================================================
+// Dashboard Activity Feed
+// ==========================================================================
+
+.activity-card {
+  border: none;
+  box-shadow: $box-shadow-sm;
+  border-radius: $border-radius-lg;
+
+  .card-header {
+    background-color: #fff;
+    border-bottom: 1px solid rgba(0, 0, 0, 0.06);
+    padding: 1rem 1.5rem;
+
+    &__title {
+      font-weight: 700;
+      font-size: 1rem;
+      margin: 0;
+      color: $dark;
+    }
+  }
+}
+
+.activity-feed {
+  list-style: none;
+  padding: 0;
+  margin: 0;
+
+  &__item {
+    display: flex;
+    gap: 0.875rem;
+    padding: 1rem 1.5rem;
+    border-bottom: 1px solid rgba(0, 0, 0, 0.04);
+    transition: background-color 0.1s;
+
+    &:last-child {
+      border-bottom: none;
+    }
+
+    &:hover {
+      background-color: rgba($primary, 0.02);
+    }
+  }
+
+  &__icon {
+    width: 36px;
+    height: 36px;
+    border-radius: 50%;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    font-size: 0.875rem;
+    flex-shrink: 0;
+
+    &--search  { background-color: rgba($primary, 0.1);   color: $primary; }
+    &--match   { background-color: rgba($success, 0.1);   color: $success; }
+    &--applied { background-color: rgba($info, 0.1);      color: $info; }
+    &--alert   { background-color: rgba($warning, 0.1);   color: $warning; }
+  }
+
+  &__body {
+    flex: 1;
+    min-width: 0;
+  }
+
+  &__text {
+    font-size: 0.875rem;
+    color: $dark;
+    margin: 0;
+
+    strong {
+      font-weight: 600;
+    }
+  }
+
+  &__time {
+    font-size: 0.75rem;
+    color: rgba($dark, 0.4);
+    margin-top: 0.125rem;
+  }
+}
