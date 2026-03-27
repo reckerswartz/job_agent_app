@@ -10,7 +10,7 @@
 #
 # It's strongly recommended that you check this file into your version control system.
 
-ActiveRecord::Schema[8.1].define(version: 2026_03_27_093708) do
+ActiveRecord::Schema[8.1].define(version: 2026_03_27_100222) do
   # These are extensions that must be enabled in order to support this database
   enable_extension "pg_catalog.plpgsql"
 
@@ -49,6 +49,38 @@ ActiveRecord::Schema[8.1].define(version: 2026_03_27_093708) do
     t.string "key", null: false
     t.datetime "updated_at", null: false
     t.index ["key"], name: "index_app_settings_on_key", unique: true
+  end
+
+  create_table "application_steps", force: :cascade do |t|
+    t.string "action", null: false
+    t.datetime "created_at", null: false
+    t.text "error_message"
+    t.datetime "finished_at"
+    t.jsonb "input_data", default: {}, null: false
+    t.bigint "job_application_id", null: false
+    t.jsonb "output_data", default: {}, null: false
+    t.datetime "started_at"
+    t.string "status", default: "pending", null: false
+    t.integer "step_number", default: 0, null: false
+    t.datetime "updated_at", null: false
+    t.index ["job_application_id", "step_number"], name: "index_application_steps_on_job_application_id_and_step_number"
+    t.index ["job_application_id"], name: "index_application_steps_on_job_application_id"
+  end
+
+  create_table "job_applications", force: :cascade do |t|
+    t.datetime "applied_at"
+    t.datetime "created_at", null: false
+    t.jsonb "error_details", default: {}, null: false
+    t.jsonb "form_data_used", default: {}, null: false
+    t.bigint "job_listing_id", null: false
+    t.jsonb "metadata", default: {}, null: false
+    t.text "notes"
+    t.bigint "profile_id", null: false
+    t.string "status", default: "queued", null: false
+    t.datetime "updated_at", null: false
+    t.index ["job_listing_id"], name: "index_job_applications_on_job_listing_id", unique: true
+    t.index ["profile_id"], name: "index_job_applications_on_profile_id"
+    t.index ["status"], name: "index_job_applications_on_status"
   end
 
   create_table "job_listings", force: :cascade do |t|
@@ -193,6 +225,9 @@ ActiveRecord::Schema[8.1].define(version: 2026_03_27_093708) do
 
   add_foreign_key "active_storage_attachments", "active_storage_blobs", column: "blob_id"
   add_foreign_key "active_storage_variant_records", "active_storage_blobs", column: "blob_id"
+  add_foreign_key "application_steps", "job_applications"
+  add_foreign_key "job_applications", "job_listings"
+  add_foreign_key "job_applications", "profiles"
   add_foreign_key "job_listings", "job_sources"
   add_foreign_key "job_scan_runs", "job_search_criteria", column: "job_search_criteria_id"
   add_foreign_key "job_scan_runs", "job_sources"

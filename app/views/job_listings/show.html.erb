@@ -10,6 +10,11 @@
       </p>
     </div>
     <div class="d-flex gap-2">
+      <% if @listing.job_application.present? %>
+        <%= link_to "View Application", job_application_path(@listing.job_application), class: "btn btn-sm btn-info" %>
+      <% else %>
+        <%= button_to "Apply Now", job_applications_path(job_listing_id: @listing.id), method: :post, class: "btn btn-sm btn-primary" %>
+      <% end %>
       <% if @listing.status == "new" || @listing.status == "reviewed" %>
         <%= button_to "Save", update_status_job_listing_path(@listing, new_status: "saved"), method: :patch, class: "btn btn-sm btn-success" %>
         <%= button_to "Reject", update_status_job_listing_path(@listing, new_status: "rejected"), method: :patch, class: "btn btn-sm btn-outline-danger" %>

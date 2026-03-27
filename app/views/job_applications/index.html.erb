@@ -1,0 +1,75 @@
+<% content_for(:page_title, "Applications") %>
+
+<div class="page-header d-flex justify-content-between align-items-start mb-4">
+  <div>
+    <h1 class="page-header__title">Applications</h1>
+    <p class="page-header__subtitle"><%= @applications.size %> applications</p>
+  </div>
+</div>
+
+<%# ── Status Filter Tabs ── %>
+<ul class="nav nav-tabs mb-4">
+  <li class="nav-item">
+    <%= link_to "All (#{@status_counts.values.sum})", job_applications_path,
+        class: "nav-link #{params[:status].blank? ? 'active' : ''}" %>
+  </li>
+  <% JobApplication::STATUSES.each do |s| %>
+    <% count = @status_counts[s] || 0 %>
+    <% next if count == 0 && s != params[:status] %>
+    <li class="nav-item">
+      <%= link_to "#{s.humanize} (#{count})", job_applications_path(status: s),
+          class: "nav-link #{params[:status] == s ? 'active' : ''}" %>
+    </li>
+  <% end %>
+</ul>
+
+<% if @applications.any? %>
+  <div class="card dash-table-card">
+    <div class="table-responsive">
+      <table class="table">
+        <thead>
+          <tr>
+            <th>Position</th>
+            <th>Company</th>
+            <th>Status</th>
+            <th>Steps</th>
+            <th>Applied</th>
+            <th>Actions</th>
+          </tr>
+        </thead>
+        <tbody>
+          <% @applications.each do |app| %>
+            <tr>
+              <td>
+                <%= link_to app.job_listing.title, job_application_path(app), class: "fw-bold text-decoration-none" %>
+              </td>
+              <td><%= app.job_listing.company %></td>
+              <td>
+                <span class="badge bg-<%= application_status_color(app.status) %>"><%= app.status.humanize %></span>
+              </td>
+              <td><%= app.application_steps.count %></td>
+              <td class="text-muted">
+                <%= app.applied_at ? time_ago_in_words(app.applied_at) + " ago" : "Pending" %>
+              </td>
+              <td>
+                <%= link_to "View", job_application_path(app), class: "btn btn-sm btn-outline-primary" %>
+                <% if app.can_retry? %>
+                  <%= button_to "Retry", retry_application_job_application_path(app), method: :post, class: "btn btn-sm btn-outline-warning" %>
+                <% end %>
+              </td>
+            </tr>
+          <% end %>
+        </tbody>
+      </table>
+    </div>
+  </div>
+<% else %>
+  <div class="card source-empty-card">
+    <div class="card-body text-center py-5">
+      <div class="source-empty-card__icon mb-3">&#x1F4E8;</div>
+      <h3>No applications yet</h3>
+      <p class="text-muted mb-3">Apply to jobs from the listings page to start tracking your applications.</p>
+      <%= link_to "Browse Job Listings", job_listings_path, class: "btn btn-primary" %>
+    </div>
+  </div>
+<% end %>
