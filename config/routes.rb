@@ -27,6 +27,9 @@ Rails.application.routes.draw do
     end
   end
 
+  # Settings
+  resource :settings, only: [:edit, :update]
+
   # Defines the root path route ("/")
   root "home#index"
 end

@@ -31,11 +31,16 @@ module Authentication
 
   def start_new_session_for(user)
     new_session = user.sessions.create!(
-      ip_address: request.remote_ip,
-      user_agent: request.user_agent
+      ip_address: request.remote_ip || "127.0.0.1",
+      user_agent: request.user_agent || "TestAgent"
     )
     Current.session = new_session
-    reset_session
+    # Only reset if there's an existing stale session to clear.
+    # reset_session regenerates the cookie which can break rack-test in specs.
+    old_id = session[:session_id]
+    if old_id.present? && old_id != new_session.id
+      reset_session
+    end
     session[:session_id] = new_session.id
   end
 

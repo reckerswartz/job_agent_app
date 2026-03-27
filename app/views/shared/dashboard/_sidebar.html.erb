@@ -34,8 +34,8 @@
       <% end %>
     </li>
     <li>
-      <%= link_to "#", class: "sidebar__link" do %>
-        <span class="sidebar__link-icon">&#x2699;</span> Preferences
+      <%= link_to edit_settings_path, class: "sidebar__link #{current_page?(edit_settings_path) ? 'sidebar__link--active' : ''}" do %>
+        <span class="sidebar__link-icon">&#x2699;</span> Settings
       <% end %>
     </li>
   </ul>

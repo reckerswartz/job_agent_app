@@ -1,0 +1,33 @@
+Pankaj Kumar
+Senior Ruby on Rails Developer
+pankaj@example.com | +91-9876543210 | New Delhi, India
+LinkedIn: https://linkedin.com/in/pankajkumar
+
+SUMMARY
+Experienced Ruby on Rails developer with 8+ years building scalable web applications.
+Proficient in Ruby, Rails, PostgreSQL, Redis, and modern frontend technologies.
+
+WORK EXPERIENCE
+
+Senior Ruby on Rails Developer — TechCorp Solutions
+Jan 2020 – Present | New Delhi, India
+- Led development of microservices architecture serving 1M+ daily users
+- Implemented CI/CD pipelines reducing deployment time by 60%
+- Mentored team of 5 junior developers
+
+Ruby on Rails Developer — WebStudio Inc
+Jun 2016 – Dec 2019 | Bangalore, India
+- Built e-commerce platform processing $2M+ monthly transactions
+- Optimized database queries reducing response times by 40%
+- Integrated third-party payment gateways (Stripe, Razorpay)
+
+EDUCATION
+
+Bachelor of Technology in Computer Science
+Delhi University — 2012-2016
+
+SKILLS
+Ruby, Ruby on Rails, PostgreSQL, Redis, Sidekiq, RSpec, JavaScript, React, Docker, AWS, Git
+
+CERTIFICATIONS
+AWS Certified Developer Associate — Amazon Web Services, 2022
