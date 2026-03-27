@@ -5,14 +5,26 @@ module JobScanner
     def initialize(job_source, criteria = nil)
       @job_source = job_source
       @criteria = criteria
+      @session = nil
     end
 
     def scan
       listings = []
       search_url = build_search_url
 
+      @session = BrowserSession.new
       page_data = fetch_page(search_url)
       return listings if page_data.nil?
+
+      if @session.login_required?
+        create_login_intervention!
+        return listings
+      end
+
+      if @session.captcha_detected?
+        create_captcha_intervention!
+        return listings
+      end
 
       MAX_PAGES.times do |page_num|
         page_listings = extract_listings(page_data)
@@ -26,6 +38,8 @@ module JobScanner
       end
 
       listings
+    ensure
+      @session&.close
     end
 
     protected
@@ -43,11 +57,25 @@ module JobScanner
     end
 
     def fetch_page(url)
-      { url: url, html: "", listings: [] }
+      html = @session.navigate(url)
+      return nil if html.nil?
+
+      raw_listings = @session.evaluate(extraction_script) || []
+      { url: url, html: html, listings: raw_listings }
+    rescue => e
+      Rails.logger.error("[JobScanner] fetch_page failed: #{e.message}")
+      nil
+    end
+
+    def extraction_script
+      "[]"
     end
 
     def extract_listings(page_data)
-      []
+      (page_data[:listings] || []).map do |raw|
+        raw_sym = raw.is_a?(Hash) ? raw.symbolize_keys : {}
+        normalize_listing(raw_sym)
+      end
     end
 
     def has_next_page?(page_data)
@@ -87,6 +115,25 @@ module JobScanner
       return value if value.is_a?(Time) || value.is_a?(DateTime)
 
       Time.zone.parse(value.to_s) rescue nil
+    end
+
+    def create_login_intervention!
+      InterventionCreator.create_for(
+        job_source,
+        type: "login_required",
+        context: { page_url: @session.current_url, source: job_source.name },
+        user: job_source.user
+      )
+      job_source.update!(status: "needs_login")
+    end
+
+    def create_captcha_intervention!
+      InterventionCreator.create_for(
+        job_source,
+        type: "captcha",
+        context: { page_url: @session.current_url, source: job_source.name },
+        user: job_source.user
+      )
     end
   end
 end

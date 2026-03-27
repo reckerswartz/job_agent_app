@@ -45,6 +45,9 @@ gem "image_processing", "~> 1.2"
 # PDF text extraction for resume parsing
 gem "pdf-reader", "~> 2.12"
 
+# Browser automation for job scanning and application
+gem "playwright-ruby-client"
+
 group :development, :test do
   # See https://guides.rubyonrails.org/debugging_rails_applications.html#debugging-with-the-debug-gem
   gem "debug", platforms: %i[ mri windows ], require: "debug/prelude"

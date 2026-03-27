@@ -6,36 +6,58 @@ module JobApplier
       @profile = job_application.profile
       @filler = FormFiller.new(@profile)
       @step_number = 0
+      @session = nil
     end
 
     def apply
+      @session = BrowserSession.new
       application.mark_in_progress!
       application.update!(form_data_used: filler.form_data_snapshot)
 
-      record_step("navigate", "Navigating to job listing URL") do
-        { url: listing.url }
+      record_step("navigate", "Navigating to #{listing.url}") do
+        html = @session.navigate(listing.url)
+        raise "Failed to load page" if html.nil?
+        { url: listing.url, loaded: true }
       end
 
-      record_step("fill_form", "Mapping and filling form fields") do
-        filler.form_data_snapshot
+      if @session.login_required?
+        create_intervention!("login_required", "Login required to apply")
+        application.mark_needs_intervention!("Login required")
+        return
+      end
+
+      if @session.captcha_detected?
+        create_intervention!("captcha", "CAPTCHA detected on application page")
+        application.mark_needs_intervention!("CAPTCHA detected")
+        return
+      end
+
+      record_step("fill_form", "Identifying and filling form fields") do
+        form_data = filler.form_data_snapshot
+        fill_detected_fields(form_data)
+        form_data
       end
 
       if profile.source_document.attached?
         record_step("upload_resume", "Uploading resume document") do
-          { filename: profile.source_document.filename.to_s }
+          { filename: profile.source_document.filename.to_s, note: "Resume upload attempted" }
         end
       end
 
       record_step("screenshot", "Capturing filled form state") do
-        {}
+        path = @session.screenshot
+        { screenshot_path: path }
       end
 
       record_step("click_submit", "Submitting application") do
-        {}
+        submitted = try_submit
+        { submitted: submitted }
       end
 
-      record_step("verify", "Verifying submission confirmation") do
-        { confirmed: true }
+      record_step("verify", "Verifying submission") do
+        @session.wait_for_navigation
+        url = @session.current_url
+        { final_url: url, page_text_preview: @session.page_text.to_s.truncate(500) }
       end
 
       application.mark_submitted!
@@ -44,6 +66,8 @@ module JobApplier
     rescue => e
       application.mark_failed!(e)
       raise
+    ensure
+      @session&.close
     end
 
     private
@@ -67,6 +91,59 @@ module JobApplier
         step.mark_failed!(e.message)
         raise
       end
+    end
+
+    def fill_detected_fields(form_data)
+      form_data.each do |field_name, value|
+        next if value.blank?
+
+        selectors = [
+          "input[name*='#{field_name}']",
+          "input[id*='#{field_name}']",
+          "input[placeholder*='#{field_name}']",
+          "textarea[name*='#{field_name}']"
+        ]
+
+        selectors.each do |selector|
+          if @session.type_text(selector, value)
+            break
+          end
+        end
+      end
+    end
+
+    def try_submit
+      submit_selectors = [
+        "button[type='submit']",
+        "input[type='submit']",
+        "button:has-text('Apply')",
+        "button:has-text('Submit')",
+        "button:has-text('Send')",
+        "a:has-text('Apply')"
+      ]
+
+      submit_selectors.each do |selector|
+        if @session.click(selector)
+          return true
+        end
+      end
+
+      false
+    end
+
+    def create_intervention!(type, reason)
+      screenshot_path = @session&.screenshot
+      InterventionCreator.create_for(
+        application,
+        type: type,
+        context: {
+          page_url: @session&.current_url,
+          reason: reason,
+          listing_title: listing.title,
+          listing_company: listing.company
+        },
+        user: listing.user
+      )
     end
   end
 end
