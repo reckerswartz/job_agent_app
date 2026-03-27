@@ -1,0 +1,108 @@
+<% content_for(:page_title, "Application — #{@application.job_listing.title}") %>
+
+<div class="page-header mb-4">
+  <div class="d-flex justify-content-between align-items-start">
+    <div>
+      <h1 class="page-header__title"><%= @application.job_listing.title %></h1>
+      <p class="page-header__subtitle">
+        <%= @application.job_listing.company %>
+        &middot;
+        <span class="badge bg-<%= application_status_color(@application.status) %>"><%= @application.status.humanize %></span>
+      </p>
+    </div>
+    <div class="d-flex gap-2">
+      <% if @application.can_retry? %>
+        <%= button_to "Retry Application", retry_application_job_application_path(@application), method: :post, class: "btn btn-warning" %>
+      <% end %>
+      <%= link_to "Back to Applications", job_applications_path, class: "btn btn-outline-secondary" %>
+    </div>
+  </div>
+</div>
+
+<div class="row g-4">
+  <%# ── Step Timeline ── %>
+  <div class="col-lg-8">
+    <div class="card mb-4">
+      <div class="card-header"><h3 class="card-header__title mb-0">Application Steps</h3></div>
+      <div class="card-body p-0">
+        <% if @steps.any? %>
+          <div class="app-timeline">
+            <% @steps.each do |step| %>
+              <div class="app-timeline__step">
+                <div class="app-timeline__marker bg-<%= step_status_color(step.status) %>">
+                  <%= step.step_number %>
+                </div>
+                <div class="app-timeline__content">
+                  <div class="d-flex justify-content-between align-items-start">
+                    <div>
+                      <strong><%= step.action.humanize %></strong>
+                      <span class="badge bg-<%= step_status_color(step.status) %> ms-2"><%= step.status.capitalize %></span>
+                    </div>
+                    <small class="text-muted"><%= step.duration_display %></small>
+                  </div>
+                  <% if step.input_data["description"].present? %>
+                    <p class="text-muted small mb-1"><%= step.input_data["description"] %></p>
+                  <% end %>
+                  <% if step.failed? && step.error_message.present? %>
+                    <div class="alert alert-danger small py-1 px-2 mt-1 mb-0"><%= step.error_message %></div>
+                  <% end %>
+                </div>
+              </div>
+            <% end %>
+          </div>
+        <% else %>
+          <div class="p-4 text-center text-muted">No steps recorded yet. Application is queued.</div>
+        <% end %>
+      </div>
+    </div>
+
+    <% if @application.error_details.present? && @application.error_details.any? %>
+      <div class="card mb-4">
+        <div class="card-header"><h3 class="card-header__title mb-0 text-danger">Error Details</h3></div>
+        <div class="card-body">
+          <p class="mb-1"><strong><%= @application.error_details["class"] || @application.error_details["reason"] %></strong></p>
+          <p class="text-muted"><%= @application.error_details["message"] %></p>
+        </div>
+      </div>
+    <% end %>
+  </div>
+
+  <%# ── Sidebar Info ── %>
+  <div class="col-lg-4">
+    <div class="card mb-4">
+      <div class="card-header"><h3 class="card-header__title mb-0">Details</h3></div>
+      <div class="card-body">
+        <dl class="listing-details">
+          <dt>Status</dt>
+          <dd><span class="badge bg-<%= application_status_color(@application.status) %>"><%= @application.status.humanize %></span></dd>
+          <dt>Duration</dt>
+          <dd><%= @application.duration_display %></dd>
+          <dt>Steps</dt>
+          <dd><%= @steps.count %></dd>
+          <% if @application.applied_at %>
+            <dt>Applied</dt>
+            <dd><%= @application.applied_at.strftime("%Y-%m-%d %H:%M") %></dd>
+          <% end %>
+          <dt>Listing</dt>
+          <dd><%= link_to @application.job_listing.title, job_listing_path(@application.job_listing) %></dd>
+          <dt>Profile</dt>
+          <dd><%= @application.profile.display_name %></dd>
+        </dl>
+      </div>
+    </div>
+
+    <% if @application.form_data_used.present? && @application.form_data_used.any? %>
+      <div class="card">
+        <div class="card-header"><h3 class="card-header__title mb-0">Form Data Sent</h3></div>
+        <div class="card-body">
+          <dl class="listing-details">
+            <% @application.form_data_used.each do |key, value| %>
+              <dt><%= key.humanize %></dt>
+              <dd class="small"><%= value %></dd>
+            <% end %>
+          </dl>
+        </div>
+      </div>
+    <% end %>
+  </div>
+</div>

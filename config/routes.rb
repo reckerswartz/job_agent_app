@@ -34,6 +34,13 @@ Rails.application.routes.draw do
     end
   end
 
+  # Job Applications
+  resources :job_applications, only: [:index, :show, :create] do
+    member do
+      post :retry_application
+    end
+  end
+
   # Job Sources & Search Criteria
   resources :job_sources do
     resources :scan_runs, controller: "job_scan_runs", only: [:index, :create, :show]

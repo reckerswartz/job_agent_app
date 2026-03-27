@@ -22,7 +22,7 @@
       <% end %>
     </li>
     <li>
-      <%= link_to "#", class: "sidebar__link" do %>
+      <%= link_to job_applications_path, class: "sidebar__link #{request.path.start_with?('/job_applications') ? 'sidebar__link--active' : ''}" do %>
         <span class="sidebar__link-icon">&#x1F4E8;</span> Applications
       <% end %>
     </li>
