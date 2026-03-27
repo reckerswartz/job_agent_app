@@ -50,8 +50,7 @@ module Llm
 
     def build_adapter(provider)
       case provider.adapter
-      when "openai"    then OpenaiAdapter.new(provider)
-      when "anthropic" then AnthropicAdapter.new(provider)
+      when "nvidia" then NvidiaAdapter.new(provider)
       else raise "Unknown adapter: #{provider.adapter}"
       end
     end

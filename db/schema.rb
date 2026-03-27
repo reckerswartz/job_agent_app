@@ -10,7 +10,7 @@
 #
 # It's strongly recommended that you check this file into your version control system.
 
-ActiveRecord::Schema[8.1].define(version: 2026_03_27_104625) do
+ActiveRecord::Schema[8.1].define(version: 2026_03_27_120143) do
   # These are extensions that must be enabled in order to support this database
   enable_extension "pg_catalog.plpgsql"
 
@@ -207,10 +207,14 @@ ActiveRecord::Schema[8.1].define(version: 2026_03_27_104625) do
 
   create_table "llm_models", force: :cascade do |t|
     t.boolean "active", default: true, null: false
+    t.integer "context_window"
     t.datetime "created_at", null: false
     t.string "identifier", null: false
     t.bigint "llm_provider_id", null: false
+    t.integer "max_images"
+    t.string "model_type", default: "text", null: false
     t.string "name", null: false
+    t.string "role"
     t.jsonb "settings", default: {}, null: false
     t.boolean "supports_text", default: true, null: false
     t.boolean "supports_vision", default: false, null: false
@@ -218,6 +222,8 @@ ActiveRecord::Schema[8.1].define(version: 2026_03_27_104625) do
     t.index ["active"], name: "index_llm_models_on_active"
     t.index ["llm_provider_id", "identifier"], name: "index_llm_models_on_llm_provider_id_and_identifier", unique: true
     t.index ["llm_provider_id"], name: "index_llm_models_on_llm_provider_id"
+    t.index ["model_type"], name: "index_llm_models_on_model_type"
+    t.index ["role"], name: "index_llm_models_on_role"
   end
 
   create_table "llm_providers", force: :cascade do |t|
