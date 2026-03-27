@@ -1,0 +1,11 @@
+<%= form_with url: profile_section_entry_path(section, entry), method: :patch, class: "d-inline-flex gap-2 align-items-center mb-2" do |f| %>
+  <input type="text" name="profile_entry[content][name]" value="<%= entry.content["name"] %>" class="form-control form-control-sm" style="width:150px" placeholder="Language">
+  <select name="profile_entry[content][proficiency]" class="form-select form-select-sm" style="width:150px">
+    <option value="">Proficiency</option>
+    <% %w[Native Fluent Advanced Intermediate Basic].each do |level| %>
+      <option value="<%= level %>" <%= "selected" if entry.content["proficiency"] == level %>><%= level %></option>
+    <% end %>
+  </select>
+  <%= f.submit "Save", class: "btn btn-sm btn-primary" %>
+  <%= button_to "x", profile_section_entry_path(section, entry), method: :delete, class: "btn btn-sm btn-outline-danger", data: { turbo_confirm: "Remove?" } %>
+<% end %>

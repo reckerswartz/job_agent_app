@@ -1,0 +1,11 @@
+<%= form_with url: profile_section_entries_path(section), method: :post, class: "d-inline-flex gap-2 align-items-center" do |f| %>
+  <input type="text" name="profile_entry[content][name]" class="form-control form-control-sm" style="width:150px" placeholder="Skill name" required>
+  <select name="profile_entry[content][level]" class="form-select form-select-sm" style="width:130px">
+    <option value="">Level</option>
+    <% %w[Beginner Intermediate Advanced Expert].each do |level| %>
+      <option value="<%= level %>"><%= level %></option>
+    <% end %>
+  </select>
+  <input type="text" name="profile_entry[content][category]" class="form-control form-control-sm" style="width:130px" placeholder="Category">
+  <%= f.submit "Add Skill", class: "btn btn-sm btn-primary" %>
+<% end %>

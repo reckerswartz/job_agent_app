@@ -1,0 +1,17 @@
+<%= form_with url: profile_section_entry_path(section, entry), method: :patch do |f| %>
+  <div class="row g-2 mb-2">
+    <div class="col-md-6">
+      <input type="text" name="profile_entry[content][name]" value="<%= entry.content["name"] %>" class="form-control form-control-sm" placeholder="Project name">
+    </div>
+    <div class="col-md-6">
+      <input type="url" name="profile_entry[content][url]" value="<%= entry.content["url"] %>" class="form-control form-control-sm" placeholder="URL">
+    </div>
+    <div class="col-12">
+      <textarea name="profile_entry[content][description]" class="form-control form-control-sm" rows="2" placeholder="Description"><%= entry.content["description"] %></textarea>
+    </div>
+  </div>
+  <div class="d-flex gap-2">
+    <%= f.submit "Update", class: "btn btn-sm btn-primary" %>
+    <%= button_to "Remove", profile_section_entry_path(section, entry), method: :delete, class: "btn btn-sm btn-outline-danger", data: { turbo_confirm: "Remove?" } %>
+  </div>
+<% end %>

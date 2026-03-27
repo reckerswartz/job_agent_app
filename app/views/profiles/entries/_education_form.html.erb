@@ -1,0 +1,23 @@
+<%= form_with url: profile_section_entry_path(section, entry), method: :patch do |f| %>
+  <div class="row g-2 mb-2">
+    <div class="col-md-6">
+      <input type="text" name="profile_entry[content][institution]" value="<%= entry.content["institution"] %>" class="form-control form-control-sm" placeholder="Institution">
+    </div>
+    <div class="col-md-6">
+      <input type="text" name="profile_entry[content][degree]" value="<%= entry.content["degree"] %>" class="form-control form-control-sm" placeholder="Degree">
+    </div>
+    <div class="col-md-4">
+      <input type="text" name="profile_entry[content][field]" value="<%= entry.content["field"] %>" class="form-control form-control-sm" placeholder="Field of Study">
+    </div>
+    <div class="col-md-3">
+      <input type="text" name="profile_entry[content][start_date]" value="<%= entry.content["start_date"] %>" class="form-control form-control-sm" placeholder="Start">
+    </div>
+    <div class="col-md-3">
+      <input type="text" name="profile_entry[content][end_date]" value="<%= entry.content["end_date"] %>" class="form-control form-control-sm" placeholder="End">
+    </div>
+  </div>
+  <div class="d-flex gap-2">
+    <%= f.submit "Update", class: "btn btn-sm btn-primary" %>
+    <%= button_to "Remove", profile_section_entry_path(section, entry), method: :delete, class: "btn btn-sm btn-outline-danger", data: { turbo_confirm: "Remove this entry?" } %>
+  </div>
+<% end %>

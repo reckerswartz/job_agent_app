@@ -1,0 +1,21 @@
+<div class="entry-display">
+  <div class="d-flex justify-content-between">
+    <div>
+      <strong><%= entry.content["title"] %></strong>
+      <% if entry.content["company"].present? %>
+        <span class="text-muted">at <%= entry.content["company"] %></span>
+      <% end %>
+    </div>
+    <small class="text-muted">
+      <%= entry.content["start_date"] %>
+      &mdash;
+      <%= entry.content["current"] == "true" ? "Present" : entry.content["end_date"] %>
+    </small>
+  </div>
+  <% if entry.content["location"].present? %>
+    <small class="text-muted"><%= entry.content["location"] %></small>
+  <% end %>
+  <% if entry.content["description"].present? %>
+    <p class="mt-2 mb-0 small"><%= entry.content["description"] %></p>
+  <% end %>
+</div>

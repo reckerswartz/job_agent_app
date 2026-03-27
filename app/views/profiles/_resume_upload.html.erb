@@ -1,0 +1,39 @@
+<div class="card profile-section-card">
+  <div class="card-header">
+    <h3 class="card-header__title mb-0">Upload Resume</h3>
+  </div>
+  <div class="card-body">
+    <p class="text-muted mb-3">Upload a PDF or text file. We'll extract the text automatically so you can fill in your profile details.</p>
+
+    <%= form_with url: upload_resume_profile_path, method: :post, multipart: true, class: "mb-4" do |f| %>
+      <div class="file-upload-zone mb-3">
+        <div class="file-upload-zone__inner">
+          <div class="file-upload-zone__icon">&#x1F4C4;</div>
+          <p class="file-upload-zone__text">
+            <% if profile.source_document.attached? %>
+              <strong>Current file:</strong> <%= profile.source_document.filename %>
+              (<%= number_to_human_size(profile.source_document.byte_size) %>)
+            <% else %>
+              Drag & drop your resume or click to browse
+            <% end %>
+          </p>
+          <%= f.file_field :source_document, accept: ".pdf,.txt,.rtf", class: "file-upload-zone__input" %>
+        </div>
+      </div>
+      <div class="d-flex gap-2">
+        <%= f.submit "Upload & Parse", class: "btn btn-primary" %>
+        <% if profile.source_document.attached? %>
+          <span class="badge bg-success align-self-center">File attached</span>
+        <% end %>
+      </div>
+    <% end %>
+
+    <% if profile.source_text.present? %>
+      <hr>
+      <h4 class="mb-3">Extracted Text</h4>
+      <div class="profile-extracted-text-wrap">
+        <pre class="profile-extracted-text"><%= profile.source_text %></pre>
+      </div>
+    <% end %>
+  </div>
+</div>

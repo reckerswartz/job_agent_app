@@ -19,6 +19,14 @@ Rails.application.routes.draw do
   # Dashboard
   get "dashboard", to: "dashboard#index", as: :dashboard
 
+  # Profile
+  resource :profile, only: [:show, :edit, :update] do
+    post :upload_resume
+    resources :sections, controller: "profile_sections", only: [:create, :destroy] do
+      resources :entries, controller: "profile_entries", only: [:create, :update, :destroy]
+    end
+  end
+
   # Defines the root path route ("/")
   root "home#index"
 end

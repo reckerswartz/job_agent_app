@@ -1,0 +1,20 @@
+<%= form_with url: profile_section_entries_path(section), method: :post do |f| %>
+  <div class="row g-2 mb-2">
+    <div class="col-md-6">
+      <input type="text" name="profile_entry[content][institution]" class="form-control form-control-sm" placeholder="Institution" required>
+    </div>
+    <div class="col-md-6">
+      <input type="text" name="profile_entry[content][degree]" class="form-control form-control-sm" placeholder="Degree">
+    </div>
+    <div class="col-md-4">
+      <input type="text" name="profile_entry[content][field]" class="form-control form-control-sm" placeholder="Field of Study">
+    </div>
+    <div class="col-md-3">
+      <input type="text" name="profile_entry[content][start_date]" class="form-control form-control-sm" placeholder="Start">
+    </div>
+    <div class="col-md-3">
+      <input type="text" name="profile_entry[content][end_date]" class="form-control form-control-sm" placeholder="End">
+    </div>
+  </div>
+  <%= f.submit "Add Education", class: "btn btn-sm btn-primary" %>
+<% end %>

@@ -1,0 +1,68 @@
+<div class="card profile-section-card">
+  <div class="card-header">
+    <h3 class="card-header__title mb-0">Contact Details</h3>
+  </div>
+  <div class="card-body">
+    <%= form_with model: profile, url: profile_path, method: :patch do |f| %>
+      <div class="row g-3">
+        <div class="col-md-6">
+          <%= f.label :title, "Profile Title", class: "form-label" %>
+          <%= f.text_field :title, class: "form-control", placeholder: "My Resume" %>
+        </div>
+        <div class="col-md-6">
+          <%= f.label :headline, class: "form-label" %>
+          <%= f.text_field :headline, class: "form-control", placeholder: "Senior Rails Developer" %>
+        </div>
+      </div>
+
+      <hr class="my-4">
+
+      <div class="row g-3">
+        <div class="col-md-6">
+          <label for="profile_contact_details_first_name" class="form-label">First Name</label>
+          <input type="text" name="profile[contact_details][first_name]" id="profile_contact_details_first_name" value="<%= profile.contact_field("first_name") %>" class="form-control" placeholder="John">
+        </div>
+        <div class="col-md-6">
+          <label for="profile_contact_details_surname" class="form-label">Last Name</label>
+          <input type="text" name="profile[contact_details][surname]" id="profile_contact_details_surname" value="<%= profile.contact_field("surname") %>" class="form-control" placeholder="Doe">
+        </div>
+        <div class="col-md-6">
+          <label for="profile_contact_details_email" class="form-label">Email</label>
+          <input type="email" name="profile[contact_details][email]" id="profile_contact_details_email" value="<%= profile.contact_field("email") %>" class="form-control" placeholder="john@example.com">
+        </div>
+        <div class="col-md-6">
+          <label for="profile_contact_details_phone" class="form-label">Phone</label>
+          <input type="text" name="profile[contact_details][phone]" id="profile_contact_details_phone" value="<%= profile.contact_field("phone") %>" class="form-control" placeholder="+1 555-0123">
+        </div>
+        <div class="col-md-6">
+          <label for="profile_contact_details_city" class="form-label">City</label>
+          <input type="text" name="profile[contact_details][city]" id="profile_contact_details_city" value="<%= profile.contact_field("city") %>" class="form-control" placeholder="New York">
+        </div>
+        <div class="col-md-6">
+          <label for="profile_contact_details_country" class="form-label">Country</label>
+          <input type="text" name="profile[contact_details][country]" id="profile_contact_details_country" value="<%= profile.contact_field("country") %>" class="form-control" placeholder="USA">
+        </div>
+        <div class="col-md-6">
+          <label for="profile_contact_details_linkedin" class="form-label">LinkedIn URL</label>
+          <input type="url" name="profile[contact_details][linkedin]" id="profile_contact_details_linkedin" value="<%= profile.contact_field("linkedin") %>" class="form-control" placeholder="https://linkedin.com/in/johndoe">
+        </div>
+        <div class="col-md-6">
+          <label for="profile_contact_details_website" class="form-label">Website</label>
+          <input type="url" name="profile[contact_details][website]" id="profile_contact_details_website" value="<%= profile.contact_field("website") %>" class="form-control" placeholder="https://johndoe.dev">
+        </div>
+      </div>
+
+      <hr class="my-4">
+
+      <div class="mb-3">
+        <%= f.label :summary, class: "form-label" %>
+        <%= f.text_area :summary, class: "form-control", rows: 4, placeholder: "A brief professional summary..." %>
+      </div>
+
+      <div class="d-flex gap-2">
+        <%= f.submit "Save Contact Details", class: "btn btn-primary" %>
+        <%= link_to "Cancel", profile_path, class: "btn btn-outline-secondary" %>
+      </div>
+    <% end %>
+  </div>
+</div>

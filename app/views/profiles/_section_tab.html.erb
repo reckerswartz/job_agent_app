@@ -1,0 +1,38 @@
+<%
+  section = profile.profile_sections.find_by(section_type: section_type)
+  section_title = ProfileSection::SECTION_TITLES[section_type]
+%>
+
+<div class="card profile-section-card mb-4">
+  <div class="card-header d-flex justify-content-between align-items-center">
+    <h3 class="card-header__title mb-0"><%= section_title %></h3>
+    <% unless section %>
+      <%= form_with url: profile_sections_path, method: :post, class: "d-inline" do |f| %>
+        <%= f.hidden_field :profile_section, value: "" %>
+        <input type="hidden" name="profile_section[section_type]" value="<%= section_type %>">
+        <input type="hidden" name="profile_section[title]" value="<%= section_title %>">
+        <%= f.submit "Add Section", class: "btn btn-sm btn-outline-primary" %>
+      <% end %>
+    <% end %>
+  </div>
+
+  <div class="card-body">
+    <% if section %>
+      <% if section.profile_entries.any? %>
+        <% section.ordered_entries.each do |entry| %>
+          <div class="profile-entry mb-3 p-3 border rounded">
+            <%= render "profiles/entries/#{section_type}_form", entry: entry, section: section %>
+          </div>
+        <% end %>
+      <% else %>
+        <p class="text-muted">No entries yet. Add your first entry below.</p>
+      <% end %>
+
+      <hr>
+      <h5 class="mb-3">Add New Entry</h5>
+      <%= render "profiles/entries/#{section_type}_new", section: section %>
+    <% else %>
+      <p class="text-muted mb-0">Click "Add Section" to enable this section on your profile.</p>
+    <% end %>
+  </div>
+</div>
