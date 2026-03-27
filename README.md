@@ -52,6 +52,35 @@ gh-done                         # Merge current PR + sync back to main
 gh-status                       # View open PRs, issues, CI
 ```
 
+## Architecture
+
+```
+User Profile (from resume PDF/text)
+    ↓
+Job Sources (LinkedIn, Indeed, Naukri, etc.)
+    ↓
+Job Scanner (Playwright browser automation)
+    ↓
+Job Listings (deduplicated, scored 0-100)
+    ↓
+Job Applications (auto-fill forms, track steps)
+    ↓
+Interventions (login/CAPTCHA → manual resolution → auto-retry)
+    ↓
+Dashboard (live stats, activity feed)
+```
+
+### Key Components
+
+| Layer | Tech |
+|-------|------|
+| **Auth** | Devise (database_authenticatable, trackable, recoverable) |
+| **Browser Automation** | playwright-ruby-client (headless Chromium) |
+| **Background Jobs** | Solid Queue (scanning, applying, parsing queues) |
+| **LLM** | NVIDIA Build API (vision + text + verification pipeline) |
+| **Frontend** | Webpack + Bootstrap 5 Sass + Stimulus |
+| **Database** | PostgreSQL + Active Storage |
+
 ## CI/CD
 
 CI runs automatically on pushes to `main` and on all pull requests:
@@ -61,46 +90,16 @@ CI runs automatically on pushes to `main` and on all pull requests:
 | `scan_ruby` | Brakeman | Static security analysis |
 | `scan_ruby` | bundler-audit | Gem CVE scanning |
 | `lint` | RuboCop | Code style enforcement |
+| `test` | RSpec (222 specs) | Full test suite with PostgreSQL |
 
 Dependabot keeps Ruby gems and GitHub Actions up to date weekly.
 
-## MCP Servers
+## Environment Variables
 
-AI coding assistants connect to external tools via [Model Context Protocol](https://modelcontextprotocol.io/) servers. See [docs/mcp-servers.md](docs/mcp-servers.md) for full details.
+See `.env.example` for all required environment variables. Key ones:
 
-| Server | Package | Purpose | API Key Required |
-|--------|---------|---------|-----------------|
-| **Playwright** | `@playwright/mcp` | Browser automation — job board navigation, form filling, scraping | None |
-| **Figma** | `figma-developer-mcp` | Read Figma designs to implement the job dashboard UI | `FIGMA_API_KEY` |
-| **Miro** | `@llmindset/mcp-miro` | Whiteboard planning — map workflows, architecture, user flows | `MIRO_OAUTH_TOKEN` |
-| **Toolbox** | `mcp-toolbox[all]` | Web search, URL-to-markdown, file ops, memory | `TAVILY_API_KEY` |
-
-Configure API keys in `.devin/config.json` → `mcpServers.<name>.env`.
-
-## Agent Skills
-
-This project includes agent skills (`.devin/skills/`) that extend AI coding assistant capabilities for development workflows. Skills follow the universal `SKILL.md` format and work across Claude Code, Cursor, Windsurf, and other AI coding tools.
-
-### Installed Skills
-
-| Skill | Description | Invoke With |
-|-------|-------------|-------------|
-| **browser-use** | Control a live browser to navigate, interact, and extract data from web pages | `/browser-use [url]` |
-| **browser-recorder** | Record browser sessions — screenshots, snapshots, network activity | `/browser-recorder [url]` |
-| **browser-test** | Full app walkthrough with regression baseline recording | `/browser-test [base-url]` |
-| **job-search-automation** | Search job boards, extract listings, score and rank matches | `/job-search-automation [criteria]` |
-| **frontend-design** | Generate production-grade UI with distinctive design system | `/frontend-design [component]` |
-| **code-reviewer** | Automated code review — simplify, deduplicate, fix quality issues | `/code-reviewer [file-or-dir]` |
-| **security-auditor** | Audit code for OWASP vulnerabilities using Brakeman and manual review | `/security-auditor [file-or-dir]` |
-| **excalidraw-diagram** | Generate architecture diagrams as Excalidraw JSON | `/excalidraw-diagram [description]` |
-
-### Skills Reference
-
-Based on [10 Must-Have Skills for Claude (and Any Coding Agent) in 2026](https://medium.com/@unicodeveloper/10-must-have-skills-for-claude-and-any-coding-agent-in-2026-b5451b013051):
-
-- **Browser Use** — Core to the app's job search automation workflow
-- **Frontend Design** — Escape generic AI-generated UI; use a purposeful design system
-- **Code Reviewer** — Every code change gets a second-draft review before presentation
-- **Security Auditor** — Inspired by Shannon autonomous pentester; audit for OWASP vulnerabilities
-- **Excalidraw Diagram** — Generate visual architecture documentation as part of development
-- **Job Search Automation** — Custom domain skill for multi-board job discovery and ranking
+| Variable | Purpose |
+|----------|---------|
+| `NVIDIA_API_KEY` | NVIDIA Build API for LLM features |
+| `ACTIVE_RECORD_ENCRYPTION_*` | Encryption keys for AppSetting |
+| `DATABASE_URL` | PostgreSQL connection (production/CI) |

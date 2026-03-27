@@ -1,0 +1,31 @@
+<% if pagy.pages > 1 %>
+  <nav aria-label="Pagination" class="d-flex justify-content-center mt-4">
+    <ul class="pagination pagination-sm">
+      <% if pagy.prev %>
+        <li class="page-item">
+          <%= link_to "‹ Prev", url_for(page: pagy.prev), class: "page-link" %>
+        </li>
+      <% else %>
+        <li class="page-item disabled"><span class="page-link">‹ Prev</span></li>
+      <% end %>
+
+      <% pagy.series.each do |item| %>
+        <% if item.is_a?(Integer) %>
+          <li class="page-item"><%= link_to item, url_for(page: item), class: "page-link" %></li>
+        <% elsif item.is_a?(String) %>
+          <li class="page-item active"><span class="page-link"><%= item %></span></li>
+        <% elsif item == :gap %>
+          <li class="page-item disabled"><span class="page-link">…</span></li>
+        <% end %>
+      <% end %>
+
+      <% if pagy.next %>
+        <li class="page-item">
+          <%= link_to "Next ›", url_for(page: pagy.next), class: "page-link" %>
+        </li>
+      <% else %>
+        <li class="page-item disabled"><span class="page-link">Next ›</span></li>
+      <% end %>
+    </ul>
+  </nav>
+<% end %>

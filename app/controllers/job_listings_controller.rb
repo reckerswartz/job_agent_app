@@ -5,12 +5,13 @@ class JobListingsController < ApplicationController
   before_action :set_listing, only: [:show, :update_status]
 
   def index
-    @listings = JobListing.for_user(current_user)
-                          .by_status(params[:status])
-                          .recent
-                          .includes(:job_source)
+    scope = JobListing.for_user(current_user)
+                      .by_status(params[:status])
+                      .recent
+                      .includes(:job_source)
 
-    @listings = @listings.where(job_source_id: params[:source_id]) if params[:source_id].present?
+    scope = scope.where(job_source_id: params[:source_id]) if params[:source_id].present?
+    @pagy, @listings = pagy(scope)
     @status_counts = JobListing.for_user(current_user).group(:status).count
   end
 
