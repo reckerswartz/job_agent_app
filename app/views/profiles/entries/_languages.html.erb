@@ -1,0 +1,6 @@
+<div class="entry-display d-inline-block me-2 mb-2">
+  <span class="badge bg-secondary"><%= entry.content["name"] %></span>
+  <% if entry.content["proficiency"].present? %>
+    <small class="text-muted">(<%= entry.content["proficiency"] %>)</small>
+  <% end %>
+</div>

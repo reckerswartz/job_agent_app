@@ -1,0 +1,9 @@
+<div class="entry-display">
+  <strong><%= entry.content["name"] %></strong>
+  <% if entry.content["url"].present? %>
+    <%= link_to "(link)", entry.content["url"], target: "_blank", class: "small" %>
+  <% end %>
+  <% if entry.content["description"].present? %>
+    <p class="mt-1 mb-0 small"><%= entry.content["description"] %></p>
+  <% end %>
+</div>

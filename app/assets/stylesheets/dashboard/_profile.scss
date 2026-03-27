@@ -1,0 +1,106 @@
+// ==========================================================================
+// Dashboard Profile Page
+// ==========================================================================
+
+.profile-card {
+  border: none;
+  box-shadow: $box-shadow-sm;
+  border-radius: $border-radius-lg;
+
+  &__name {
+    font-size: 1.5rem;
+    font-weight: 800;
+    color: $dark;
+    margin-bottom: 0.25rem;
+  }
+
+  &__headline {
+    color: rgba($dark, 0.6);
+    font-size: 1rem;
+    margin-bottom: 1rem;
+  }
+
+  &__contact {
+    display: flex;
+    flex-wrap: wrap;
+    gap: 1rem;
+  }
+
+  &__contact-item {
+    font-size: 0.875rem;
+    color: rgba($dark, 0.65);
+  }
+}
+
+.profile-section-card {
+  border: none;
+  box-shadow: $box-shadow-sm;
+  border-radius: $border-radius-lg;
+
+  .card-header {
+    background-color: #fff;
+    border-bottom: 1px solid rgba(0, 0, 0, 0.06);
+    padding: 1rem 1.5rem;
+
+    .card-header__title {
+      font-weight: 700;
+      font-size: 1rem;
+      color: $dark;
+    }
+  }
+
+  .card-body {
+    padding: 1.5rem;
+  }
+}
+
+.profile-tabs {
+  border-bottom-color: rgba(0, 0, 0, 0.08);
+
+  .nav-link {
+    font-weight: 600;
+    font-size: 0.875rem;
+    color: rgba($dark, 0.5);
+    border: none;
+    padding: 0.625rem 1rem;
+
+    &:hover {
+      color: $dark;
+      border-color: transparent;
+    }
+
+    &.active {
+      color: $primary;
+      border-bottom: 2px solid $primary;
+      background: transparent;
+    }
+  }
+}
+
+.profile-entry {
+  background-color: rgba(0, 0, 0, 0.015);
+  border-color: rgba(0, 0, 0, 0.06) !important;
+  transition: background-color 0.15s;
+
+  &:hover {
+    background-color: rgba($primary, 0.02);
+  }
+}
+
+.profile-extracted-text-wrap {
+  max-height: 400px;
+  overflow-y: auto;
+  border: 1px solid rgba(0, 0, 0, 0.08);
+  border-radius: $border-radius;
+  padding: 1rem;
+  background-color: $light;
+}
+
+.profile-extracted-text {
+  font-family: $font-family-monospace;
+  font-size: 0.8rem;
+  white-space: pre-wrap;
+  word-wrap: break-word;
+  margin: 0;
+  color: rgba($dark, 0.8);
+}

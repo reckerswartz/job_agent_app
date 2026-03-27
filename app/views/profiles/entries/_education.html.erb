@@ -1,0 +1,16 @@
+<div class="entry-display">
+  <div class="d-flex justify-content-between">
+    <div>
+      <strong><%= entry.content["degree"] %></strong>
+      <% if entry.content["field"].present? %>
+        <span class="text-muted">in <%= entry.content["field"] %></span>
+      <% end %>
+    </div>
+    <small class="text-muted">
+      <%= entry.content["start_date"] %> &mdash; <%= entry.content["end_date"] %>
+    </small>
+  </div>
+  <% if entry.content["institution"].present? %>
+    <div><%= entry.content["institution"] %></div>
+  <% end %>
+</div>

@@ -29,7 +29,7 @@
 
     <li class="sidebar__heading">Settings</li>
     <li>
-      <%= link_to "#", class: "sidebar__link" do %>
+      <%= link_to profile_path, class: "sidebar__link #{current_page?(profile_path) || current_page?(edit_profile_path) ? 'sidebar__link--active' : ''}" do %>
         <span class="sidebar__link-icon">&#x1F464;</span> Profile
       <% end %>
     </li>

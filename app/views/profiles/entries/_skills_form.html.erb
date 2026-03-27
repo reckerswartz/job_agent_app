@@ -1,0 +1,12 @@
+<%= form_with url: profile_section_entry_path(section, entry), method: :patch, class: "d-inline-flex gap-2 align-items-center mb-2" do |f| %>
+  <input type="text" name="profile_entry[content][name]" value="<%= entry.content["name"] %>" class="form-control form-control-sm" style="width:150px" placeholder="Skill">
+  <select name="profile_entry[content][level]" class="form-select form-select-sm" style="width:130px">
+    <option value="">Level</option>
+    <% %w[Beginner Intermediate Advanced Expert].each do |level| %>
+      <option value="<%= level %>" <%= "selected" if entry.content["level"] == level %>><%= level %></option>
+    <% end %>
+  </select>
+  <input type="text" name="profile_entry[content][category]" value="<%= entry.content["category"] %>" class="form-control form-control-sm" style="width:130px" placeholder="Category">
+  <%= f.submit "Save", class: "btn btn-sm btn-primary" %>
+  <%= button_to "x", profile_section_entry_path(section, entry), method: :delete, class: "btn btn-sm btn-outline-danger", data: { turbo_confirm: "Remove?" } %>
+<% end %>
