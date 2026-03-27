@@ -13,6 +13,18 @@
       <span class="topbar__search-icon">&#x1F50D;</span>
       <input type="text" class="form-control form-control-sm" placeholder="Search jobs...">
     </div>
-    <div class="topbar__avatar" title="User">U</div>
+    <% if authenticated? %>
+      <div class="dropdown">
+        <div class="topbar__avatar" data-bs-toggle="dropdown" role="button" title="<%= current_user.display_name %>">
+          <%= current_user.initials %>
+        </div>
+        <ul class="dropdown-menu dropdown-menu-end">
+          <li><span class="dropdown-item-text fw-bold"><%= current_user.display_name %></span></li>
+          <li><span class="dropdown-item-text text-muted small"><%= current_user.email_address %></span></li>
+          <li><hr class="dropdown-divider"></li>
+          <li><%= button_to "Sign Out", sign_out_path, method: :delete, class: "dropdown-item" %></li>
+        </ul>
+      </div>
+    <% end %>
   </div>
 </header>

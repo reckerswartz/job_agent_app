@@ -1,0 +1,84 @@
+// ==========================================================================
+// Auth Pages (Sign In / Sign Up)
+// ==========================================================================
+
+.auth-page {
+  background-color: #f4f6f9;
+}
+
+.auth-container {
+  width: 100%;
+  max-width: 440px;
+  padding: 1rem;
+}
+
+.auth-card {
+  border: none;
+  box-shadow: $box-shadow;
+  border-radius: $border-radius-lg;
+}
+
+.auth-brand {
+  &__icon {
+    font-size: 2.5rem;
+    display: block;
+    margin-bottom: 0.5rem;
+  }
+
+  &__name {
+    font-size: 1.5rem;
+    font-weight: 800;
+    color: $dark;
+    letter-spacing: -0.03em;
+    margin: 0;
+  }
+}
+
+.auth-title {
+  font-size: 1.25rem;
+  font-weight: 700;
+  color: $dark;
+}
+
+.auth-subtitle {
+  font-size: 0.9rem;
+  color: rgba($dark, 0.5);
+}
+
+.auth-form {
+  .form-label {
+    font-weight: 600;
+    font-size: 0.875rem;
+    color: $dark;
+  }
+
+  .form-control-lg {
+    font-size: 0.95rem;
+    padding: 0.7rem 1rem;
+    border-radius: $border-radius;
+
+    &:focus {
+      border-color: rgba($primary, 0.4);
+      box-shadow: 0 0 0 3px rgba($primary, 0.1);
+    }
+  }
+}
+
+.auth-alt {
+  font-size: 0.875rem;
+  color: rgba($dark, 0.5);
+
+  &__link {
+    color: $primary;
+    font-weight: 600;
+    text-decoration: none;
+
+    &:hover {
+      text-decoration: underline;
+    }
+  }
+}
+
+.auth-footer {
+  font-size: 0.8rem;
+}
