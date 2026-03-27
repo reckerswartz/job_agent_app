@@ -31,7 +31,7 @@ RSpec.describe Profile, type: :model do
     end
 
     it "falls back to user display_name" do
-      user = build(:user, email_address: "jane@example.com")
+      user = build(:user, email: "jane@example.com")
       profile = build(:profile, user: user, contact_details: {})
       expect(profile.display_name).to eq(user.display_name)
     end

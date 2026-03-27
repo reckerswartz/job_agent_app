@@ -5,7 +5,7 @@ RSpec.describe "ProfileEntries", type: :request do
   let!(:profile) { create(:profile, user: user) }
   let!(:section) { create(:profile_section, profile: profile, section_type: "work_experience") }
 
-  before { sign_in_as(user) }
+  before { sign_in user }
 
   describe "POST /profile/sections/:section_id/entries" do
     it "creates a new entry" do

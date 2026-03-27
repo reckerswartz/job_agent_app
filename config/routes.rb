@@ -9,12 +9,12 @@ Rails.application.routes.draw do
   # get "manifest" => "rails/pwa#manifest", as: :pwa_manifest
   # get "service-worker" => "rails/pwa#service_worker", as: :pwa_service_worker
 
-  # Authentication
-  get  "sign_in",  to: "sessions#new",           as: :sign_in
-  post "sign_in",  to: "sessions#create"
-  get  "sign_up",  to: "registrations#new",       as: :sign_up
-  post "sign_up",  to: "registrations#create"
-  delete "sign_out", to: "sessions#destroy",      as: :sign_out
+  # Authentication (Devise)
+  devise_for :users, path: "", path_names: {
+    sign_in: "sign_in",
+    sign_out: "sign_out",
+    sign_up: "sign_up"
+  }
 
   # Dashboard
   get "dashboard", to: "dashboard#index", as: :dashboard
