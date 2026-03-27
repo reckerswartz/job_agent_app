@@ -24,50 +24,61 @@
 </ul>
 
 <% if @listings.any? %>
-  <div class="card dash-table-card">
-    <div class="table-responsive">
-      <table class="table">
-        <thead>
-          <tr>
-            <th>Position</th>
-            <th>Company</th>
-            <th>Location</th>
-            <th>Match</th>
-            <th>Source</th>
-            <th>Status</th>
-            <th>Posted</th>
-          </tr>
-        </thead>
-        <tbody>
-          <% @listings.each do |listing| %>
+  <div data-controller="bulk-select">
+    <%# ── Bulk Action Bar ── %>
+    <div class="d-flex gap-2 align-items-center mb-3 p-2 bg-light rounded" style="display:none;" data-bulk-select-target="actionBar">
+      <span class="fw-bold small" data-bulk-select-target="count">0 selected</span>
+      <button type="button" class="btn btn-sm btn-success" data-action="click->bulk-select#submitBulk" data-status="saved">Save Selected</button>
+      <button type="button" class="btn btn-sm btn-outline-danger" data-action="click->bulk-select#submitBulk" data-status="rejected">Reject Selected</button>
+    </div>
+
+    <div class="card dash-table-card">
+      <div class="table-responsive">
+        <table class="table">
+          <thead>
             <tr>
-              <td>
-                <%= link_to listing.title, job_listing_path(listing), class: "fw-bold text-decoration-none" %>
-              </td>
-              <td><%= listing.company %></td>
-              <td><%= listing.location %></td>
-              <td>
-                <% if listing.match_score %>
-                  <span class="match-score <%= listing.match_badge_class %>"><%= listing.match_score %>%</span>
-                <% else %>
-                  <span class="text-muted">—</span>
-                <% end %>
-              </td>
-              <td>
-                <span class="badge bg-<%= listing.job_source.platform_color %> source-badge">
-                  <%= listing.job_source.platform.capitalize %>
-                </span>
-              </td>
-              <td>
-                <span class="badge bg-<%= status_badge_color(listing.status) %>"><%= listing.status.capitalize %></span>
-              </td>
-              <td class="text-muted">
-                <%= listing.posted_at ? time_ago_in_words(listing.posted_at) + " ago" : "—" %>
-              </td>
+              <th style="width:40px"><input type="checkbox" class="form-check-input" data-bulk-select-target="selectAll" data-action="change->bulk-select#toggleAll"></th>
+              <th>Position</th>
+              <th>Company</th>
+              <th>Location</th>
+              <th>Match</th>
+              <th>Source</th>
+              <th>Status</th>
+              <th>Posted</th>
             </tr>
-          <% end %>
-        </tbody>
-      </table>
+          </thead>
+          <tbody>
+            <% @listings.each do |listing| %>
+              <tr>
+                <td><input type="checkbox" class="form-check-input" value="<%= listing.id %>" data-bulk-select-target="checkbox" data-action="change->bulk-select#toggle"></td>
+                <td>
+                  <%= link_to listing.title, job_listing_path(listing), class: "fw-bold text-decoration-none" %>
+                </td>
+                <td><%= listing.company %></td>
+                <td><%= listing.location %></td>
+                <td>
+                  <% if listing.match_score %>
+                    <span class="match-score <%= listing.match_badge_class %>"><%= listing.match_score %>%</span>
+                  <% else %>
+                    <span class="text-muted">—</span>
+                  <% end %>
+                </td>
+                <td>
+                  <span class="badge bg-<%= listing.job_source.platform_color %> source-badge">
+                    <%= listing.job_source.platform.capitalize %>
+                  </span>
+                </td>
+                <td>
+                  <span class="badge bg-<%= status_badge_color(listing.status) %>"><%= listing.status.capitalize %></span>
+                </td>
+                <td class="text-muted">
+                  <%= listing.posted_at ? time_ago_in_words(listing.posted_at) + " ago" : "—" %>
+                </td>
+              </tr>
+            <% end %>
+          </tbody>
+        </table>
+      </div>
     </div>
   </div>
   <%= render "shared/pagination", pagy: @pagy %>

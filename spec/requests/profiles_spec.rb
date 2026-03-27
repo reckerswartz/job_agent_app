@@ -72,4 +72,27 @@ RSpec.describe "Profiles", type: :request do
       expect(flash[:alert]).to be_present
     end
   end
+
+  describe "POST /profile/structure_with_ai" do
+    before { sign_in user }
+
+    it "enqueues resume structure job when source_text present" do
+      profile = user.profiles.first_or_create!(title: "My Resume")
+      profile.update!(source_text: "Some resume text here")
+
+      expect {
+        post structure_with_ai_profile_path
+      }.to have_enqueued_job(ResumeStructureJob)
+
+      expect(response).to redirect_to(profile_path)
+    end
+
+    it "redirects with alert when no source_text" do
+      user.profiles.first_or_create!(title: "My Resume")
+
+      post structure_with_ai_profile_path
+      expect(response).to redirect_to(profile_path)
+      expect(flash[:alert]).to include("No resume text")
+    end
+  end
 end

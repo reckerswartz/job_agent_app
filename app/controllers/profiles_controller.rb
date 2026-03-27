@@ -4,6 +4,16 @@ class ProfilesController < ApplicationController
 
   before_action :set_or_create_profile
 
+  def structure_with_ai
+    if @profile.source_text.blank?
+      redirect_to profile_path, alert: "No resume text to structure. Please upload a resume first."
+      return
+    end
+
+    ResumeStructureJob.perform_later(@profile.id)
+    redirect_to profile_path, notice: "AI structuring started. Your profile sections will be populated shortly."
+  end
+
   def show
   end
 

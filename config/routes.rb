@@ -22,6 +22,7 @@ Rails.application.routes.draw do
   # Profile
   resource :profile, only: [:show, :edit, :update] do
     post :upload_resume
+    post :structure_with_ai
     resources :sections, controller: "profile_sections", only: [:create, :destroy] do
       resources :entries, controller: "profile_entries", only: [:create, :update, :destroy]
     end
@@ -31,6 +32,10 @@ Rails.application.routes.draw do
   resources :job_listings, only: [:index, :show] do
     member do
       patch :update_status
+      post :generate_cover_letter
+    end
+    collection do
+      post :bulk_update
     end
   end
 
