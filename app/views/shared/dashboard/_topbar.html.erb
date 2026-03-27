@@ -1,0 +1,18 @@
+<header class="topbar">
+  <div class="topbar__left">
+    <button class="topbar__toggle"
+            data-action="click->sidebar#toggle"
+            aria-label="Toggle sidebar">
+      &#x2630;
+    </button>
+    <h1 class="topbar__title"><%= yield(:page_title) || "Dashboard" %></h1>
+  </div>
+
+  <div class="topbar__right">
+    <div class="topbar__search">
+      <span class="topbar__search-icon">&#x1F50D;</span>
+      <input type="text" class="form-control form-control-sm" placeholder="Search jobs...">
+    </div>
+    <div class="topbar__avatar" title="User">U</div>
+  </div>
+</header>

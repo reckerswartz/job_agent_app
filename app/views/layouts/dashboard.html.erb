@@ -1,0 +1,62 @@
+<!DOCTYPE html>
+<html>
+  <head>
+    <title><%= content_for(:title) || "Dashboard — Job Agent" %></title>
+    <meta name="viewport" content="width=device-width,initial-scale=1">
+    <meta name="apple-mobile-web-app-capable" content="yes">
+    <meta name="application-name" content="Job Agent App">
+    <meta name="mobile-web-app-capable" content="yes">
+    <%= csrf_meta_tags %>
+    <%= csp_meta_tag %>
+
+    <%= yield :head %>
+
+    <link rel="icon" href="/icon.png" type="image/png">
+    <link rel="icon" href="/icon.svg" type="image/svg+xml">
+    <link rel="apple-touch-icon" href="/icon.png">
+
+    <%= stylesheet_link_tag :app, "data-turbo-track": "reload" %>
+    <%= javascript_include_tag "application", "data-turbo-track": "reload", type: "module" %>
+  </head>
+
+  <body class="page-dashboard" data-controller="sidebar">
+    <div class="dashboard-wrapper">
+      <%# ── Sidebar ── %>
+      <%= render "shared/dashboard/sidebar" %>
+
+      <%# ── Overlay for mobile ── %>
+      <div class="sidebar-overlay"
+           data-sidebar-target="overlay"
+           data-action="click->sidebar#close"></div>
+
+      <%# ── Main content area ── %>
+      <div class="dashboard-main">
+        <%# ── Topbar ── %>
+        <%= render "shared/dashboard/topbar" %>
+
+        <%# ── Page content ── %>
+        <div class="dashboard-content">
+          <% if notice.present? %>
+            <div class="alert alert-success alert-dismissible fade show" role="alert">
+              <%= notice %>
+              <button type="button" class="btn-close" data-bs-dismiss="alert"></button>
+            </div>
+          <% end %>
+          <% if alert.present? %>
+            <div class="alert alert-danger alert-dismissible fade show" role="alert">
+              <%= alert %>
+              <button type="button" class="btn-close" data-bs-dismiss="alert"></button>
+            </div>
+          <% end %>
+
+          <%= yield %>
+        </div>
+
+        <%# ── Footer ── %>
+        <div class="dashboard-footer">
+          &copy; <%= Date.today.year %> Job Agent App
+        </div>
+      </div>
+    </div>
+  </body>
+</html>
