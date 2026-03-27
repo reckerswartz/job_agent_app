@@ -22,6 +22,7 @@ class JobSource < ApplicationRecord
   belongs_to :user
   has_many :job_listings, dependent: :destroy
   has_many :job_scan_runs, dependent: :destroy
+  has_many :interventions, as: :interventionable, dependent: :destroy
 
   validates :name, presence: true
   validates :platform, presence: true, inclusion: { in: PLATFORMS }

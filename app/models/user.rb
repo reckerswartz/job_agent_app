@@ -5,6 +5,7 @@ class User < ApplicationRecord
   has_many :profiles, dependent: :destroy
   has_many :job_sources, dependent: :destroy
   has_many :job_search_criteria, class_name: "JobSearchCriteria", dependent: :destroy
+  has_many :interventions, dependent: :destroy
 
   enum :role, { user: 0, admin: 1 }, validate: true
 

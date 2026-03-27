@@ -1,0 +1,102 @@
+<% content_for(:page_title, "Intervention — #{@intervention.type_label}") %>
+
+<div class="page-header mb-4">
+  <div class="d-flex justify-content-between align-items-start">
+    <div>
+      <h1 class="page-header__title">
+        <span><%= raw @intervention.type_icon %></span>
+        <%= @intervention.type_label %>
+      </h1>
+      <p class="page-header__subtitle">
+        <%= @intervention.parent_description %>
+        &middot;
+        <span class="badge bg-<%= @intervention.pending? ? 'warning' : (@intervention.resolved? ? 'success' : 'secondary') %>">
+          <%= @intervention.status.capitalize %>
+        </span>
+      </p>
+    </div>
+    <div class="d-flex gap-2">
+      <% if @intervention.pending? %>
+        <%= button_to "Dismiss", dismiss_intervention_path(@intervention), method: :patch, class: "btn btn-outline-secondary" %>
+      <% end %>
+      <%= link_to "Back", interventions_path, class: "btn btn-outline-secondary" %>
+    </div>
+  </div>
+</div>
+
+<div class="row g-4">
+  <%# ── Main Content ── %>
+  <div class="col-lg-8">
+    <%# ── Context Info ── %>
+    <div class="card mb-4">
+      <div class="card-header"><h3 class="card-header__title mb-0">Context</h3></div>
+      <div class="card-body">
+        <% if @intervention.context.any? %>
+          <dl class="listing-details">
+            <% @intervention.context.each do |key, value| %>
+              <dt><%= key.humanize %></dt>
+              <dd class="small"><%= value %></dd>
+            <% end %>
+          </dl>
+        <% else %>
+          <p class="text-muted mb-0">No additional context available.</p>
+        <% end %>
+      </div>
+    </div>
+
+    <%# ── Resolution Form ── %>
+    <% if @intervention.pending? %>
+      <div class="card mb-4">
+        <div class="card-header"><h3 class="card-header__title mb-0">Resolve This Issue</h3></div>
+        <div class="card-body">
+          <%= form_with url: resolve_intervention_path(@intervention), method: :patch do |f| %>
+            <%= render "interventions/forms/#{@intervention.intervention_type}", f: f %>
+
+            <div class="d-flex gap-2 mt-4">
+              <%= f.submit "Resolve & Retry", class: "btn btn-primary" %>
+            </div>
+          <% end %>
+        </div>
+      </div>
+    <% end %>
+
+    <%# ── Resolution Result ── %>
+    <% if @intervention.resolved? && @intervention.user_input.any? %>
+      <div class="card mb-4">
+        <div class="card-header"><h3 class="card-header__title mb-0">Resolution Input</h3></div>
+        <div class="card-body">
+          <dl class="listing-details">
+            <% @intervention.user_input.each do |key, value| %>
+              <dt><%= key.humanize %></dt>
+              <dd class="small"><%= key.include?("password") ? "••••••••" : value %></dd>
+            <% end %>
+          </dl>
+          <small class="text-muted">Resolved <%= time_ago_in_words(@intervention.resolved_at) %> ago</small>
+        </div>
+      </div>
+    <% end %>
+  </div>
+
+  <%# ── Sidebar ── %>
+  <div class="col-lg-4">
+    <div class="card mb-4">
+      <div class="card-header"><h3 class="card-header__title mb-0">Details</h3></div>
+      <div class="card-body">
+        <dl class="listing-details">
+          <dt>Type</dt>
+          <dd><span class="badge bg-<%= @intervention.type_color %>"><%= @intervention.type_label %></span></dd>
+          <dt>Status</dt>
+          <dd><span class="badge bg-<%= @intervention.pending? ? 'warning' : (@intervention.resolved? ? 'success' : 'secondary') %>"><%= @intervention.status.capitalize %></span></dd>
+          <dt>Created</dt>
+          <dd><%= @intervention.created_at.strftime("%Y-%m-%d %H:%M") %></dd>
+          <% if @intervention.resolved_at %>
+            <dt>Resolved</dt>
+            <dd><%= @intervention.resolved_at.strftime("%Y-%m-%d %H:%M") %></dd>
+          <% end %>
+          <dt>Related To</dt>
+          <dd><%= @intervention.interventionable_type %> #<%= @intervention.interventionable_id %></dd>
+        </dl>
+      </div>
+    </div>
+  </div>
+</div>
