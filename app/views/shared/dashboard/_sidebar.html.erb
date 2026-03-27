@@ -12,8 +12,8 @@
       <% end %>
     </li>
     <li>
-      <%= link_to "#", class: "sidebar__link" do %>
-        <span class="sidebar__link-icon">&#x1F50D;</span> Job Search
+      <%= link_to job_sources_path, class: "sidebar__link #{request.path.start_with?('/job_sources', '/job_search_criteria') ? 'sidebar__link--active' : ''}" do %>
+        <span class="sidebar__link-icon">&#x1F50D;</span> Job Sources
       <% end %>
     </li>
     <li>

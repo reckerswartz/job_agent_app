@@ -1,0 +1,28 @@
+<% content_for(:page_title, "Search Criteria") %>
+
+<div class="page-header d-flex justify-content-between align-items-start mb-4">
+  <div>
+    <h1 class="page-header__title">Search Criteria</h1>
+    <p class="page-header__subtitle">Define what kinds of jobs to search for</p>
+  </div>
+  <%= link_to "Add Criteria", new_job_search_criterium_path, class: "btn btn-primary" %>
+</div>
+
+<% if @criteria.any? %>
+  <div class="row g-3">
+    <% @criteria.each do |c| %>
+      <div class="col-md-6">
+        <%= render "job_search_criteria/criteria_card", criteria: c %>
+      </div>
+    <% end %>
+  </div>
+<% else %>
+  <div class="card source-empty-card">
+    <div class="card-body text-center py-5">
+      <div class="source-empty-card__icon mb-3">&#x1F3AF;</div>
+      <h3>No search criteria yet</h3>
+      <p class="text-muted mb-3">Define keywords, location, and preferences to target the right jobs.</p>
+      <%= link_to "Create Your First Criteria", new_job_search_criterium_path, class: "btn btn-primary" %>
+    </div>
+  </div>
+<% end %>

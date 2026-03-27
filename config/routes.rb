@@ -27,6 +27,18 @@ Rails.application.routes.draw do
     end
   end
 
+  # Job Sources & Search Criteria
+  resources :job_sources do
+    member do
+      patch :toggle
+    end
+  end
+  resources :job_search_criteria do
+    member do
+      patch :set_default
+    end
+  end
+
   # Settings
   resource :settings, only: [:edit, :update]
 

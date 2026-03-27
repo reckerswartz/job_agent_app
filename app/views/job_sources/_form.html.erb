@@ -1,0 +1,56 @@
+<div class="card profile-section-card">
+  <div class="card-body">
+    <%= form_with(model: job_source, class: "source-form") do |f| %>
+      <% if job_source.errors.any? %>
+        <div class="alert alert-danger">
+          <% job_source.errors.full_messages.each do |msg| %>
+            <div><%= msg %></div>
+          <% end %>
+        </div>
+      <% end %>
+
+      <div class="row g-3">
+        <div class="col-md-6">
+          <%= f.label :platform, class: "form-label fw-bold" %>
+          <%= f.select :platform,
+              JobSource::PLATFORMS.map { |p| [p.capitalize, p] },
+              { include_blank: "Select platform..." },
+              class: "form-select" %>
+        </div>
+        <div class="col-md-6">
+          <%= f.label :name, "Source Name", class: "form-label fw-bold" %>
+          <%= f.text_field :name, class: "form-control", placeholder: "e.g. My LinkedIn" %>
+        </div>
+        <div class="col-md-8">
+          <%= f.label :base_url, "Base URL (auto-filled for known platforms)", class: "form-label fw-bold" %>
+          <%= f.url_field :base_url, class: "form-control", placeholder: "https://..." %>
+        </div>
+        <div class="col-md-4">
+          <%= f.label :scan_interval_hours, "Scan Every (hours)", class: "form-label fw-bold" %>
+          <%= f.number_field :scan_interval_hours, class: "form-control", min: 1, max: 168 %>
+        </div>
+      </div>
+
+      <hr class="my-4">
+      <h5 class="mb-3">Credentials <small class="text-muted">(optional — for boards that require login)</small></h5>
+      <div class="row g-3">
+        <div class="col-md-6">
+          <label for="job_source_credentials_username" class="form-label">Username / Email</label>
+          <input type="text" name="job_source[credentials][username]" id="job_source_credentials_username"
+                 value="<%= job_source.credentials&.dig("username") %>"
+                 class="form-control" placeholder="your@email.com" autocomplete="off">
+        </div>
+        <div class="col-md-6">
+          <label for="job_source_credentials_password" class="form-label">Password</label>
+          <input type="password" name="job_source[credentials][password]" id="job_source_credentials_password"
+                 class="form-control" placeholder="<%= job_source.credentials&.dig("username").present? ? '••••••••' : 'Optional' %>" autocomplete="off">
+        </div>
+      </div>
+
+      <div class="d-flex gap-2 mt-4">
+        <%= f.submit job_source.persisted? ? "Update Source" : "Add Source", class: "btn btn-primary" %>
+        <%= link_to "Cancel", job_sources_path, class: "btn btn-outline-secondary" %>
+      </div>
+    <% end %>
+  </div>
+</div>

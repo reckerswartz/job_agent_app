@@ -1,0 +1,36 @@
+<% content_for(:page_title, "Job Sources") %>
+
+<div class="page-header d-flex justify-content-between align-items-start mb-4">
+  <div>
+    <h1 class="page-header__title">Job Sources</h1>
+    <p class="page-header__subtitle">Manage the job boards you want to search</p>
+  </div>
+  <%= link_to "Add Source", new_job_source_path, class: "btn btn-primary" %>
+</div>
+
+<% if @job_sources.any? %>
+  <div class="row g-3">
+    <% @job_sources.each do |source| %>
+      <div class="col-md-6 col-xl-4">
+        <%= render "job_sources/source_card", source: source %>
+      </div>
+    <% end %>
+  </div>
+<% else %>
+  <div class="card source-empty-card">
+    <div class="card-body text-center py-5">
+      <div class="source-empty-card__icon mb-3">&#x1F50D;</div>
+      <h3>No job sources yet</h3>
+      <p class="text-muted mb-3">Add a job board to start searching for jobs automatically.</p>
+      <%= link_to "Add Your First Source", new_job_source_path, class: "btn btn-primary" %>
+    </div>
+  </div>
+<% end %>
+
+<% if @job_sources.any? %>
+  <hr class="my-4">
+  <div class="d-flex justify-content-between align-items-center mb-3">
+    <h2 class="h5 mb-0">Search Criteria</h2>
+    <%= link_to "Manage Criteria", job_search_criteria_path, class: "btn btn-sm btn-outline-primary" %>
+  </div>
+<% end %>

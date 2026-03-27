@@ -1,0 +1,63 @@
+<div class="card profile-section-card">
+  <div class="card-body">
+    <%= form_with(model: criteria, url: criteria.persisted? ? job_search_criterium_path(criteria) : job_search_criteria_path, class: "source-form") do |f| %>
+      <% if criteria.errors.any? %>
+        <div class="alert alert-danger">
+          <% criteria.errors.full_messages.each do |msg| %>
+            <div><%= msg %></div>
+          <% end %>
+        </div>
+      <% end %>
+
+      <div class="row g-3">
+        <div class="col-md-6">
+          <%= f.label :name, "Criteria Name", class: "form-label fw-bold" %>
+          <%= f.text_field :name, class: "form-control", placeholder: "e.g. Rails Developer NYC" %>
+        </div>
+        <div class="col-md-6">
+          <%= f.label :keywords, class: "form-label fw-bold" %>
+          <%= f.text_field :keywords, class: "form-control", placeholder: "Ruby on Rails Developer" %>
+        </div>
+        <div class="col-md-6">
+          <%= f.label :location, class: "form-label fw-bold" %>
+          <%= f.text_field :location, class: "form-control", placeholder: "New York, NY" %>
+        </div>
+        <div class="col-md-6">
+          <%= f.label :remote_preference, class: "form-label fw-bold" %>
+          <%= f.select :remote_preference,
+              JobSearchCriteria::REMOTE_PREFERENCES.map { |r| [r.humanize, r] },
+              {}, class: "form-select" %>
+        </div>
+        <div class="col-md-4">
+          <%= f.label :experience_level, class: "form-label fw-bold" %>
+          <%= f.select :experience_level,
+              JobSearchCriteria::EXPERIENCE_LEVELS.map { |l| [l.humanize, l] },
+              { include_blank: "Any level" }, class: "form-select" %>
+        </div>
+        <div class="col-md-4">
+          <%= f.label :job_type, class: "form-label fw-bold" %>
+          <%= f.select :job_type,
+              JobSearchCriteria::JOB_TYPES.map { |t| [t.humanize, t] },
+              {}, class: "form-select" %>
+        </div>
+        <div class="col-md-2">
+          <%= f.label :salary_min, "Min Salary", class: "form-label fw-bold" %>
+          <%= f.number_field :salary_min, class: "form-control", placeholder: "50000", min: 0 %>
+        </div>
+        <div class="col-md-2">
+          <%= f.label :salary_max, "Max Salary", class: "form-label fw-bold" %>
+          <%= f.number_field :salary_max, class: "form-control", placeholder: "150000", min: 0 %>
+        </div>
+        <div class="col-12">
+          <%= f.label :excluded_companies, "Excluded Companies (comma-separated)", class: "form-label fw-bold" %>
+          <%= f.text_field :excluded_companies, class: "form-control", placeholder: "Company A, Company B" %>
+        </div>
+      </div>
+
+      <div class="d-flex gap-2 mt-4">
+        <%= f.submit criteria.persisted? ? "Update Criteria" : "Create Criteria", class: "btn btn-primary" %>
+        <%= link_to "Cancel", job_search_criteria_path, class: "btn btn-outline-secondary" %>
+      </div>
+    <% end %>
+  </div>
+</div>
