@@ -3,6 +3,8 @@ class User < ApplicationRecord
          :recoverable, :rememberable, :validatable, :trackable
 
   has_many :profiles, dependent: :destroy
+  has_many :job_sources, dependent: :destroy
+  has_many :job_search_criteria, class_name: "JobSearchCriteria", dependent: :destroy
 
   enum :role, { user: 0, admin: 1 }, validate: true
 

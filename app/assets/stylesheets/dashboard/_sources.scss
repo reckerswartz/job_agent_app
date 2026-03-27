@@ -1,0 +1,49 @@
+// ==========================================================================
+// Dashboard Sources & Search Criteria
+// ==========================================================================
+
+.source-card {
+  border: none;
+  box-shadow: $box-shadow-sm;
+  border-radius: $border-radius-lg;
+  transition: box-shadow 0.2s ease;
+
+  &:hover {
+    box-shadow: $box-shadow;
+  }
+
+  &__platform {
+    font-size: 0.7rem;
+    text-transform: uppercase;
+    letter-spacing: 0.04em;
+  }
+
+  &__name {
+    font-weight: 700;
+    color: $dark;
+  }
+
+  &__meta {
+    font-size: 0.8rem;
+  }
+
+  &__details {
+    line-height: 1.7;
+  }
+}
+
+.source-empty-card {
+  border: 2px dashed rgba(0, 0, 0, 0.12);
+  box-shadow: none;
+  border-radius: $border-radius-lg;
+
+  &__icon {
+    font-size: 3rem;
+  }
+}
+
+// Purple badge for Indeed (not in Bootstrap)
+.bg-purple {
+  background-color: #6366f1 !important;
+  color: #fff;
+}

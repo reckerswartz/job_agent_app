@@ -1,0 +1,42 @@
+<div class="card source-card">
+  <div class="card-body">
+    <div class="d-flex justify-content-between align-items-start mb-2">
+      <div>
+        <span class="badge bg-<%= source.platform_color %> source-card__platform"><%= source.platform.capitalize %></span>
+        <h5 class="source-card__name mt-2 mb-1"><%= source.name %></h5>
+        <% if source.base_url.present? %>
+          <small class="text-muted text-truncate d-block" style="max-width:250px"><%= source.base_url %></small>
+        <% end %>
+      </div>
+      <div class="d-flex align-items-center gap-2">
+        <span class="badge bg-<%= source.enabled? ? 'success' : 'secondary' %>">
+          <%= source.enabled? ? "Enabled" : "Disabled" %>
+        </span>
+        <span class="badge bg-<%= source.status == 'active' ? 'success' : (source.status == 'error' ? 'danger' : 'warning') %>">
+          <%= source.status.capitalize %>
+        </span>
+      </div>
+    </div>
+
+    <div class="source-card__meta mb-3">
+      <small class="text-muted">
+        Scan every <strong><%= source.scan_interval_hours %>h</strong>
+        <% if source.last_scanned_at %>
+          &middot; Last scanned: <strong><%= time_ago_in_words(source.last_scanned_at) %> ago</strong>
+        <% else %>
+          &middot; Never scanned
+        <% end %>
+      </small>
+    </div>
+
+    <div class="d-flex gap-2">
+      <%= button_to source.enabled? ? "Disable" : "Enable",
+          toggle_job_source_path(source), method: :patch,
+          class: "btn btn-sm btn-outline-#{source.enabled? ? 'warning' : 'success'}" %>
+      <%= link_to "Edit", edit_job_source_path(source), class: "btn btn-sm btn-outline-primary" %>
+      <%= button_to "Remove", job_source_path(source), method: :delete,
+          class: "btn btn-sm btn-outline-danger",
+          data: { turbo_confirm: "Remove #{source.name}?" } %>
+    </div>
+  </div>
+</div>

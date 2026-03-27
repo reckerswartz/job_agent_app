@@ -10,7 +10,7 @@
 #
 # It's strongly recommended that you check this file into your version control system.
 
-ActiveRecord::Schema[8.1].define(version: 2026_03_27_084706) do
+ActiveRecord::Schema[8.1].define(version: 2026_03_27_090749) do
   # These are extensions that must be enabled in order to support this database
   enable_extension "pg_catalog.plpgsql"
 
@@ -49,6 +49,43 @@ ActiveRecord::Schema[8.1].define(version: 2026_03_27_084706) do
     t.string "key", null: false
     t.datetime "updated_at", null: false
     t.index ["key"], name: "index_app_settings_on_key", unique: true
+  end
+
+  create_table "job_search_criteria", force: :cascade do |t|
+    t.datetime "created_at", null: false
+    t.text "excluded_companies"
+    t.string "experience_level"
+    t.boolean "is_default", default: false, null: false
+    t.string "job_type", default: "full_time", null: false
+    t.string "keywords"
+    t.string "location"
+    t.string "name", null: false
+    t.string "remote_preference", default: "any", null: false
+    t.integer "salary_max"
+    t.integer "salary_min"
+    t.jsonb "settings", default: {}, null: false
+    t.datetime "updated_at", null: false
+    t.bigint "user_id", null: false
+    t.index ["user_id", "is_default"], name: "index_job_search_criteria_on_user_id_and_is_default"
+    t.index ["user_id"], name: "index_job_search_criteria_on_user_id"
+  end
+
+  create_table "job_sources", force: :cascade do |t|
+    t.string "base_url"
+    t.jsonb "config", default: {}, null: false
+    t.datetime "created_at", null: false
+    t.jsonb "credentials", default: {}, null: false
+    t.boolean "enabled", default: true, null: false
+    t.datetime "last_scanned_at"
+    t.string "name", null: false
+    t.string "platform", null: false
+    t.integer "scan_interval_hours", default: 6, null: false
+    t.string "status", default: "active", null: false
+    t.datetime "updated_at", null: false
+    t.bigint "user_id", null: false
+    t.index ["user_id", "enabled"], name: "index_job_sources_on_user_id_and_enabled"
+    t.index ["user_id", "platform"], name: "index_job_sources_on_user_id_and_platform"
+    t.index ["user_id"], name: "index_job_sources_on_user_id"
   end
 
   create_table "profile_entries", force: :cascade do |t|
@@ -111,6 +148,8 @@ ActiveRecord::Schema[8.1].define(version: 2026_03_27_084706) do
 
   add_foreign_key "active_storage_attachments", "active_storage_blobs", column: "blob_id"
   add_foreign_key "active_storage_variant_records", "active_storage_blobs", column: "blob_id"
+  add_foreign_key "job_search_criteria", "users"
+  add_foreign_key "job_sources", "users"
   add_foreign_key "profile_entries", "profile_sections"
   add_foreign_key "profile_sections", "profiles"
   add_foreign_key "profiles", "users"

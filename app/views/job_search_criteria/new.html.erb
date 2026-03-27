@@ -1,0 +1,8 @@
+<% content_for(:page_title, "New Search Criteria") %>
+
+<div class="page-header mb-4">
+  <h1 class="page-header__title">New Search Criteria</h1>
+  <p class="page-header__subtitle">Define what kinds of jobs to look for</p>
+</div>
+
+<%= render "job_search_criteria/form", criteria: @criteria_item %>
