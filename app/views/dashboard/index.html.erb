@@ -7,7 +7,7 @@
       <div class="card-body">
         <div class="stat-card__icon stat-card__icon--primary">&#x1F50D;</div>
         <div class="stat-card__body">
-          <div class="stat-card__value">142</div>
+          <div class="stat-card__value"><%= @jobs_found %></div>
           <div class="stat-card__label">Jobs Found</div>
         </div>
       </div>
@@ -18,9 +18,8 @@
       <div class="card-body">
         <div class="stat-card__icon stat-card__icon--success">&#x2705;</div>
         <div class="stat-card__body">
-          <div class="stat-card__value">38</div>
-          <div class="stat-card__label">Matches</div>
-          <span class="stat-card__trend stat-card__trend--up">&#x2191; 12%</span>
+          <div class="stat-card__value"><%= @high_matches %></div>
+          <div class="stat-card__label">High Matches</div>
         </div>
       </div>
     </div>
@@ -30,7 +29,7 @@
       <div class="card-body">
         <div class="stat-card__icon stat-card__icon--info">&#x1F4E8;</div>
         <div class="stat-card__body">
-          <div class="stat-card__value">7</div>
+          <div class="stat-card__value"><%= @applied %></div>
           <div class="stat-card__label">Applied</div>
         </div>
       </div>
@@ -39,10 +38,10 @@
   <div class="col-sm-6 col-xl-3">
     <div class="card stat-card">
       <div class="card-body">
-        <div class="stat-card__icon stat-card__icon--warning">&#x1F4C5;</div>
+        <div class="stat-card__icon stat-card__icon--warning">&#x26A0;</div>
         <div class="stat-card__body">
-          <div class="stat-card__value">3</div>
-          <div class="stat-card__label">Interviews</div>
+          <div class="stat-card__value"><%= @pending_interventions %></div>
+          <div class="stat-card__label">Needs Attention</div>
         </div>
       </div>
     </div>
@@ -55,65 +54,48 @@
   <div class="col-xl-8">
     <div class="card dash-table-card">
       <div class="card-header">
-        <h2 class="card-header__title">Recent Job Matches</h2>
-        <%= link_to "View All", "#", class: "btn btn-sm btn-outline-primary" %>
+        <h2 class="card-header__title">Recent Job Listings</h2>
+        <%= link_to "View All", job_listings_path, class: "btn btn-sm btn-outline-primary" %>
       </div>
-      <div class="table-responsive">
-        <table class="table">
-          <thead>
-            <tr>
-              <th>Position</th>
-              <th>Company</th>
-              <th>Location</th>
-              <th>Match</th>
-              <th>Source</th>
-              <th>Posted</th>
-            </tr>
-          </thead>
-          <tbody>
-            <tr>
-              <td><strong>Senior Rails Developer</strong></td>
-              <td>Acme Corp</td>
-              <td>NYC (Hybrid)</td>
-              <td><span class="match-score match-score--high">95%</span></td>
-              <td><span class="badge source-badge bg-primary">LinkedIn</span></td>
-              <td class="text-muted">2h ago</td>
-            </tr>
-            <tr>
-              <td><strong>Ruby Backend Engineer</strong></td>
-              <td>StartupCo</td>
-              <td>Remote</td>
-              <td><span class="match-score match-score--high">91%</span></td>
-              <td><span class="badge source-badge bg-danger">Indeed</span></td>
-              <td class="text-muted">4h ago</td>
-            </tr>
-            <tr>
-              <td><strong>Full Stack Developer</strong></td>
-              <td>TechGiant Inc</td>
-              <td>San Francisco</td>
-              <td><span class="match-score match-score--medium">76%</span></td>
-              <td><span class="badge source-badge bg-success">Glassdoor</span></td>
-              <td class="text-muted">6h ago</td>
-            </tr>
-            <tr>
-              <td><strong>Platform Engineer</strong></td>
-              <td>CloudBase</td>
-              <td>Remote (US)</td>
-              <td><span class="match-score match-score--medium">72%</span></td>
-              <td><span class="badge source-badge bg-primary">LinkedIn</span></td>
-              <td class="text-muted">8h ago</td>
-            </tr>
-            <tr>
-              <td><strong>Rails API Developer</strong></td>
-              <td>FinServ Ltd</td>
-              <td>Chicago</td>
-              <td><span class="match-score match-score--low">58%</span></td>
-              <td><span class="badge source-badge bg-danger">Indeed</span></td>
-              <td class="text-muted">1d ago</td>
-            </tr>
-          </tbody>
-        </table>
-      </div>
+      <% if @recent_listings.any? %>
+        <div class="table-responsive">
+          <table class="table">
+            <thead>
+              <tr>
+                <th>Position</th>
+                <th>Company</th>
+                <th>Location</th>
+                <th>Match</th>
+                <th>Source</th>
+                <th>Posted</th>
+              </tr>
+            </thead>
+            <tbody>
+              <% @recent_listings.each do |listing| %>
+                <tr>
+                  <td><%= link_to listing.title, job_listing_path(listing), class: "fw-bold text-decoration-none" %></td>
+                  <td><%= listing.company %></td>
+                  <td><%= listing.location %></td>
+                  <td>
+                    <% if listing.match_score %>
+                      <span class="match-score <%= listing.match_badge_class %>"><%= listing.match_score %>%</span>
+                    <% else %>
+                      <span class="text-muted">—</span>
+                    <% end %>
+                  </td>
+                  <td><span class="badge source-badge bg-<%= listing.job_source.platform_color %>"><%= listing.job_source.platform.capitalize %></span></td>
+                  <td class="text-muted"><%= listing.posted_at ? time_ago_in_words(listing.posted_at) + " ago" : "—" %></td>
+                </tr>
+              <% end %>
+            </tbody>
+          </table>
+        </div>
+      <% else %>
+        <div class="card-body text-center py-4">
+          <p class="text-muted mb-2">No job listings yet.</p>
+          <%= link_to "Set up job sources to start scanning", job_sources_path, class: "btn btn-sm btn-outline-primary" %>
+        </div>
+      <% end %>
     </div>
   </div>
 
@@ -123,53 +105,24 @@
       <div class="card-header">
         <h2 class="card-header__title">Recent Activity</h2>
       </div>
-      <ul class="activity-feed">
-        <li class="activity-feed__item">
-          <div class="activity-feed__icon activity-feed__icon--search">&#x1F50D;</div>
-          <div class="activity-feed__body">
-            <p class="activity-feed__text">
-              Searched <strong>LinkedIn</strong> for "Ruby Developer"
-            </p>
-            <div class="activity-feed__time">15 minutes ago</div>
-          </div>
-        </li>
-        <li class="activity-feed__item">
-          <div class="activity-feed__icon activity-feed__icon--match">&#x2B50;</div>
-          <div class="activity-feed__body">
-            <p class="activity-feed__text">
-              New match: <strong>Senior Rails Developer</strong> at Acme Corp
-            </p>
-            <div class="activity-feed__time">2 hours ago</div>
-          </div>
-        </li>
-        <li class="activity-feed__item">
-          <div class="activity-feed__icon activity-feed__icon--applied">&#x1F4E8;</div>
-          <div class="activity-feed__body">
-            <p class="activity-feed__text">
-              Applied to <strong>Backend Engineer</strong> at DevStudio
-            </p>
-            <div class="activity-feed__time">5 hours ago</div>
-          </div>
-        </li>
-        <li class="activity-feed__item">
-          <div class="activity-feed__icon activity-feed__icon--search">&#x1F50D;</div>
-          <div class="activity-feed__body">
-            <p class="activity-feed__text">
-              Searched <strong>Indeed</strong> for "Rails Developer NYC"
-            </p>
-            <div class="activity-feed__time">6 hours ago</div>
-          </div>
-        </li>
-        <li class="activity-feed__item">
-          <div class="activity-feed__icon activity-feed__icon--alert">&#x26A0;</div>
-          <div class="activity-feed__body">
-            <p class="activity-feed__text">
-              Job posting <strong>expiring soon</strong>: React Lead at Novo
-            </p>
-            <div class="activity-feed__time">1 day ago</div>
-          </div>
-        </li>
-      </ul>
+      <% if @recent_activity.any? %>
+        <ul class="activity-feed">
+          <% @recent_activity.each do |event| %>
+            <li class="activity-feed__item">
+              <% icon_char = { "search" => "&#x1F50D;", "match" => "&#x2B50;", "applied" => "&#x1F4E8;", "alert" => "&#x26A0;" }[event[:icon]] || "&#x26A0;" %>
+              <div class="activity-feed__icon activity-feed__icon--<%= event[:icon] %>"><%= raw icon_char %></div>
+              <div class="activity-feed__body">
+                <p class="activity-feed__text"><%= raw event[:text] %></p>
+                <div class="activity-feed__time"><%= time_ago_in_words(event[:time]) %> ago</div>
+              </div>
+            </li>
+          <% end %>
+        </ul>
+      <% else %>
+        <div class="card-body text-center py-4">
+          <p class="text-muted mb-0">No recent activity. Start by adding job sources and running a scan.</p>
+        </div>
+      <% end %>
     </div>
   </div>
 </div>
