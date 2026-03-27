@@ -10,7 +10,7 @@
 #
 # It's strongly recommended that you check this file into your version control system.
 
-ActiveRecord::Schema[8.1].define(version: 2026_03_27_100222) do
+ActiveRecord::Schema[8.1].define(version: 2026_03_27_102432) do
   # These are extensions that must be enabled in order to support this database
   enable_extension "pg_catalog.plpgsql"
 
@@ -65,6 +65,23 @@ ActiveRecord::Schema[8.1].define(version: 2026_03_27_100222) do
     t.datetime "updated_at", null: false
     t.index ["job_application_id", "step_number"], name: "index_application_steps_on_job_application_id_and_step_number"
     t.index ["job_application_id"], name: "index_application_steps_on_job_application_id"
+  end
+
+  create_table "interventions", force: :cascade do |t|
+    t.jsonb "context", default: {}, null: false
+    t.datetime "created_at", null: false
+    t.string "intervention_type", null: false
+    t.bigint "interventionable_id", null: false
+    t.string "interventionable_type", null: false
+    t.datetime "resolved_at"
+    t.string "status", default: "pending", null: false
+    t.datetime "updated_at", null: false
+    t.bigint "user_id", null: false
+    t.jsonb "user_input", default: {}, null: false
+    t.index ["interventionable_type", "interventionable_id"], name: "index_interventions_on_interventionable"
+    t.index ["status"], name: "index_interventions_on_status"
+    t.index ["user_id", "status"], name: "index_interventions_on_user_id_and_status"
+    t.index ["user_id"], name: "index_interventions_on_user_id"
   end
 
   create_table "job_applications", force: :cascade do |t|
@@ -226,6 +243,7 @@ ActiveRecord::Schema[8.1].define(version: 2026_03_27_100222) do
   add_foreign_key "active_storage_attachments", "active_storage_blobs", column: "blob_id"
   add_foreign_key "active_storage_variant_records", "active_storage_blobs", column: "blob_id"
   add_foreign_key "application_steps", "job_applications"
+  add_foreign_key "interventions", "users"
   add_foreign_key "job_applications", "job_listings"
   add_foreign_key "job_applications", "profiles"
   add_foreign_key "job_listings", "job_sources"

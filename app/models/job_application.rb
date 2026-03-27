@@ -4,6 +4,7 @@ class JobApplication < ApplicationRecord
   belongs_to :job_listing
   belongs_to :profile
   has_many :application_steps, -> { order(step_number: :asc) }, dependent: :destroy
+  has_many :interventions, as: :interventionable, dependent: :destroy
 
   validates :status, inclusion: { in: STATUSES }
   validates :job_listing_id, uniqueness: { message: "already has an application" }

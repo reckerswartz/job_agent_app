@@ -1,0 +1,71 @@
+<% content_for(:page_title, "Interventions") %>
+
+<div class="page-header d-flex justify-content-between align-items-start mb-4">
+  <div>
+    <h1 class="page-header__title">Interventions</h1>
+    <p class="page-header__subtitle">Items requiring your attention</p>
+  </div>
+</div>
+
+<%# ── Status Filter Tabs ── %>
+<ul class="nav nav-tabs mb-4">
+  <li class="nav-item">
+    <%= link_to "All (#{@status_counts.values.sum})", interventions_path,
+        class: "nav-link #{params[:status].blank? ? 'active' : ''}" %>
+  </li>
+  <% Intervention::STATUSES.each do |s| %>
+    <% count = @status_counts[s] || 0 %>
+    <% next if count == 0 && s != params[:status] %>
+    <li class="nav-item">
+      <%= link_to "#{s.capitalize} (#{count})", interventions_path(status: s),
+          class: "nav-link #{params[:status] == s ? 'active' : ''}" %>
+    </li>
+  <% end %>
+</ul>
+
+<% if @interventions.any? %>
+  <div class="row g-3">
+    <% @interventions.each do |intervention| %>
+      <div class="col-md-6">
+        <div class="card intervention-card">
+          <div class="card-body">
+            <div class="d-flex justify-content-between align-items-start mb-2">
+              <div class="d-flex align-items-center gap-2">
+                <span class="intervention-card__icon"><%= raw intervention.type_icon %></span>
+                <span class="badge bg-<%= intervention.type_color %>"><%= intervention.type_label %></span>
+              </div>
+              <span class="badge bg-<%= intervention.pending? ? 'warning' : (intervention.resolved? ? 'success' : 'secondary') %>">
+                <%= intervention.status.capitalize %>
+              </span>
+            </div>
+
+            <p class="intervention-card__desc mb-2"><%= intervention.parent_description %></p>
+
+            <% if intervention.context["page_url"].present? %>
+              <small class="text-muted d-block mb-2 text-truncate"><%= intervention.context["page_url"] %></small>
+            <% end %>
+
+            <small class="text-muted"><%= time_ago_in_words(intervention.created_at) %> ago</small>
+
+            <div class="d-flex gap-2 mt-3">
+              <%= link_to "View", intervention_path(intervention), class: "btn btn-sm btn-outline-primary" %>
+              <% if intervention.pending? %>
+                <%= button_to "Dismiss", dismiss_intervention_path(intervention), method: :patch,
+                    class: "btn btn-sm btn-outline-secondary",
+                    data: { turbo_confirm: "Dismiss this intervention?" } %>
+              <% end %>
+            </div>
+          </div>
+        </div>
+      </div>
+    <% end %>
+  </div>
+<% else %>
+  <div class="card source-empty-card">
+    <div class="card-body text-center py-5">
+      <div class="source-empty-card__icon mb-3">&#x2705;</div>
+      <h3>No pending interventions</h3>
+      <p class="text-muted mb-0">Everything is running smoothly. No manual action needed.</p>
+    </div>
+  </div>
+<% end %>

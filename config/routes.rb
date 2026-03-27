@@ -54,6 +54,14 @@ Rails.application.routes.draw do
     end
   end
 
+  # Interventions
+  resources :interventions, only: [:index, :show] do
+    member do
+      patch :resolve
+      patch :dismiss
+    end
+  end
+
   # Settings
   resource :settings, only: [:edit, :update]
 

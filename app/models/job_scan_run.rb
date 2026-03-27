@@ -4,6 +4,7 @@ class JobScanRun < ApplicationRecord
   belongs_to :job_source
   belongs_to :job_search_criteria, class_name: "JobSearchCriteria", optional: true
   has_many_attached :screenshots
+  has_many :interventions, as: :interventionable, dependent: :destroy
 
   validates :status, inclusion: { in: STATUSES }
 

@@ -1,0 +1,36 @@
+// ==========================================================================
+// Dashboard Interventions
+// ==========================================================================
+
+.intervention-card {
+  border: none;
+  box-shadow: $box-shadow-sm;
+  border-radius: $border-radius-lg;
+  transition: box-shadow 0.2s ease;
+
+  &:hover {
+    box-shadow: $box-shadow;
+  }
+
+  &__icon {
+    font-size: 1.25rem;
+  }
+
+  &__desc {
+    font-weight: 600;
+    font-size: 0.9rem;
+    color: $dark;
+  }
+}
+
+.intervention-badge {
+  display: inline-flex;
+  align-items: center;
+  gap: 0.25rem;
+  font-size: 0.7rem;
+  font-weight: 700;
+  padding: 0.15rem 0.5rem;
+  border-radius: $border-radius-sm;
+  background-color: rgba($warning, 0.15);
+  color: $warning;
+}

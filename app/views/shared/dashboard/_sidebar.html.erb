@@ -27,6 +27,16 @@
       <% end %>
     </li>
 
+    <li>
+      <% pending_count = user_signed_in? ? current_user.interventions.pending.count : 0 %>
+      <%= link_to interventions_path, class: "sidebar__link #{request.path.start_with?('/interventions') ? 'sidebar__link--active' : ''}" do %>
+        <span class="sidebar__link-icon">&#x26A0;</span> Interventions
+        <% if pending_count > 0 %>
+          <span class="badge bg-warning text-dark ms-auto"><%= pending_count %></span>
+        <% end %>
+      <% end %>
+    </li>
+
     <li class="sidebar__heading">Settings</li>
     <li>
       <%= link_to profile_path, class: "sidebar__link #{current_page?(profile_path) || current_page?(edit_profile_path) ? 'sidebar__link--active' : ''}" do %>
