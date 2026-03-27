@@ -1,0 +1,26 @@
+<h2><%= @listings.size %> New High-Match Jobs</h2>
+
+<p>Hi <%= @user.display_name %>,</p>
+
+<p>We found <strong><%= @listings.size %></strong> new job listings that are a great match for your profile:</p>
+
+<table style="border-collapse: collapse; width: 100%; margin: 16px 0;">
+  <tr style="background: #f5f5f5;">
+    <th style="padding: 8px; text-align: left;">Position</th>
+    <th style="padding: 8px; text-align: left;">Company</th>
+    <th style="padding: 8px; text-align: left;">Match</th>
+  </tr>
+  <% @listings.each do |listing| %>
+    <tr>
+      <td style="padding: 8px; border-bottom: 1px solid #eee;">
+        <a href="<%= job_listing_url(listing) %>"><%= listing.title %></a>
+      </td>
+      <td style="padding: 8px; border-bottom: 1px solid #eee;"><%= listing.company %></td>
+      <td style="padding: 8px; border-bottom: 1px solid #eee;"><%= listing.match_score %>%</td>
+    </tr>
+  <% end %>
+</table>
+
+<p><a href="<%= job_listings_url %>">View all listings →</a></p>
+
+<p style="color: #888; font-size: 12px;">You can manage notification preferences in your <a href="<%= edit_settings_url %>">Settings</a>.</p>

@@ -17,3 +17,7 @@ production:
     class: ScanAllSourcesJob
     queue: scanning
     schedule: every 6 hours
+  daily_match_digest:
+    class: DailyMatchDigestJob
+    queue: default
+    schedule: at 8am every day

@@ -1,0 +1,26 @@
+<h2>Action Needed: <%= @intervention.type_label %></h2>
+
+<p>Hi <%= @user.display_name %>,</p>
+
+<p>An automated task requires your attention:</p>
+
+<table style="border-collapse: collapse; margin: 16px 0;">
+  <tr>
+    <td style="padding: 4px 16px 4px 0; font-weight: bold;">Type:</td>
+    <td><%= @intervention.type_label %></td>
+  </tr>
+  <tr>
+    <td style="padding: 4px 16px 4px 0; font-weight: bold;">Related To:</td>
+    <td><%= @intervention.parent_description %></td>
+  </tr>
+  <% if @intervention.context["page_url"].present? %>
+    <tr>
+      <td style="padding: 4px 16px 4px 0; font-weight: bold;">Page:</td>
+      <td><%= @intervention.context["page_url"] %></td>
+    </tr>
+  <% end %>
+</table>
+
+<p><a href="<%= intervention_url(@intervention) %>">Resolve this intervention →</a></p>
+
+<p style="color: #888; font-size: 12px;">You can manage notification preferences in your <a href="<%= edit_settings_url %>">Settings</a>.</p>

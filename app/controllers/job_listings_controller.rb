@@ -38,6 +38,12 @@ class JobListingsController < ApplicationController
     redirect_to job_listing_path(@listing), notice: "Cover letter generation started. Refresh in a moment to see the result."
   end
 
+  def export
+    listings = JobListing.for_user(current_user).by_status(params[:status]).recent
+    csv_data = generate_csv(listings)
+    send_data csv_data, filename: "job_listings_#{Date.current}.csv", type: "text/csv"
+  end
+
   def bulk_update
     ids = params[:ids] || []
     new_status = params[:new_status]
@@ -55,5 +61,24 @@ class JobListingsController < ApplicationController
 
   def set_listing
     @listing = JobListing.for_user(current_user).find(params[:id])
+  end
+
+  def generate_csv(listings)
+    require "csv"
+    CSV.generate(headers: true) do |csv|
+      csv << %w[Title Company Location Match_Score Status Source URL Posted_At]
+      listings.includes(:job_source).find_each do |listing|
+        csv << [
+          listing.title,
+          listing.company,
+          listing.location,
+          listing.match_score,
+          listing.status,
+          listing.job_source.platform,
+          listing.url,
+          listing.posted_at&.iso8601
+        ]
+      end
+    end
   end
 end

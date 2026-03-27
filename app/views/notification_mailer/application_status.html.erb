@@ -1,0 +1,26 @@
+<h2>Application <%= @application.status.humanize %></h2>
+
+<p>Hi <%= @user.display_name %>,</p>
+
+<p>Your application for <strong><%= @listing.title %></strong> at <strong><%= @listing.company %></strong> has been updated:</p>
+
+<table style="border-collapse: collapse; margin: 16px 0;">
+  <tr>
+    <td style="padding: 4px 16px 4px 0; font-weight: bold;">Status:</td>
+    <td><%= @application.status.humanize %></td>
+  </tr>
+  <% if @application.applied_at %>
+    <tr>
+      <td style="padding: 4px 16px 4px 0; font-weight: bold;">Applied:</td>
+      <td><%= @application.applied_at.strftime("%Y-%m-%d %H:%M") %></td>
+    </tr>
+  <% end %>
+  <tr>
+    <td style="padding: 4px 16px 4px 0; font-weight: bold;">Steps:</td>
+    <td><%= @application.application_steps.count %></td>
+  </tr>
+</table>
+
+<p><a href="<%= job_application_url(@application) %>">View application details →</a></p>
+
+<p style="color: #888; font-size: 12px;">You can manage notification preferences in your <a href="<%= edit_settings_url %>">Settings</a>.</p>

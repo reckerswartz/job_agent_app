@@ -1,0 +1,26 @@
+<h2>Scan Complete: <%= @source.name %></h2>
+
+<p>Hi <%= @user.display_name %>,</p>
+
+<p>Your scan of <strong><%= @source.name %></strong> (<%= @source.platform.capitalize %>) has completed.</p>
+
+<table style="border-collapse: collapse; margin: 16px 0;">
+  <tr>
+    <td style="padding: 4px 16px 4px 0; font-weight: bold;">Listings Found:</td>
+    <td><%= @scan_run.listings_found %></td>
+  </tr>
+  <tr>
+    <td style="padding: 4px 16px 4px 0; font-weight: bold;">New Listings:</td>
+    <td><%= @scan_run.new_listings %></td>
+  </tr>
+  <tr>
+    <td style="padding: 4px 16px 4px 0; font-weight: bold;">Duration:</td>
+    <td><%= @scan_run.duration_display %></td>
+  </tr>
+</table>
+
+<% if @scan_run.new_listings > 0 %>
+  <p><a href="<%= job_listings_url %>">View your job listings →</a></p>
+<% end %>
+
+<p style="color: #888; font-size: 12px;">You can manage notification preferences in your <a href="<%= edit_settings_url %>">Settings</a>.</p>

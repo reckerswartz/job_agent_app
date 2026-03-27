@@ -36,6 +36,7 @@ Rails.application.routes.draw do
     end
     collection do
       post :bulk_update
+      get :export
     end
   end
 

@@ -63,8 +63,15 @@ module JobApplier
       application.mark_submitted!
       listing.update!(status: "applied")
 
+      if listing.user&.notify?("email_application_status")
+        NotificationMailer.application_status(listing.user, application).deliver_later
+      end
+
     rescue => e
       application.mark_failed!(e)
+      if listing.user&.notify?("email_application_status")
+        NotificationMailer.application_status(listing.user, application).deliver_later
+      end
       raise
     ensure
       @session&.close
