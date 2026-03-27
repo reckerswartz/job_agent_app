@@ -1,12 +1,13 @@
 module Llm
-  class OpenaiAdapter < BaseAdapter
+  class NvidiaAdapter < BaseAdapter
     def chat(messages, model:)
       url = "#{provider.base_url}/chat/completions"
       body = {
         model: model.identifier,
         messages: messages,
         max_tokens: model.settings["max_tokens"] || 4096,
-        temperature: model.settings["temperature"] || 0.7
+        temperature: model.settings["temperature"] || 0.7,
+        stream: false
       }
 
       result = http_post(url, body)
@@ -24,8 +25,8 @@ module Llm
           latency_ms: result[:latency_ms]
         }
       else
-        error_msg = result[:body].dig("error", "message") || result[:body].to_s
-        raise StandardError, "OpenAI API error (#{result[:status]}): #{error_msg}"
+        error_msg = result[:body].dig("error", "message") || result[:body].dig("detail") || result[:body].to_s
+        raise StandardError, "NVIDIA API error (#{result[:status]}): #{error_msg}"
       end
     end
 
@@ -39,6 +40,15 @@ module Llm
           ]
         }
       ]
+      chat(messages, model: model)
+    end
+
+    def multi_vision(images, prompt:, model:)
+      content = [{ type: "text", text: prompt }]
+      images.each do |img|
+        content << { type: "image_url", image_url: { url: img } }
+      end
+      messages = [{ role: "user", content: content }]
       chat(messages, model: model)
     end
 

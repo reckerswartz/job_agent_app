@@ -4,28 +4,6 @@
       "command": "npx",
       "args": ["-y", "@playwright/mcp@latest"],
       "env": {}
-    },
-    "figma": {
-      "command": "npx",
-      "args": ["-y", "figma-developer-mcp", "--stdio"],
-      "env": {
-        "FIGMA_API_KEY": ""
-      }
-    },
-    "miro": {
-      "command": "npx",
-      "args": ["-y", "@llmindset/mcp-miro"],
-      "env": {
-        "MIRO_OAUTH_TOKEN": ""
-      }
-    },
-    "toolbox": {
-      "command": "uvx",
-      "args": ["--prerelease=allow", "mcp-toolbox[all]@latest", "stdio"],
-      "env": {
-        "TAVILY_API_KEY": "",
-        "DUCKDUCKGO_API_KEY": ""
-      }
     }
   },
   "permissions": {
@@ -54,10 +32,7 @@
       "mcp__playwright__browser_wait",
       "mcp__playwright__browser_drag",
       "mcp__playwright__browser_file_upload",
-      "mcp__playwright__browser_handle_dialog",
-      "mcp__figma__*",
-      "mcp__miro__*",
-      "mcp__toolbox__*"
+      "mcp__playwright__browser_handle_dialog"
     ]
   }
 }

@@ -19,9 +19,9 @@ RSpec.describe LlmProvider, type: :model do
 
   describe "#api_key" do
     it "reads from AppSetting" do
-      provider = build(:llm_provider, api_key_setting: "openai_api_key")
-      allow(AppSetting).to receive(:get).with("openai_api_key").and_return("sk-test-key")
-      expect(provider.api_key).to eq("sk-test-key")
+      provider = build(:llm_provider, api_key_setting: "nvidia_api_key")
+      allow(AppSetting).to receive(:get).with("nvidia_api_key").and_return("nvapi-test-key")
+      expect(provider.api_key).to eq("nvapi-test-key")
     end
 
     it "returns nil when no setting configured" do
@@ -32,8 +32,8 @@ RSpec.describe LlmProvider, type: :model do
 
   describe "#available?" do
     it "returns true when active and api_key present" do
-      provider = build(:llm_provider, active: true, api_key_setting: "openai_api_key")
-      allow(AppSetting).to receive(:get).with("openai_api_key").and_return("sk-test")
+      provider = build(:llm_provider, active: true, api_key_setting: "nvidia_api_key")
+      allow(AppSetting).to receive(:get).with("nvidia_api_key").and_return("nvapi-test")
       expect(provider).to be_available
     end
 

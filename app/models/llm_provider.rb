@@ -1,5 +1,5 @@
 class LlmProvider < ApplicationRecord
-  ADAPTERS = %w[openai anthropic].freeze
+  ADAPTERS = %w[nvidia].freeze
 
   has_many :llm_models, dependent: :destroy
   has_many :llm_interactions, dependent: :nullify
