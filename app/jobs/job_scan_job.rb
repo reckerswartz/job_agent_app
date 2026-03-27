@@ -49,6 +49,10 @@ class JobScanJob < ApplicationJob
       scan_run.mark_completed!(found: found_count, new_count: new_count)
       source.update!(last_scanned_at: Time.current)
 
+      if new_count > 0 && source.user.notify?("email_scan_completed")
+        NotificationMailer.scan_completed(source.user, scan_run).deliver_later
+      end
+
     rescue => e
       Rails.logger.error("[JobScanJob] Failed for source #{source.id}: #{e.message}")
       scan_run.mark_failed!(e)

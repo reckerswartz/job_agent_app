@@ -5,6 +5,9 @@
     <h1 class="page-header__title">Job Listings</h1>
     <p class="page-header__subtitle"><%= @listings.size %> listings found</p>
   </div>
+  <% if @listings.any? %>
+    <%= link_to "Export CSV", export_job_listings_path(status: params[:status]), class: "btn btn-outline-secondary btn-sm" %>
+  <% end %>
 </div>
 
 <%# ── Status Filter Tabs ── %>

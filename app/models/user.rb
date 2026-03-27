@@ -11,6 +11,10 @@ class User < ApplicationRecord
 
   before_validation :assign_initial_role, on: :create
 
+  def notify?(key)
+    notification_settings.fetch(key.to_s, true)
+  end
+
   def display_name
     email.split("@").first.humanize
   end
