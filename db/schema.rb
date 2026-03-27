@@ -10,7 +10,7 @@
 #
 # It's strongly recommended that you check this file into your version control system.
 
-ActiveRecord::Schema[8.1].define(version: 2026_03_27_102432) do
+ActiveRecord::Schema[8.1].define(version: 2026_03_27_104625) do
   # These are extensions that must be enabled in order to support this database
   enable_extension "pg_catalog.plpgsql"
 
@@ -182,6 +182,58 @@ ActiveRecord::Schema[8.1].define(version: 2026_03_27_102432) do
     t.index ["user_id"], name: "index_job_sources_on_user_id"
   end
 
+  create_table "llm_interactions", force: :cascade do |t|
+    t.datetime "created_at", null: false
+    t.string "feature_name", null: false
+    t.integer "latency_ms"
+    t.bigint "llm_model_id"
+    t.bigint "llm_provider_id"
+    t.jsonb "metadata", default: {}, null: false
+    t.bigint "profile_id"
+    t.text "prompt"
+    t.text "response"
+    t.string "status", default: "pending", null: false
+    t.jsonb "token_usage", default: {}, null: false
+    t.datetime "updated_at", null: false
+    t.bigint "user_id", null: false
+    t.index ["created_at"], name: "index_llm_interactions_on_created_at"
+    t.index ["feature_name"], name: "index_llm_interactions_on_feature_name"
+    t.index ["llm_model_id"], name: "index_llm_interactions_on_llm_model_id"
+    t.index ["llm_provider_id"], name: "index_llm_interactions_on_llm_provider_id"
+    t.index ["profile_id"], name: "index_llm_interactions_on_profile_id"
+    t.index ["status"], name: "index_llm_interactions_on_status"
+    t.index ["user_id"], name: "index_llm_interactions_on_user_id"
+  end
+
+  create_table "llm_models", force: :cascade do |t|
+    t.boolean "active", default: true, null: false
+    t.datetime "created_at", null: false
+    t.string "identifier", null: false
+    t.bigint "llm_provider_id", null: false
+    t.string "name", null: false
+    t.jsonb "settings", default: {}, null: false
+    t.boolean "supports_text", default: true, null: false
+    t.boolean "supports_vision", default: false, null: false
+    t.datetime "updated_at", null: false
+    t.index ["active"], name: "index_llm_models_on_active"
+    t.index ["llm_provider_id", "identifier"], name: "index_llm_models_on_llm_provider_id_and_identifier", unique: true
+    t.index ["llm_provider_id"], name: "index_llm_models_on_llm_provider_id"
+  end
+
+  create_table "llm_providers", force: :cascade do |t|
+    t.boolean "active", default: true, null: false
+    t.string "adapter", null: false
+    t.string "api_key_setting"
+    t.string "base_url", null: false
+    t.datetime "created_at", null: false
+    t.string "name", null: false
+    t.jsonb "settings", default: {}, null: false
+    t.string "slug", null: false
+    t.datetime "updated_at", null: false
+    t.index ["active"], name: "index_llm_providers_on_active"
+    t.index ["slug"], name: "index_llm_providers_on_slug", unique: true
+  end
+
   create_table "profile_entries", force: :cascade do |t|
     t.jsonb "content", default: {}, null: false
     t.datetime "created_at", null: false
@@ -251,6 +303,11 @@ ActiveRecord::Schema[8.1].define(version: 2026_03_27_102432) do
   add_foreign_key "job_scan_runs", "job_sources"
   add_foreign_key "job_search_criteria", "users"
   add_foreign_key "job_sources", "users"
+  add_foreign_key "llm_interactions", "llm_models"
+  add_foreign_key "llm_interactions", "llm_providers"
+  add_foreign_key "llm_interactions", "profiles"
+  add_foreign_key "llm_interactions", "users"
+  add_foreign_key "llm_models", "llm_providers"
   add_foreign_key "profile_entries", "profile_sections"
   add_foreign_key "profile_sections", "profiles"
   add_foreign_key "profiles", "users"
