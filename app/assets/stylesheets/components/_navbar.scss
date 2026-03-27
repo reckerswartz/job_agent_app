@@ -1,0 +1,21 @@
+// ==========================================================================
+// Navbar
+// ==========================================================================
+
+.navbar {
+  padding-top: 0.75rem;
+  padding-bottom: 0.75rem;
+  box-shadow: $box-shadow-sm;
+
+  .navbar-brand {
+    font-weight: 800;
+    letter-spacing: -0.025em;
+  }
+
+  .nav-link {
+    font-weight: 500;
+    padding-left: 1rem;
+    padding-right: 1rem;
+    transition: color 0.2s ease;
+  }
+}

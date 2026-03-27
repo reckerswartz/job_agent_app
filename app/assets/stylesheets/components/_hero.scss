@@ -1,0 +1,32 @@
+// ==========================================================================
+// Hero Section
+// ==========================================================================
+
+.hero {
+  padding: 4rem 0;
+  text-align: center;
+
+  &__title {
+    font-weight: 800;
+    letter-spacing: -0.03em;
+    color: $dark;
+    margin-bottom: 1rem;
+  }
+
+  &__subtitle {
+    font-size: 1.25rem;
+    color: rgba($dark, 0.65);
+    max-width: 600px;
+    margin-left: auto;
+    margin-right: auto;
+    margin-bottom: 2rem;
+    line-height: 1.7;
+  }
+
+  &__actions {
+    display: flex;
+    gap: 0.75rem;
+    justify-content: center;
+    flex-wrap: wrap;
+  }
+}

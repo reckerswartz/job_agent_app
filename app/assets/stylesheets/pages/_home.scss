@@ -1,0 +1,33 @@
+// ==========================================================================
+// Home Page
+// ==========================================================================
+
+.home-page {
+  .features-section {
+    padding: 2rem 0 3rem;
+  }
+
+  .stats-bar {
+    padding: 2rem 0;
+    background-color: rgba($primary, 0.03);
+    border-radius: $border-radius-lg;
+    margin-bottom: 2rem;
+
+    &__item {
+      text-align: center;
+
+      &-value {
+        font-size: 2rem;
+        font-weight: 800;
+        color: $primary;
+        line-height: 1;
+      }
+
+      &-label {
+        font-size: 0.875rem;
+        color: rgba($dark, 0.5);
+        margin-top: 0.25rem;
+      }
+    }
+  }
+}

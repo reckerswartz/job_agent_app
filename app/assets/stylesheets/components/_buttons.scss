@@ -1,0 +1,27 @@
+// ==========================================================================
+// Button Overrides
+// ==========================================================================
+
+.btn {
+  font-weight: 600;
+  letter-spacing: 0.01em;
+  transition: all 0.2s ease;
+}
+
+.btn-primary {
+  &:hover {
+    transform: translateY(-1px);
+    box-shadow: 0 4px 12px rgba($primary, 0.35);
+  }
+}
+
+.btn-outline-secondary {
+  border-color: rgba($dark, 0.2);
+  color: $dark;
+
+  &:hover {
+    background-color: $dark;
+    border-color: $dark;
+    transform: translateY(-1px);
+  }
+}

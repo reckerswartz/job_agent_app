@@ -2,7 +2,8 @@
   "name": "app",
   "private": true,
   "scripts": {
-    "build": "webpack --config webpack.config.js",
+    "build": "NODE_ENV=production webpack --config webpack.config.js",
+    "build:dev": "webpack --config webpack.config.js",
     "build:css": "sass ./app/assets/stylesheets/application.sass.scss:./app/assets/builds/application.css --no-source-map --load-path=node_modules",
     "e2e": "npx playwright test",
     "e2e:headed": "npx playwright test --headed",
@@ -15,6 +16,10 @@
   },
   "devDependencies": {
     "@playwright/test": "^1.58.2",
+    "css-loader": "^7.1.4",
+    "css-minimizer-webpack-plugin": "^8.0.0",
+    "mini-css-extract-plugin": "^2.10.2",
+    "sass-loader": "^16.0.7",
     "webpack": "^5.105.4",
     "webpack-cli": "^7.0.2"
   },
