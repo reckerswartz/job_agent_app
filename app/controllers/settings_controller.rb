@@ -1,5 +1,5 @@
 class SettingsController < ApplicationController
-  before_action :require_authentication
+  before_action :authenticate_user!
   layout "dashboard"
 
   def edit

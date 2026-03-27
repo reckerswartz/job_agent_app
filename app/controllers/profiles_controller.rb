@@ -1,5 +1,5 @@
 class ProfilesController < ApplicationController
-  before_action :require_authentication
+  before_action :authenticate_user!
   layout "dashboard"
 
   before_action :set_or_create_profile

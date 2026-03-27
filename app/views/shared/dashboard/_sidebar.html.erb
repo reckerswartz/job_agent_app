@@ -41,7 +41,7 @@
   </ul>
 
   <div class="sidebar__footer">
-    <% if authenticated? %>
+    <% if user_signed_in? %>
       <div class="sidebar__user">
         <span class="sidebar__user-avatar"><%= current_user.initials %></span>
         <span class="sidebar__user-name"><%= current_user.display_name %></span>

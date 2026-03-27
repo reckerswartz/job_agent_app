@@ -5,19 +5,19 @@
 puts "=== Seeding Job Agent App ==="
 
 # ── Users ──
-admin = User.find_or_create_by!(email_address: "admin@jobagent.dev") do |u|
+admin = User.find_or_create_by!(email: "admin@jobagent.dev") do |u|
   u.password = "password123"
   u.password_confirmation = "password123"
   u.role = :admin
 end
-puts "  Admin user: #{admin.email_address}"
+puts "  Admin user: #{admin.email}"
 
-demo = User.find_or_create_by!(email_address: "demo@jobagent.dev") do |u|
+demo = User.find_or_create_by!(email: "demo@jobagent.dev") do |u|
   u.password = "password123"
   u.password_confirmation = "password123"
   u.role = :user
 end
-puts "  Demo user: #{demo.email_address}"
+puts "  Demo user: #{demo.email}"
 
 # ── Profile for demo user ──
 profile = demo.profiles.first_or_create!(title: "My Resume") do |p|

@@ -6,12 +6,12 @@ RSpec.describe "Profiles", type: :request do
   describe "authentication" do
     it "redirects to sign_in when not authenticated" do
       get profile_path
-      expect(response).to redirect_to(sign_in_path)
+      expect(response).to redirect_to(new_user_session_path)
     end
   end
 
   describe "GET /profile" do
-    before { sign_in_as(user) }
+    before { sign_in user }
 
     it "renders the profile show page" do
       get profile_path
@@ -25,7 +25,7 @@ RSpec.describe "Profiles", type: :request do
   end
 
   describe "GET /profile/edit" do
-    before { sign_in_as(user) }
+    before { sign_in user }
 
     it "renders the profile edit form" do
       get edit_profile_path
@@ -35,7 +35,7 @@ RSpec.describe "Profiles", type: :request do
   end
 
   describe "PATCH /profile" do
-    before { sign_in_as(user) }
+    before { sign_in user }
 
     it "updates contact details" do
       patch profile_path, params: {
@@ -53,7 +53,7 @@ RSpec.describe "Profiles", type: :request do
   end
 
   describe "POST /profile/upload_resume" do
-    before { sign_in_as(user) }
+    before { sign_in user }
 
     it "uploads a PDF and enqueues parsing job" do
       post upload_resume_profile_path, params: {
