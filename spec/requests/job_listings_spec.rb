@@ -46,4 +46,35 @@ RSpec.describe "JobListings", type: :request do
       expect(flash[:alert]).to be_present
     end
   end
+
+  describe "POST /job_listings/:id/generate_cover_letter" do
+    let!(:listing) { create(:job_listing, job_source: source) }
+    let!(:profile) { create(:profile, user: user) }
+
+    it "enqueues a cover letter job and redirects" do
+      expect {
+        post generate_cover_letter_job_listing_path(listing)
+      }.to have_enqueued_job(CoverLetterJob)
+
+      expect(response).to redirect_to(job_listing_path(listing))
+    end
+  end
+
+  describe "POST /job_listings/bulk_update" do
+    let!(:listing1) { create(:job_listing, job_source: source, status: "new") }
+    let!(:listing2) { create(:job_listing, job_source: source, status: "new") }
+
+    it "updates multiple listings" do
+      post bulk_update_job_listings_path, params: { ids: [listing1.id, listing2.id], new_status: "saved" }
+      expect(listing1.reload.status).to eq("saved")
+      expect(listing2.reload.status).to eq("saved")
+      expect(response).to redirect_to(job_listings_path)
+    end
+
+    it "rejects invalid status" do
+      post bulk_update_job_listings_path, params: { ids: [listing1.id], new_status: "invalid" }
+      expect(response).to redirect_to(job_listings_path)
+      expect(flash[:alert]).to be_present
+    end
+  end
 end
