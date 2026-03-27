@@ -23,10 +23,10 @@
     <%= javascript_include_tag "application", "data-turbo-track": "reload", type: "module" %>
   </head>
 
-  <body>
-    <nav class="navbar navbar-expand-lg navbar-dark bg-dark">
+  <body class="d-flex flex-column min-vh-100">
+    <nav class="navbar navbar-expand-lg navbar-dark" style="background-color: #1A1A2E;">
       <div class="container">
-        <%= link_to "Job Agent App", root_path, class: "navbar-brand" %>
+        <%= link_to "Job Agent", root_path, class: "navbar-brand" %>
         <button class="navbar-toggler" type="button" data-bs-toggle="collapse" data-bs-target="#navbarNav">
           <span class="navbar-toggler-icon"></span>
         </button>
@@ -40,7 +40,7 @@
       </div>
     </nav>
 
-    <main class="container py-4">
+    <main class="container py-4 flex-grow-1">
       <% if notice.present? %>
         <div class="alert alert-success alert-dismissible fade show" role="alert">
           <%= notice %>
@@ -57,9 +57,9 @@
       <%= yield %>
     </main>
 
-    <footer class="bg-light py-3 mt-auto">
-      <div class="container text-center text-muted">
-        <small>&copy; <%= Date.today.year %> Job Agent App</small>
+    <footer class="site-footer">
+      <div class="container text-center">
+        <p class="site-footer__text">&copy; <%= Date.today.year %> Job Agent App</p>
       </div>
     </footer>
   </body>

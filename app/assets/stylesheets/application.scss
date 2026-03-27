@@ -1,0 +1,65 @@
+// ==========================================================================
+// Application Stylesheet — Entry Point
+// ==========================================================================
+// 1. Custom variables (must come BEFORE Bootstrap imports)
+// 2. Bootstrap (selective imports)
+// 3. Custom component styles
+// ==========================================================================
+
+// --------------------------------------------------------------------------
+// 1. Custom Variables & Overrides
+// --------------------------------------------------------------------------
+@import "config/variables";
+
+// --------------------------------------------------------------------------
+// 2. Bootstrap — Selective Imports
+//    Only import what we need to keep the bundle small.
+//    Full list: node_modules/bootstrap/scss/bootstrap.scss
+// --------------------------------------------------------------------------
+
+// Required Bootstrap core
+@import "bootstrap/scss/functions";
+@import "bootstrap/scss/variables";
+@import "bootstrap/scss/variables-dark";
+@import "bootstrap/scss/maps";
+@import "bootstrap/scss/mixins";
+@import "bootstrap/scss/utilities";
+
+// Reset & base
+@import "bootstrap/scss/root";
+@import "bootstrap/scss/reboot";
+@import "bootstrap/scss/type";
+@import "bootstrap/scss/images";
+
+// Layout
+@import "bootstrap/scss/containers";
+@import "bootstrap/scss/grid";
+
+// Components we use
+@import "bootstrap/scss/buttons";
+@import "bootstrap/scss/card";
+@import "bootstrap/scss/navbar";
+@import "bootstrap/scss/nav";
+@import "bootstrap/scss/alert";
+@import "bootstrap/scss/badge";
+@import "bootstrap/scss/close";
+@import "bootstrap/scss/dropdown";
+@import "bootstrap/scss/forms";
+@import "bootstrap/scss/transitions";
+
+// Utilities API (generates responsive utility classes)
+@import "bootstrap/scss/utilities/api";
+
+// --------------------------------------------------------------------------
+// 3. Custom Component Styles
+// --------------------------------------------------------------------------
+@import "components/navbar";
+@import "components/hero";
+@import "components/cards";
+@import "components/footer";
+@import "components/buttons";
+
+// --------------------------------------------------------------------------
+// 4. Page-specific Styles
+// --------------------------------------------------------------------------
+@import "pages/home";
