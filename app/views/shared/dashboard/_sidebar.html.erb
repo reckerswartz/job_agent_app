@@ -41,6 +41,11 @@
   </ul>
 
   <div class="sidebar__footer">
-    Job Agent v1.0
+    <% if authenticated? %>
+      <div class="sidebar__user">
+        <span class="sidebar__user-avatar"><%= current_user.initials %></span>
+        <span class="sidebar__user-name"><%= current_user.display_name %></span>
+      </div>
+    <% end %>
   </div>
 </aside>

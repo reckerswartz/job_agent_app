@@ -1,0 +1,51 @@
+<!DOCTYPE html>
+<html>
+  <head>
+    <title><%= content_for(:title) || "Job Agent App" %></title>
+    <meta name="viewport" content="width=device-width,initial-scale=1">
+    <meta name="apple-mobile-web-app-capable" content="yes">
+    <meta name="application-name" content="Job Agent App">
+    <meta name="mobile-web-app-capable" content="yes">
+    <%= csrf_meta_tags %>
+    <%= csp_meta_tag %>
+
+    <link rel="icon" href="/icon.png" type="image/png">
+    <link rel="icon" href="/icon.svg" type="image/svg+xml">
+    <link rel="apple-touch-icon" href="/icon.png">
+
+    <%= stylesheet_link_tag :app, "data-turbo-track": "reload" %>
+    <%= javascript_include_tag "application", "data-turbo-track": "reload", type: "module" %>
+  </head>
+
+  <body class="auth-page d-flex align-items-center justify-content-center min-vh-100">
+    <div class="auth-container">
+      <div class="auth-card card">
+        <div class="card-body p-4 p-md-5">
+          <div class="auth-brand text-center mb-4">
+            <span class="auth-brand__icon">&#x1F4BC;</span>
+            <h1 class="auth-brand__name">Job Agent</h1>
+          </div>
+
+          <% if alert.present? %>
+            <div class="alert alert-danger alert-dismissible fade show" role="alert">
+              <%= alert %>
+              <button type="button" class="btn-close" data-bs-dismiss="alert"></button>
+            </div>
+          <% end %>
+          <% if notice.present? %>
+            <div class="alert alert-success alert-dismissible fade show" role="alert">
+              <%= notice %>
+              <button type="button" class="btn-close" data-bs-dismiss="alert"></button>
+            </div>
+          <% end %>
+
+          <%= yield %>
+        </div>
+      </div>
+
+      <div class="auth-footer text-center mt-3">
+        <small class="text-muted">&copy; <%= Date.today.year %> Job Agent App</small>
+      </div>
+    </div>
+  </body>
+</html>
