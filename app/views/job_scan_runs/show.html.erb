@@ -1,0 +1,66 @@
+<% content_for(:page_title, "Scan Run ##{@scan_run.id}") %>
+
+<div class="page-header mb-4">
+  <div class="d-flex justify-content-between align-items-start">
+    <div>
+      <h1 class="page-header__title">Scan Run #<%= @scan_run.id %></h1>
+      <p class="page-header__subtitle"><%= @job_source.name %></p>
+    </div>
+    <%= link_to "Back to History", job_source_scan_runs_path(@job_source), class: "btn btn-outline-secondary" %>
+  </div>
+</div>
+
+<div class="row g-4">
+  <div class="col-md-8">
+    <div class="card mb-4">
+      <div class="card-header"><h3 class="card-header__title mb-0">Run Details</h3></div>
+      <div class="card-body">
+        <dl class="listing-details">
+          <dt>Status</dt>
+          <dd><span class="badge bg-<%= scan_status_color(@scan_run.status) %>"><%= @scan_run.status.capitalize %></span></dd>
+          <dt>Duration</dt>
+          <dd><%= @scan_run.duration_display %></dd>
+          <dt>Listings Found</dt>
+          <dd><%= @scan_run.listings_found %></dd>
+          <dt>New Listings</dt>
+          <dd><%= @scan_run.new_listings %></dd>
+          <% if @scan_run.started_at %>
+            <dt>Started</dt>
+            <dd><%= @scan_run.started_at.strftime("%Y-%m-%d %H:%M:%S") %></dd>
+          <% end %>
+          <% if @scan_run.finished_at %>
+            <dt>Finished</dt>
+            <dd><%= @scan_run.finished_at.strftime("%Y-%m-%d %H:%M:%S") %></dd>
+          <% end %>
+          <% if @scan_run.job_search_criteria %>
+            <dt>Search Criteria</dt>
+            <dd><%= @scan_run.job_search_criteria.name %></dd>
+          <% end %>
+        </dl>
+      </div>
+    </div>
+
+    <% if @scan_run.failed? && @scan_run.error_details.present? %>
+      <div class="card mb-4">
+        <div class="card-header"><h3 class="card-header__title mb-0 text-danger">Error Details</h3></div>
+        <div class="card-body">
+          <p class="mb-1"><strong><%= @scan_run.error_details["class"] %></strong></p>
+          <p class="text-muted"><%= @scan_run.error_details["message"] %></p>
+          <% if @scan_run.error_details["backtrace"].present? %>
+            <pre class="profile-extracted-text"><%= @scan_run.error_details["backtrace"].join("\n") %></pre>
+          <% end %>
+        </div>
+      </div>
+    <% end %>
+  </div>
+
+  <div class="col-md-4">
+    <div class="card">
+      <div class="card-header"><h3 class="card-header__title mb-0">Source Info</h3></div>
+      <div class="card-body">
+        <p><strong><%= @job_source.name %></strong></p>
+        <span class="badge bg-<%= @job_source.platform_color %>"><%= @job_source.platform.capitalize %></span>
+      </div>
+    </div>
+  </div>
+</div>

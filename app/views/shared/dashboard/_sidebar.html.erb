@@ -17,8 +17,8 @@
       <% end %>
     </li>
     <li>
-      <%= link_to "#", class: "sidebar__link" do %>
-        <span class="sidebar__link-icon">&#x2B50;</span> Saved Jobs
+      <%= link_to job_listings_path, class: "sidebar__link #{request.path.start_with?('/job_listings') ? 'sidebar__link--active' : ''}" do %>
+        <span class="sidebar__link-icon">&#x1F4CB;</span> Job Listings
       <% end %>
     </li>
     <li>

@@ -10,7 +10,7 @@
 #
 # It's strongly recommended that you check this file into your version control system.
 
-ActiveRecord::Schema[8.1].define(version: 2026_03_27_090749) do
+ActiveRecord::Schema[8.1].define(version: 2026_03_27_093708) do
   # These are extensions that must be enabled in order to support this database
   enable_extension "pg_catalog.plpgsql"
 
@@ -49,6 +49,51 @@ ActiveRecord::Schema[8.1].define(version: 2026_03_27_090749) do
     t.string "key", null: false
     t.datetime "updated_at", null: false
     t.index ["key"], name: "index_app_settings_on_key", unique: true
+  end
+
+  create_table "job_listings", force: :cascade do |t|
+    t.string "company"
+    t.datetime "created_at", null: false
+    t.text "description"
+    t.string "employment_type"
+    t.datetime "expires_at"
+    t.string "external_id"
+    t.bigint "job_source_id", null: false
+    t.string "location"
+    t.integer "match_score"
+    t.jsonb "metadata", default: {}, null: false
+    t.datetime "posted_at"
+    t.jsonb "raw_data", default: {}, null: false
+    t.string "remote_type"
+    t.text "requirements"
+    t.string "salary_range"
+    t.string "status", default: "new", null: false
+    t.string "title", null: false
+    t.datetime "updated_at", null: false
+    t.string "url"
+    t.index ["job_source_id", "external_id"], name: "index_job_listings_on_job_source_id_and_external_id", unique: true
+    t.index ["job_source_id", "status"], name: "index_job_listings_on_job_source_id_and_status"
+    t.index ["job_source_id"], name: "index_job_listings_on_job_source_id"
+    t.index ["match_score"], name: "index_job_listings_on_match_score"
+    t.index ["status"], name: "index_job_listings_on_status"
+  end
+
+  create_table "job_scan_runs", force: :cascade do |t|
+    t.datetime "created_at", null: false
+    t.integer "duration_ms"
+    t.jsonb "error_details", default: {}, null: false
+    t.datetime "finished_at"
+    t.bigint "job_search_criteria_id"
+    t.bigint "job_source_id", null: false
+    t.integer "listings_found", default: 0, null: false
+    t.integer "new_listings", default: 0, null: false
+    t.datetime "started_at"
+    t.string "status", default: "queued", null: false
+    t.datetime "updated_at", null: false
+    t.index ["job_search_criteria_id"], name: "index_job_scan_runs_on_job_search_criteria_id"
+    t.index ["job_source_id", "status"], name: "index_job_scan_runs_on_job_source_id_and_status"
+    t.index ["job_source_id"], name: "index_job_scan_runs_on_job_source_id"
+    t.index ["status"], name: "index_job_scan_runs_on_status"
   end
 
   create_table "job_search_criteria", force: :cascade do |t|
@@ -148,6 +193,9 @@ ActiveRecord::Schema[8.1].define(version: 2026_03_27_090749) do
 
   add_foreign_key "active_storage_attachments", "active_storage_blobs", column: "blob_id"
   add_foreign_key "active_storage_variant_records", "active_storage_blobs", column: "blob_id"
+  add_foreign_key "job_listings", "job_sources"
+  add_foreign_key "job_scan_runs", "job_search_criteria", column: "job_search_criteria_id"
+  add_foreign_key "job_scan_runs", "job_sources"
   add_foreign_key "job_search_criteria", "users"
   add_foreign_key "job_sources", "users"
   add_foreign_key "profile_entries", "profile_sections"

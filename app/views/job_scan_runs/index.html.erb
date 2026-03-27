@@ -1,0 +1,53 @@
+<% content_for(:page_title, "Scan History — #{@job_source.name}") %>
+
+<div class="page-header d-flex justify-content-between align-items-start mb-4">
+  <div>
+    <h1 class="page-header__title">Scan History</h1>
+    <p class="page-header__subtitle"><%= @job_source.name %> (<%= @job_source.platform.capitalize %>)</p>
+  </div>
+  <div class="d-flex gap-2">
+    <%= button_to "Scan Now", job_source_scan_runs_path(@job_source), method: :post, class: "btn btn-primary" %>
+    <%= link_to "Back to Sources", job_sources_path, class: "btn btn-outline-secondary" %>
+  </div>
+</div>
+
+<% if @scan_runs.any? %>
+  <div class="card dash-table-card">
+    <div class="table-responsive">
+      <table class="table">
+        <thead>
+          <tr>
+            <th>Run</th>
+            <th>Status</th>
+            <th>Duration</th>
+            <th>Found</th>
+            <th>New</th>
+            <th>Started</th>
+          </tr>
+        </thead>
+        <tbody>
+          <% @scan_runs.each do |run| %>
+            <tr>
+              <td><%= link_to "##{run.id}", job_source_scan_run_path(@job_source, run), class: "fw-bold text-decoration-none" %></td>
+              <td>
+                <span class="badge bg-<%= scan_status_color(run.status) %>"><%= run.status.capitalize %></span>
+              </td>
+              <td><%= run.duration_display %></td>
+              <td><%= run.listings_found %></td>
+              <td><%= run.new_listings %></td>
+              <td class="text-muted"><%= run.started_at ? time_ago_in_words(run.started_at) + " ago" : "Queued" %></td>
+            </tr>
+          <% end %>
+        </tbody>
+      </table>
+    </div>
+  </div>
+<% else %>
+  <div class="card source-empty-card">
+    <div class="card-body text-center py-5">
+      <div class="source-empty-card__icon mb-3">&#x1F504;</div>
+      <h3>No scans yet</h3>
+      <p class="text-muted mb-3">Click "Scan Now" to run your first scan on this source.</p>
+    </div>
+  </div>
+<% end %>

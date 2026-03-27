@@ -1,0 +1,82 @@
+<% content_for(:page_title, "Job Listings") %>
+
+<div class="page-header d-flex justify-content-between align-items-start mb-4">
+  <div>
+    <h1 class="page-header__title">Job Listings</h1>
+    <p class="page-header__subtitle"><%= @listings.size %> listings found</p>
+  </div>
+</div>
+
+<%# ── Status Filter Tabs ── %>
+<ul class="nav nav-tabs mb-4">
+  <li class="nav-item">
+    <%= link_to "All (#{@status_counts.values.sum})", job_listings_path,
+        class: "nav-link #{params[:status].blank? ? 'active' : ''}" %>
+  </li>
+  <% JobListing::STATUSES.each do |s| %>
+    <% count = @status_counts[s] || 0 %>
+    <% next if count == 0 && s != params[:status] %>
+    <li class="nav-item">
+      <%= link_to "#{s.capitalize} (#{count})", job_listings_path(status: s),
+          class: "nav-link #{params[:status] == s ? 'active' : ''}" %>
+    </li>
+  <% end %>
+</ul>
+
+<% if @listings.any? %>
+  <div class="card dash-table-card">
+    <div class="table-responsive">
+      <table class="table">
+        <thead>
+          <tr>
+            <th>Position</th>
+            <th>Company</th>
+            <th>Location</th>
+            <th>Match</th>
+            <th>Source</th>
+            <th>Status</th>
+            <th>Posted</th>
+          </tr>
+        </thead>
+        <tbody>
+          <% @listings.each do |listing| %>
+            <tr>
+              <td>
+                <%= link_to listing.title, job_listing_path(listing), class: "fw-bold text-decoration-none" %>
+              </td>
+              <td><%= listing.company %></td>
+              <td><%= listing.location %></td>
+              <td>
+                <% if listing.match_score %>
+                  <span class="match-score <%= listing.match_badge_class %>"><%= listing.match_score %>%</span>
+                <% else %>
+                  <span class="text-muted">—</span>
+                <% end %>
+              </td>
+              <td>
+                <span class="badge bg-<%= listing.job_source.platform_color %> source-badge">
+                  <%= listing.job_source.platform.capitalize %>
+                </span>
+              </td>
+              <td>
+                <span class="badge bg-<%= status_badge_color(listing.status) %>"><%= listing.status.capitalize %></span>
+              </td>
+              <td class="text-muted">
+                <%= listing.posted_at ? time_ago_in_words(listing.posted_at) + " ago" : "—" %>
+              </td>
+            </tr>
+          <% end %>
+        </tbody>
+      </table>
+    </div>
+  </div>
+<% else %>
+  <div class="card source-empty-card">
+    <div class="card-body text-center py-5">
+      <div class="source-empty-card__icon mb-3">&#x1F4CB;</div>
+      <h3>No job listings yet</h3>
+      <p class="text-muted mb-3">Add job sources and run a scan to discover listings.</p>
+      <%= link_to "Go to Job Sources", job_sources_path, class: "btn btn-primary" %>
+    </div>
+  </div>
+<% end %>
