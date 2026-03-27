@@ -64,6 +64,19 @@ CI runs automatically on pushes to `main` and on all pull requests:
 
 Dependabot keeps Ruby gems and GitHub Actions up to date weekly.
 
+## MCP Servers
+
+AI coding assistants connect to external tools via [Model Context Protocol](https://modelcontextprotocol.io/) servers. See [docs/mcp-servers.md](docs/mcp-servers.md) for full details.
+
+| Server | Package | Purpose | API Key Required |
+|--------|---------|---------|-----------------|
+| **Playwright** | `@playwright/mcp` | Browser automation — job board navigation, form filling, scraping | None |
+| **Figma** | `figma-developer-mcp` | Read Figma designs to implement the job dashboard UI | `FIGMA_API_KEY` |
+| **Miro** | `@llmindset/mcp-miro` | Whiteboard planning — map workflows, architecture, user flows | `MIRO_OAUTH_TOKEN` |
+| **Toolbox** | `mcp-toolbox[all]` | Web search, URL-to-markdown, file ops, memory | `TAVILY_API_KEY` |
+
+Configure API keys in `.devin/config.json` → `mcpServers.<name>.env`.
+
 ## Agent Skills
 
 This project includes agent skills (`.devin/skills/`) that extend AI coding assistant capabilities for development workflows. Skills follow the universal `SKILL.md` format and work across Claude Code, Cursor, Windsurf, and other AI coding tools.
