@@ -1,0 +1,78 @@
+<% content_for(:page_title, @listing.title) %>
+
+<div class="page-header mb-4">
+  <div class="d-flex justify-content-between align-items-start">
+    <div>
+      <h1 class="page-header__title"><%= @listing.title %></h1>
+      <p class="page-header__subtitle">
+        <%= @listing.company %>
+        <% if @listing.location.present? %> &middot; <%= @listing.location %><% end %>
+      </p>
+    </div>
+    <div class="d-flex gap-2">
+      <% if @listing.status == "new" || @listing.status == "reviewed" %>
+        <%= button_to "Save", update_status_job_listing_path(@listing, new_status: "saved"), method: :patch, class: "btn btn-sm btn-success" %>
+        <%= button_to "Reject", update_status_job_listing_path(@listing, new_status: "rejected"), method: :patch, class: "btn btn-sm btn-outline-danger" %>
+      <% end %>
+      <%= link_to "Back to Listings", job_listings_path, class: "btn btn-sm btn-outline-secondary" %>
+    </div>
+  </div>
+</div>
+
+<div class="row g-4">
+  <%# ── Main Content ── %>
+  <div class="col-lg-8">
+    <% if @listing.description.present? %>
+      <div class="card mb-4">
+        <div class="card-header"><h3 class="card-header__title mb-0">Description</h3></div>
+        <div class="card-body"><%= simple_format(@listing.description) %></div>
+      </div>
+    <% end %>
+
+    <% if @listing.requirements.present? %>
+      <div class="card mb-4">
+        <div class="card-header"><h3 class="card-header__title mb-0">Requirements</h3></div>
+        <div class="card-body"><%= simple_format(@listing.requirements) %></div>
+      </div>
+    <% end %>
+  </div>
+
+  <%# ── Sidebar Info ── %>
+  <div class="col-lg-4">
+    <div class="card mb-4">
+      <div class="card-header"><h3 class="card-header__title mb-0">Details</h3></div>
+      <div class="card-body">
+        <dl class="listing-details">
+          <% if @listing.match_score %>
+            <dt>Match Score</dt>
+            <dd><span class="match-score <%= @listing.match_badge_class %>"><%= @listing.match_score %>%</span></dd>
+          <% end %>
+          <dt>Status</dt>
+          <dd><span class="badge bg-<%= status_badge_color(@listing.status) %>"><%= @listing.status.capitalize %></span></dd>
+          <dt>Source</dt>
+          <dd><span class="badge bg-<%= @listing.job_source.platform_color %> source-badge"><%= @listing.job_source.platform.capitalize %></span></dd>
+          <% if @listing.salary_range.present? %>
+            <dt>Salary</dt>
+            <dd><%= @listing.salary_range %></dd>
+          <% end %>
+          <% if @listing.employment_type.present? %>
+            <dt>Type</dt>
+            <dd><%= @listing.employment_type.humanize %></dd>
+          <% end %>
+          <% if @listing.remote_type.present? %>
+            <dt>Remote</dt>
+            <dd><%= @listing.remote_type.humanize %></dd>
+          <% end %>
+          <% if @listing.posted_at.present? %>
+            <dt>Posted</dt>
+            <dd><%= time_ago_in_words(@listing.posted_at) %> ago</dd>
+          <% end %>
+          <% if @listing.url.present? %>
+            <dt>Link</dt>
+            <dd><%= link_to "View Original", @listing.url, target: "_blank", class: "btn btn-sm btn-outline-primary" %></dd>
+          <% end %>
+        </dl>
+      </div>
+    </div>
+  </div>
+</div>

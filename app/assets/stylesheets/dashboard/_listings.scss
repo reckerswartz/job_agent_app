@@ -1,0 +1,19 @@
+// ==========================================================================
+// Dashboard Job Listings
+// ==========================================================================
+
+.listing-details {
+  dt {
+    font-size: 0.8rem;
+    font-weight: 600;
+    text-transform: uppercase;
+    letter-spacing: 0.04em;
+    color: rgba($dark, 0.5);
+    margin-bottom: 0.125rem;
+  }
+
+  dd {
+    margin-bottom: 1rem;
+    font-size: 0.9rem;
+  }
+}

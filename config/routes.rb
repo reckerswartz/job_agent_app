@@ -27,8 +27,16 @@ Rails.application.routes.draw do
     end
   end
 
+  # Job Listings
+  resources :job_listings, only: [:index, :show] do
+    member do
+      patch :update_status
+    end
+  end
+
   # Job Sources & Search Criteria
   resources :job_sources do
+    resources :scan_runs, controller: "job_scan_runs", only: [:index, :create, :show]
     member do
       patch :toggle
     end
