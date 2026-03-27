@@ -72,7 +72,28 @@ gh-pr-status() {
 
 # Merge current PR (squash by default)
 gh-pr-merge() {
+  local branch
+  branch=$(git branch --show-current)
+  if [ "$branch" = "main" ]; then
+    echo "✗ Already on main — nothing to merge"
+    return 1
+  fi
+  echo "Merging PR for ${branch}..."
   gh pr merge --squash --delete-branch
+  echo "✓ PR merged and remote branch deleted"
+}
+
+# Enable auto-merge on current PR (merges automatically once CI passes)
+gh-pr-auto() {
+  local branch
+  branch=$(git branch --show-current)
+  if [ "$branch" = "main" ]; then
+    echo "✗ Already on main — no PR to auto-merge"
+    return 1
+  fi
+  echo "Enabling auto-merge for ${branch}..."
+  gh pr merge --auto --squash --delete-branch
+  echo "✓ Auto-merge enabled — PR will merge when all checks pass"
 }
 
 # ─── Issues ───────────────────────────────────────────────────────────────────
@@ -155,6 +176,17 @@ gh-ship() {
   gh pr create --fill
 }
 
+# Full workflow: commit, push, open PR, enable auto-merge
+gh-ship-auto() {
+  local msg="${1:?Usage: gh-ship-auto <commit-message>}"
+  git add -A
+  git commit -m "$msg"
+  git push -u origin "$(git branch --show-current)"
+  gh pr create --fill
+  gh pr merge --auto --squash --delete-branch
+  echo "✓ PR created with auto-merge enabled"
+}
+
 # Sync current branch with latest main
 gh-sync() {
   local branch
@@ -164,8 +196,103 @@ gh-sync() {
   echo "✓ Rebased ${branch} onto latest main"
 }
 
+# ─── Complete Lifecycle ───────────────────────────────────────────────────────
+
+# Merge current PR, sync back to main, ready for next task
+gh-done() {
+  local branch
+  branch=$(git branch --show-current)
+
+  if [ "$branch" = "main" ]; then
+    echo "✗ Already on main — nothing to merge"
+    return 1
+  fi
+
+  echo "=== Completing work on ${branch} ==="
+  echo ""
+
+  # Step 1: Ensure all changes are pushed
+  if [ -n "$(git status --porcelain)" ]; then
+    echo "[1/4] Uncommitted changes detected — committing..."
+    git add -A
+    git commit -m "Update: final changes on ${branch}"
+    git push origin "${branch}"
+  else
+    echo "[1/4] Working tree clean ✓"
+  fi
+
+  # Step 2: Merge the PR
+  echo "[2/4] Merging PR..."
+  if ! gh pr merge --squash --delete-branch; then
+    echo ""
+    echo "✗ Merge failed. Possible reasons:"
+    echo "  - CI checks haven't passed yet (use gh-pr-auto to enable auto-merge)"
+    echo "  - Merge conflicts need resolution"
+    echo "  - No PR exists for this branch (use gh-pr to create one)"
+    return 1
+  fi
+  echo "  ✓ PR merged and remote branch deleted"
+
+  # Step 3: Switch to main and pull latest
+  echo "[3/4] Syncing to main..."
+  git checkout main
+  git pull origin main
+  echo "  ✓ On main with latest changes"
+
+  # Step 4: Clean up local branch
+  echo "[4/4] Cleaning up..."
+  git branch -d "${branch}" 2>/dev/null && echo "  ✓ Local branch ${branch} deleted" || echo "  ✓ Local branch already cleaned up"
+
+  echo ""
+  echo "=== Done! Ready for next task ==="
+  echo "  Start a new task with: gh-feature <name>"
+}
+
+# Merge current PR with auto-merge, then sync when ready
+gh-done-auto() {
+  local branch
+  branch=$(git branch --show-current)
+
+  if [ "$branch" = "main" ]; then
+    echo "✗ Already on main — nothing to merge"
+    return 1
+  fi
+
+  echo "=== Setting auto-merge for ${branch} ==="
+  echo ""
+
+  # Ensure all changes are pushed
+  if [ -n "$(git status --porcelain)" ]; then
+    echo "[1/3] Uncommitted changes detected — committing..."
+    git add -A
+    git commit -m "Update: final changes on ${branch}"
+    git push origin "${branch}"
+  else
+    echo "[1/3] Working tree clean ✓"
+  fi
+
+  # Enable auto-merge
+  echo "[2/3] Enabling auto-merge..."
+  if ! gh pr merge --auto --squash --delete-branch; then
+    echo "✗ Auto-merge failed. Does a PR exist? Use gh-pr to create one."
+    return 1
+  fi
+  echo "  ✓ Auto-merge enabled — will merge when CI passes"
+
+  # Switch to main
+  echo "[3/3] Switching to main..."
+  git checkout main
+  git pull origin main
+  echo "  ✓ On main (PR will merge automatically in background)"
+
+  echo ""
+  echo "=== Auto-merge queued! Start next task with: gh-feature <name> ==="
+}
+
 echo "GitHub CLI helpers loaded. Run any gh-* command for shortcuts."
-echo "Commands: gh-feature, gh-fix, gh-chore, gh-pr, gh-pr-draft, gh-pr-list,"
-echo "          gh-pr-view, gh-pr-status, gh-pr-merge, gh-issue, gh-bug, gh-feat,"
-echo "          gh-task, gh-issue-list, gh-issue-search, gh-status, gh-activity,"
-echo "          gh-browse, gh-ship, gh-sync"
+echo ""
+echo "  Branches:   gh-feature, gh-fix, gh-chore"
+echo "  PRs:        gh-pr, gh-pr-draft, gh-pr-list, gh-pr-view, gh-pr-status, gh-pr-merge, gh-pr-auto"
+echo "  Issues:     gh-issue, gh-bug, gh-feat, gh-task, gh-issue-list, gh-issue-search"
+echo "  Info:       gh-status, gh-activity, gh-browse"
+echo "  Workflow:   gh-ship, gh-ship-auto, gh-sync, gh-done, gh-done-auto"

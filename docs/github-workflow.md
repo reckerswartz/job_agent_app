@@ -19,14 +19,23 @@ Rules:
 ## Development Workflow
 
 ```
-1. Create branch    →  git checkout -b feature/my-change
+1. Create branch    →  gh-feature my-change
 2. Make changes     →  (code, test, verify)
 3. Commit           →  git commit -m "Add job search filtering"
 4. Push             →  git push -u origin feature/my-change
 5. Open PR          →  gh pr create
 6. CI passes        →  (automatic on push)
-7. Review & merge   →  gh pr merge --squash --delete-branch
+7. Merge + sync     →  gh-done
 ```
+
+### One-Command Shortcuts
+
+| Goal | Command | What it does |
+|------|---------|--------------|
+| Ship & create PR | `gh-ship "message"` | commit → push → open PR |
+| Ship & auto-merge | `gh-ship-auto "message"` | commit → push → open PR → enable auto-merge |
+| Merge & sync | `gh-done` | merge PR → switch to main → pull latest → delete branch |
+| Auto-merge & sync | `gh-done-auto` | enable auto-merge → switch to main → pull latest |
 
 ## Commit Messages
 
@@ -66,6 +75,15 @@ Every change goes through a PR. The PR template (`.github/pull_request_template.
 - **Small PRs** — aim for < 400 lines changed
 - One concern per PR (don't mix features with refactors)
 - If a feature is large, break it into stacked PRs
+
+### Merging
+
+PRs are squash-merged by default to keep `main` history linear.
+
+- **Immediate merge** — `gh-pr-merge` or `gh-done` (merge now if CI has passed)
+- **Auto-merge** — `gh-pr-auto` or `gh-done-auto` (merge automatically when CI passes)
+
+After merging, always sync back to `main` before starting the next task. `gh-done` handles this automatically.
 
 ## Issues
 
@@ -141,23 +159,32 @@ source scripts/gh-helpers.sh
 
 | Command | Description |
 |---------|-------------|
+| **Branches** | |
 | `gh-feature <name>` | Create feature branch from latest main |
 | `gh-fix <name>` | Create fix branch from latest main |
 | `gh-chore <name>` | Create chore branch from latest main |
+| **Pull Requests** | |
 | `gh-pr [title]` | Open PR for current branch |
 | `gh-pr-draft [title]` | Open draft PR |
 | `gh-pr-list` | List open PRs |
 | `gh-pr-view` | View current branch's PR |
 | `gh-pr-status` | Check CI status on current PR |
-| `gh-pr-merge` | Squash-merge and delete branch |
+| `gh-pr-merge` | Squash-merge and delete remote branch |
+| `gh-pr-auto` | Enable auto-merge (merges when CI passes) |
+| **Issues** | |
 | `gh-issue` | Create issue (interactive) |
 | `gh-bug <title>` | Create bug report |
 | `gh-feat <title>` | Create feature request |
 | `gh-task <title>` | Create task issue |
 | `gh-issue-list [label]` | List open issues, optionally by label |
 | `gh-issue-search <keyword>` | Search issues |
+| **Info** | |
 | `gh-status` | Repo summary (PRs, issues, CI) |
 | `gh-activity` | Recent merged PRs and closed issues |
 | `gh-browse` | Open repo in browser |
-| `gh-ship <message>` | Commit, push, open PR in one command |
+| **Workflow** | |
+| `gh-ship <message>` | Commit → push → open PR |
+| `gh-ship-auto <message>` | Commit → push → open PR → enable auto-merge |
 | `gh-sync` | Rebase current branch onto latest main |
+| `gh-done` | **Merge PR → sync to main → clean up branch** |
+| `gh-done-auto` | **Enable auto-merge → sync to main** |
