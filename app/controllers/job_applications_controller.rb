@@ -5,10 +5,11 @@ class JobApplicationsController < ApplicationController
   before_action :set_application, only: [:show, :retry_application]
 
   def index
-    @applications = JobApplication.for_user(current_user)
-                                  .by_status(params[:status])
-                                  .recent
-                                  .includes(job_listing: :job_source)
+    scope = JobApplication.for_user(current_user)
+                          .by_status(params[:status])
+                          .recent
+                          .includes(job_listing: :job_source)
+    @pagy, @applications = pagy(scope)
     @status_counts = JobApplication.for_user(current_user).group(:status).count
   end
 

@@ -5,10 +5,9 @@ class InterventionsController < ApplicationController
   before_action :set_intervention, only: [:show, :resolve, :dismiss]
 
   def index
-    @interventions = current_user.interventions
-                                 .recent
-                                 .includes(:interventionable)
-    @interventions = @interventions.where(status: params[:status]) if params[:status].present?
+    scope = current_user.interventions.recent.includes(:interventionable)
+    scope = scope.where(status: params[:status]) if params[:status].present?
+    @pagy, @interventions = pagy(scope)
     @status_counts = current_user.interventions.group(:status).count
     @pending_count = @status_counts["pending"] || 0
   end

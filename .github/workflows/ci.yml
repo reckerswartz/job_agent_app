@@ -50,3 +50,50 @@ jobs:
       - name: Lint code for consistent style
         run: bin/rubocop -f github
 
+  test:
+    runs-on: ubuntu-latest
+    services:
+      postgres:
+        image: postgres:16
+        env:
+          POSTGRES_PASSWORD: postgres
+        ports:
+          - 5432:5432
+        options: >-
+          --health-cmd pg_isready
+          --health-interval 10s
+          --health-timeout 5s
+          --health-retries 5
+    env:
+      RAILS_ENV: test
+      DATABASE_URL: postgres://postgres:postgres@localhost:5432/job_agent_app_test
+      ACTIVE_RECORD_ENCRYPTION_PRIMARY_KEY: ci-test-primary-key-32chars000
+      ACTIVE_RECORD_ENCRYPTION_DETERMINISTIC_KEY: ci-test-deterministic-key-32ch0
+      ACTIVE_RECORD_ENCRYPTION_KEY_DERIVATION_SALT: ci-test-key-derivation-salt-32c
+    steps:
+      - name: Checkout code
+        uses: actions/checkout@v6
+
+      - name: Set up Ruby
+        uses: ruby/setup-ruby@v1
+        with:
+          bundler-cache: true
+
+      - name: Set up Node
+        uses: actions/setup-node@v4
+        with:
+          node-version-file: .node-version
+          cache: yarn
+
+      - name: Install JS dependencies
+        run: yarn install --immutable
+
+      - name: Build assets
+        run: yarn build
+
+      - name: Create database
+        run: bin/rails db:create db:schema:load
+
+      - name: Run RSpec
+        run: bundle exec rspec
+
