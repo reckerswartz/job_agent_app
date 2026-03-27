@@ -19,7 +19,7 @@ module ResumeParser
       when *TEXT_CONTENT_TYPES
         TextExtractor.new(profile).extract_text
       when *IMAGE_CONTENT_TYPES
-        nil
+        VisionExtractor.new(profile).extract_text
       else
         Rails.logger.warn("[ResumeParser::Orchestrator] Unsupported content type: #{content_type}")
         nil

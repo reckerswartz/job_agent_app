@@ -131,12 +131,51 @@ end
 
 profile.update!(status: "complete")
 
+# ── LLM Providers & Models ──
+openai = LlmProvider.find_or_create_by!(slug: "openai") do |p|
+  p.name = "OpenAI"
+  p.adapter = "openai"
+  p.base_url = "https://api.openai.com/v1"
+  p.api_key_setting = "openai_api_key"
+end
+LlmModel.find_or_create_by!(llm_provider: openai, identifier: "gpt-4o") do |m|
+  m.name = "GPT-4o"
+  m.supports_text = true
+  m.supports_vision = true
+end
+LlmModel.find_or_create_by!(llm_provider: openai, identifier: "gpt-4o-mini") do |m|
+  m.name = "GPT-4o Mini"
+  m.supports_text = true
+  m.supports_vision = false
+end
+puts "  OpenAI: #{openai.llm_models.count} models"
+
+anthropic = LlmProvider.find_or_create_by!(slug: "anthropic") do |p|
+  p.name = "Anthropic"
+  p.adapter = "anthropic"
+  p.base_url = "https://api.anthropic.com/v1"
+  p.api_key_setting = "anthropic_api_key"
+end
+LlmModel.find_or_create_by!(llm_provider: anthropic, identifier: "claude-sonnet-4-20250514") do |m|
+  m.name = "Claude Sonnet 4"
+  m.supports_text = true
+  m.supports_vision = true
+end
+LlmModel.find_or_create_by!(llm_provider: anthropic, identifier: "claude-haiku-3-5") do |m|
+  m.name = "Claude Haiku 3.5"
+  m.supports_text = true
+  m.supports_vision = false
+end
+puts "  Anthropic: #{anthropic.llm_models.count} models"
+
 puts ""
 puts "=== Seed Complete ==="
 puts "  Users: #{User.count}"
 puts "  Profiles: #{Profile.count}"
 puts "  Sections: #{ProfileSection.count}"
 puts "  Entries: #{ProfileEntry.count}"
+puts "  LLM Providers: #{LlmProvider.count}"
+puts "  LLM Models: #{LlmModel.count}"
 puts ""
 puts "  Sign in as: demo@jobagent.dev / password123"
 puts "  Admin:      admin@jobagent.dev / password123"

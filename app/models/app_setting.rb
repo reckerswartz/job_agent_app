@@ -1,5 +1,7 @@
 class AppSetting < ApplicationRecord
   KNOWN_KEYS = {
+    "openai_api_key" => { description: "OpenAI API Key for GPT models (resume parsing, cover letters, matching)", env_var: "OPENAI_API_KEY" },
+    "anthropic_api_key" => { description: "Anthropic API Key for Claude models (resume parsing, cover letters, matching)", env_var: "ANTHROPIC_API_KEY" },
     "figma_api_key" => { description: "Figma API Key for design-to-code workflow", env_var: "FIGMA_API_KEY" },
     "miro_oauth_token" => { description: "Miro OAuth Token for whiteboard planning", env_var: "MIRO_OAUTH_TOKEN" },
     "tavily_api_key" => { description: "Tavily API Key for web search", env_var: "TAVILY_API_KEY" },
