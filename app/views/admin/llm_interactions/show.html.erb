@@ -1,0 +1,44 @@
+<% content_for(:page_title, "Admin — LLM Interaction ##{@interaction.id}") %>
+
+<div class="page-header mb-4">
+  <div class="d-flex justify-content-between align-items-start">
+    <div>
+      <h1 class="page-header__title">LLM Interaction #<%= @interaction.id %></h1>
+      <p class="page-header__subtitle">
+        <span class="badge bg-info"><%= @interaction.feature_name %></span>
+        <span class="badge bg-<%= @interaction.status == 'completed' ? 'success' : (@interaction.status == 'failed' ? 'danger' : 'secondary') %>"><%= @interaction.status %></span>
+      </p>
+    </div>
+    <%= link_to "Back to Logs", admin_llm_interactions_path, class: "btn btn-sm btn-outline-secondary" %>
+  </div>
+</div>
+
+<div class="row g-3">
+  <div class="col-md-8">
+    <div class="card mb-3">
+      <div class="card-header"><h3 class="card-header__title mb-0">Prompt</h3></div>
+      <div class="card-body"><pre class="profile-extracted-text mb-0"><%= @interaction.prompt %></pre></div>
+    </div>
+    <div class="card">
+      <div class="card-header"><h3 class="card-header__title mb-0">Response</h3></div>
+      <div class="card-body"><pre class="profile-extracted-text mb-0"><%= @interaction.response %></pre></div>
+    </div>
+  </div>
+  <div class="col-md-4">
+    <div class="card">
+      <div class="card-header"><h3 class="card-header__title mb-0">Details</h3></div>
+      <div class="card-body">
+        <dl class="listing-details">
+          <dt>User</dt><dd><%= @interaction.user&.email %></dd>
+          <dt>Feature</dt><dd><%= @interaction.feature_name %></dd>
+          <dt>Provider</dt><dd><%= @interaction.llm_provider&.name || "—" %></dd>
+          <dt>Model</dt><dd><%= @interaction.llm_model&.name || "—" %></dd>
+          <dt>Status</dt><dd><span class="badge bg-<%= @interaction.status == 'completed' ? 'success' : 'danger' %>"><%= @interaction.status %></span></dd>
+          <dt>Tokens</dt><dd><%= @interaction.token_usage.to_json %></dd>
+          <dt>Latency</dt><dd><%= @interaction.latency_ms ? "#{@interaction.latency_ms}ms" : "—" %></dd>
+          <dt>Created</dt><dd><%= @interaction.created_at.strftime("%Y-%m-%d %H:%M:%S") %></dd>
+        </dl>
+      </div>
+    </div>
+  </div>
+</div>

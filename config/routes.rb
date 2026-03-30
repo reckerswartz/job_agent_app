@@ -68,6 +68,16 @@ Rails.application.routes.draw do
     end
   end
 
+  # Admin
+  namespace :admin do
+    root "dashboard#index"
+    resources :users, only: [:index, :show] do
+      member { patch :toggle_role }
+    end
+    resources :llm_interactions, only: [:index, :show]
+    resources :scan_runs, only: [:index, :show]
+  end
+
   # Settings
   resource :settings, only: [:edit, :update]
 

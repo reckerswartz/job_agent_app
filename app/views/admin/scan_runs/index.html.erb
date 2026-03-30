@@ -1,0 +1,43 @@
+<% content_for(:page_title, "Admin — Scan Runs") %>
+
+<div class="page-header mb-4">
+  <h1 class="page-header__title">Scan Runs</h1>
+  <p class="page-header__subtitle"><%= JobScanRun.count %> total scans</p>
+</div>
+
+<div class="card dash-table-card">
+  <div class="table-responsive">
+    <table class="table">
+      <thead>
+        <tr>
+          <th>ID</th>
+          <th>Source</th>
+          <th>Platform</th>
+          <th>Status</th>
+          <th>Duration</th>
+          <th>Found</th>
+          <th>New</th>
+          <th>Started</th>
+        </tr>
+      </thead>
+      <tbody>
+        <% @scan_runs.each do |run| %>
+          <tr>
+            <td><%= link_to "##{run.id}", admin_scan_run_path(run), class: "fw-bold text-decoration-none" %></td>
+            <td><%= run.job_source.name %></td>
+            <td><span class="badge bg-<%= run.job_source.platform_color %>"><%= run.job_source.platform.capitalize %></span></td>
+            <td><span class="badge bg-<%= scan_status_color(run.status) %>"><%= run.status.capitalize %></span></td>
+            <td><%= run.duration_display %></td>
+            <td><%= run.listings_found %></td>
+            <td><%= run.new_listings %></td>
+            <td class="text-muted"><%= run.started_at ? time_ago_in_words(run.started_at) + " ago" : "Queued" %></td>
+          </tr>
+        <% end %>
+        <% if @scan_runs.empty? %>
+          <tr><td colspan="8" class="text-center text-muted">No scans yet</td></tr>
+        <% end %>
+      </tbody>
+    </table>
+  </div>
+</div>
+<%= render "shared/pagination", pagy: @pagy %>

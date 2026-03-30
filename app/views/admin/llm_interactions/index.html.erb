@@ -1,0 +1,43 @@
+<% content_for(:page_title, "Admin — LLM Interactions") %>
+
+<div class="page-header mb-4">
+  <h1 class="page-header__title">LLM Interactions</h1>
+  <p class="page-header__subtitle"><%= LlmInteraction.count %> total interactions</p>
+</div>
+
+<div class="card dash-table-card">
+  <div class="table-responsive">
+    <table class="table">
+      <thead>
+        <tr>
+          <th>ID</th>
+          <th>User</th>
+          <th>Feature</th>
+          <th>Model</th>
+          <th>Status</th>
+          <th>Tokens</th>
+          <th>Latency</th>
+          <th>When</th>
+        </tr>
+      </thead>
+      <tbody>
+        <% @interactions.each do |interaction| %>
+          <tr>
+            <td><%= link_to "##{interaction.id}", admin_llm_interaction_path(interaction), class: "fw-bold text-decoration-none" %></td>
+            <td><%= interaction.user&.email&.truncate(25) %></td>
+            <td><span class="badge bg-info"><%= interaction.feature_name %></span></td>
+            <td class="small"><%= interaction.llm_model&.name || "—" %></td>
+            <td><span class="badge bg-<%= interaction.status == 'completed' ? 'success' : (interaction.status == 'failed' ? 'danger' : 'secondary') %>"><%= interaction.status %></span></td>
+            <td><%= interaction.token_usage["total_tokens"] || "—" %></td>
+            <td><%= interaction.latency_ms ? "#{interaction.latency_ms}ms" : "—" %></td>
+            <td class="text-muted"><%= time_ago_in_words(interaction.created_at) %> ago</td>
+          </tr>
+        <% end %>
+        <% if @interactions.empty? %>
+          <tr><td colspan="8" class="text-center text-muted">No LLM interactions yet</td></tr>
+        <% end %>
+      </tbody>
+    </table>
+  </div>
+</div>
+<%= render "shared/pagination", pagy: @pagy %>
