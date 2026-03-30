@@ -3,10 +3,20 @@ class ApplicationController < ActionController::Base
 
   # Only allow modern browsers supporting webp images, web push, badges, import maps, CSS nesting, and CSS :has.
   allow_browser versions: :modern
+  before_action :check_onboarding!, if: :user_signed_in?
 
   layout :layout_by_resource
 
   private
+
+  def check_onboarding!
+    return if current_user.onboarding_completed?
+    return if controller_name == "onboarding"
+    return if devise_controller?
+    return if controller_name == "home"
+
+    redirect_to onboarding_path
+  end
 
   def layout_by_resource
     if devise_controller?

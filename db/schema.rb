@@ -10,7 +10,7 @@
 #
 # It's strongly recommended that you check this file into your version control system.
 
-ActiveRecord::Schema[8.1].define(version: 2026_03_27_211902) do
+ActiveRecord::Schema[8.1].define(version: 2026_03_30_112808) do
   # These are extensions that must be enabled in order to support this database
   enable_extension "pg_catalog.plpgsql"
 
@@ -289,6 +289,7 @@ ActiveRecord::Schema[8.1].define(version: 2026_03_27_211902) do
     t.datetime "last_sign_in_at"
     t.string "last_sign_in_ip"
     t.jsonb "notification_settings", default: {"email_new_matches" => true, "email_interventions" => true, "email_scan_completed" => true, "email_application_status" => true}, null: false
+    t.boolean "onboarding_completed", default: false, null: false
     t.datetime "remember_created_at"
     t.datetime "reset_password_sent_at"
     t.string "reset_password_token"

@@ -16,6 +16,12 @@ Rails.application.routes.draw do
     sign_up: "sign_up"
   }
 
+  # Onboarding
+  resource :onboarding, only: [:show], controller: "onboarding" do
+    post :update_step
+    post :skip_step
+  end
+
   # Dashboard
   get "dashboard", to: "dashboard#index", as: :dashboard
 

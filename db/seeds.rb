@@ -9,14 +9,18 @@ admin = User.find_or_create_by!(email: "admin@jobagent.dev") do |u|
   u.password = "password123"
   u.password_confirmation = "password123"
   u.role = :admin
+  u.onboarding_completed = true
 end
+admin.update!(onboarding_completed: true) unless admin.onboarding_completed?
 puts "  Admin user: #{admin.email}"
 
 demo = User.find_or_create_by!(email: "demo@jobagent.dev") do |u|
   u.password = "password123"
   u.password_confirmation = "password123"
   u.role = :user
+  u.onboarding_completed = true
 end
+demo.update!(onboarding_completed: true) unless demo.onboarding_completed?
 puts "  Demo user: #{demo.email}"
 
 # ── Profile for demo user ──
