@@ -57,6 +57,23 @@ RSpec.describe Profile, type: :model do
     end
   end
 
+  describe "#completeness_percentage" do
+    it "returns 0 for empty profile" do
+      profile = create(:profile, headline: nil, summary: "", contact_details: {})
+      expect(profile.completeness_percentage).to eq(0)
+    end
+
+    it "returns 20 for profile with contact details" do
+      profile = create(:profile, headline: nil, summary: "", contact_details: { "first_name" => "John", "surname" => "Doe", "email" => "j@e.com" })
+      expect(profile.completeness_percentage).to eq(20)
+    end
+
+    it "returns 50 for profile with contact + headline + summary" do
+      profile = create(:profile, headline: "Dev", summary: "A summary", contact_details: { "first_name" => "John", "surname" => "Doe", "email" => "j@e.com" })
+      expect(profile.completeness_percentage).to eq(50)
+    end
+  end
+
   describe "normalize_json_attributes" do
     it "strips whitespace from contact fields" do
       profile = create(:profile, contact_details: { "first_name" => "  John  " })

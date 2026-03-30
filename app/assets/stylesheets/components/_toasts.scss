@@ -1,0 +1,106 @@
+// ==========================================================================
+// Toast Notifications
+// ==========================================================================
+
+.toast-container {
+  position: fixed;
+  top: 1rem;
+  right: 1rem;
+  z-index: 1080;
+  display: flex;
+  flex-direction: column;
+  gap: 0.5rem;
+  max-width: 400px;
+}
+
+.toast-notification {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  gap: 0.75rem;
+  padding: 0.75rem 1rem;
+  border-radius: $border-radius;
+  color: #fff;
+  font-size: 0.875rem;
+  font-weight: 500;
+  box-shadow: $box-shadow-lg;
+  opacity: 0;
+  transform: translateX(100%);
+  transition: opacity 0.3s ease, transform 0.3s ease;
+
+  &--visible {
+    opacity: 1;
+    transform: translateX(0);
+  }
+
+  &--exit {
+    opacity: 0;
+    transform: translateX(100%);
+  }
+
+  &--success {
+    background-color: $success;
+  }
+
+  &--danger {
+    background-color: $danger;
+  }
+
+  &--warning {
+    background-color: $warning;
+    color: #333;
+  }
+
+  &--info {
+    background-color: $info;
+  }
+}
+
+// ==========================================================================
+// Keyboard Shortcuts Modal
+// ==========================================================================
+
+.shortcuts-modal {
+  position: fixed;
+  inset: 0;
+  z-index: 1090;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+
+  &__backdrop {
+    position: absolute;
+    inset: 0;
+    background-color: rgba(0, 0, 0, 0.5);
+  }
+
+  &__content {
+    position: relative;
+    background: #fff;
+    border-radius: $border-radius-lg;
+    padding: 1.5rem;
+    box-shadow: $box-shadow-lg;
+    max-width: 400px;
+    width: 90%;
+
+    [data-theme="dark"] & {
+      background: #16213e;
+      color: #e0e0e0;
+    }
+  }
+
+  kbd {
+    background-color: #f0f0f0;
+    border: 1px solid #ccc;
+    border-radius: 3px;
+    padding: 2px 6px;
+    font-size: 0.8rem;
+    font-family: $font-family-monospace;
+
+    [data-theme="dark"] & {
+      background-color: #2a2a4a;
+      border-color: #444;
+      color: #e0e0e0;
+    }
+  }
+}

@@ -27,6 +27,16 @@ class Profile < ApplicationRecord
     status == "complete"
   end
 
+  def completeness_percentage
+    score = 0
+    score += 20 if contact_details.values_at("first_name", "surname", "email").all?(&:present?)
+    score += 15 if headline.present?
+    score += 15 if summary.present?
+    score += 20 if source_document.attached?
+    score += 30 if profile_sections.joins(:profile_entries).exists?
+    score
+  end
+
   def mark_complete!
     update!(status: "complete")
   end
