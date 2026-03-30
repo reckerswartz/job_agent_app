@@ -8,6 +8,8 @@ class JobScanRun < ApplicationRecord
 
   validates :status, inclusion: { in: STATUSES }
 
+  after_update_commit :broadcast_status_update
+
   scope :recent, -> { order(created_at: :desc) }
   scope :by_status, ->(status) { where(status: status) if status.present? }
 
@@ -57,5 +59,18 @@ class JobScanRun < ApplicationRecord
 
   def failed?
     status == "failed"
+  end
+
+  private
+
+  def broadcast_status_update
+    broadcast_replace_to(
+      "scan_runs_#{job_source_id}",
+      target: "scan_run_#{id}",
+      partial: "job_scan_runs/scan_run_row",
+      locals: { run: self, job_source: job_source }
+    )
+  rescue => e
+    Rails.logger.debug("[JobScanRun] Broadcast skipped: #{e.message}")
   end
 end

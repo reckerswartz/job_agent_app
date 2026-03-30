@@ -1,0 +1,10 @@
+<tr id="scan_run_<%= run.id %>">
+  <td><%= link_to "##{run.id}", job_source_scan_run_path(job_source, run), class: "fw-bold text-decoration-none" %></td>
+  <td>
+    <span class="badge bg-<%= scan_status_color(run.status) %>"><%= run.status.capitalize %></span>
+  </td>
+  <td><%= run.duration_display %></td>
+  <td><%= run.listings_found %></td>
+  <td><%= run.new_listings %></td>
+  <td class="text-muted"><%= run.started_at ? time_ago_in_words(run.started_at) + " ago" : "Queued" %></td>
+</tr>

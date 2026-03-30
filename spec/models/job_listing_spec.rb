@@ -32,6 +32,40 @@ RSpec.describe JobListing, type: :model do
     end
   end
 
+  describe ".search" do
+    let(:user) { create(:user) }
+    let(:source) { create(:job_source, user: user) }
+
+    it "searches by title" do
+      listing = create(:job_listing, job_source: source, title: "Ruby Developer")
+      create(:job_listing, job_source: source, title: "Java Developer")
+      expect(JobListing.search("Ruby")).to eq([listing])
+    end
+
+    it "searches by company" do
+      listing = create(:job_listing, job_source: source, title: "Dev", company: "Acme Corp")
+      create(:job_listing, job_source: source, title: "Dev", company: "Other Inc")
+      expect(JobListing.search("Acme")).to eq([listing])
+    end
+
+    it "searches by location" do
+      listing = create(:job_listing, job_source: source, title: "Dev", location: "New York")
+      create(:job_listing, job_source: source, title: "Dev", location: "London")
+      expect(JobListing.search("York")).to eq([listing])
+    end
+
+    it "is case-insensitive" do
+      listing = create(:job_listing, job_source: source, title: "RUBY Developer")
+      expect(JobListing.search("ruby")).to eq([listing])
+    end
+
+    it "returns all when query is blank" do
+      create(:job_listing, job_source: source)
+      expect(JobListing.search("").count).to eq(1)
+      expect(JobListing.search(nil).count).to eq(1)
+    end
+  end
+
   describe "scopes" do
     let(:user) { create(:user) }
     let(:source) { create(:job_source, user: user) }
