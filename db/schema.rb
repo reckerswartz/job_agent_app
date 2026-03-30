@@ -10,7 +10,7 @@
 #
 # It's strongly recommended that you check this file into your version control system.
 
-ActiveRecord::Schema[8.1].define(version: 2026_03_30_112808) do
+ActiveRecord::Schema[8.1].define(version: 2026_03_30_152639) do
   # These are extensions that must be enabled in order to support this database
   enable_extension "pg_catalog.plpgsql"
 
@@ -101,9 +101,11 @@ ActiveRecord::Schema[8.1].define(version: 2026_03_30_112808) do
   end
 
   create_table "job_listings", force: :cascade do |t|
+    t.string "application_url"
     t.string "company"
     t.datetime "created_at", null: false
     t.text "description"
+    t.boolean "easy_apply", default: false
     t.string "employment_type"
     t.datetime "expires_at"
     t.string "external_id"
@@ -115,11 +117,13 @@ ActiveRecord::Schema[8.1].define(version: 2026_03_30_112808) do
     t.jsonb "raw_data", default: {}, null: false
     t.string "remote_type"
     t.text "requirements"
+    t.boolean "resume_upload_supported", default: false
     t.string "salary_range"
     t.string "status", default: "new", null: false
     t.string "title", null: false
     t.datetime "updated_at", null: false
     t.string "url"
+    t.index ["easy_apply"], name: "index_job_listings_on_easy_apply"
     t.index ["job_source_id", "external_id"], name: "index_job_listings_on_job_source_id_and_external_id", unique: true
     t.index ["job_source_id", "status"], name: "index_job_listings_on_job_source_id_and_status"
     t.index ["job_source_id"], name: "index_job_listings_on_job_source_id"

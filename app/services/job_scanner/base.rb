@@ -104,6 +104,9 @@ module JobScanner
         posted_at: parse_date(raw[:posted_at]),
         employment_type: raw[:employment_type].to_s.strip.presence,
         remote_type: raw[:remote_type].to_s.strip.presence,
+        easy_apply: raw[:easy_apply] || false,
+        resume_upload_supported: raw[:resume_upload_supported] || false,
+        application_url: raw[:application_url].to_s.strip.presence,
         raw_data: raw
       }
     end

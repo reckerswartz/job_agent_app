@@ -35,6 +35,9 @@ class JobScanJob < ApplicationJob
           posted_at: listing_data[:posted_at],
           employment_type: listing_data[:employment_type],
           remote_type: listing_data[:remote_type],
+          easy_apply: listing_data[:easy_apply] || false,
+          resume_upload_supported: listing_data[:resume_upload_supported] || false,
+          application_url: listing_data[:application_url],
           raw_data: listing_data[:raw_data] || {}
         )
 
