@@ -17,25 +17,26 @@ Rails.application.routes.draw do
   }
 
   # Onboarding
-  resource :onboarding, only: [:show], controller: "onboarding" do
+  resource :onboarding, only: [ :show ], controller: "onboarding" do
     post :update_step
     post :skip_step
   end
 
   # Dashboard
   get "dashboard", to: "dashboard#index", as: :dashboard
+  get "analytics", to: "analytics#index", as: :analytics
 
   # Profile
-  resource :profile, only: [:show, :edit, :update] do
+  resource :profile, only: [ :show, :edit, :update ] do
     post :upload_resume
     post :structure_with_ai
-    resources :sections, controller: "profile_sections", only: [:create, :destroy] do
-      resources :entries, controller: "profile_entries", only: [:create, :update, :destroy]
+    resources :sections, controller: "profile_sections", only: [ :create, :destroy ] do
+      resources :entries, controller: "profile_entries", only: [ :create, :update, :destroy ]
     end
   end
 
   # Job Listings
-  resources :job_listings, only: [:index, :show] do
+  resources :job_listings, only: [ :index, :show ] do
     member do
       patch :update_status
       post :generate_cover_letter
@@ -47,7 +48,7 @@ Rails.application.routes.draw do
   end
 
   # Job Applications
-  resources :job_applications, only: [:index, :show, :create] do
+  resources :job_applications, only: [ :index, :show, :create ] do
     member do
       post :retry_application
     end
@@ -55,7 +56,7 @@ Rails.application.routes.draw do
 
   # Job Sources & Search Criteria
   resources :job_sources do
-    resources :scan_runs, controller: "job_scan_runs", only: [:index, :create, :show]
+    resources :scan_runs, controller: "job_scan_runs", only: [ :index, :create, :show ]
     member do
       patch :toggle
     end
@@ -67,7 +68,7 @@ Rails.application.routes.draw do
   end
 
   # Interventions
-  resources :interventions, only: [:index, :show] do
+  resources :interventions, only: [ :index, :show ] do
     member do
       patch :resolve
       patch :dismiss
@@ -77,15 +78,15 @@ Rails.application.routes.draw do
   # Admin
   namespace :admin do
     root "dashboard#index"
-    resources :users, only: [:index, :show] do
+    resources :users, only: [ :index, :show ] do
       member { patch :toggle_role }
     end
-    resources :llm_interactions, only: [:index, :show]
-    resources :scan_runs, only: [:index, :show]
+    resources :llm_interactions, only: [ :index, :show ]
+    resources :scan_runs, only: [ :index, :show ]
   end
 
   # Settings
-  resource :settings, only: [:edit, :update]
+  resource :settings, only: [ :edit, :update ]
 
   # Defines the root path route ("/")
   root "home#index"

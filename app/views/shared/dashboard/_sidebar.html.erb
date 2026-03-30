@@ -26,6 +26,11 @@
         <span class="sidebar__link-icon">&#x1F4E8;</span> Applications
       <% end %>
     </li>
+    <li>
+      <%= link_to analytics_path, class: "sidebar__link #{current_page?(analytics_path) ? 'sidebar__link--active' : ''}" do %>
+        <span class="sidebar__link-icon">&#x1F4C8;</span> Analytics
+      <% end %>
+    </li>
 
     <li>
       <% pending_count = user_signed_in? ? current_user.interventions.pending.count : 0 %>

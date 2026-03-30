@@ -1,6 +1,6 @@
 class BrowserSession
   LOGIN_INDICATORS = %w[/login /signin /auth /sign-in /log-in].freeze
-  CAPTCHA_INDICATORS = ["captcha", "verify you're human", "i'm not a robot", "recaptcha", "hcaptcha"].freeze
+  CAPTCHA_INDICATORS = [ "captcha", "verify you're human", "i'm not a robot", "recaptcha", "hcaptcha" ].freeze
 
   attr_reader :page, :browser, :playwright
 

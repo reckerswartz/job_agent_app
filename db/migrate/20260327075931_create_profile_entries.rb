@@ -8,6 +8,6 @@ class CreateProfileEntries < ActiveRecord::Migration[8.1]
       t.timestamps
     end
 
-    add_index :profile_entries, [:profile_section_id, :position]
+    add_index :profile_entries, [ :profile_section_id, :position ]
   end
 end

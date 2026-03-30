@@ -2,7 +2,7 @@ class JobApplicationsController < ApplicationController
   before_action :authenticate_user!
   layout "dashboard"
 
-  before_action :set_application, only: [:show, :retry_application]
+  before_action :set_application, only: [ :show, :retry_application ]
 
   def index
     scope = JobApplication.for_user(current_user)

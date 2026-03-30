@@ -14,7 +14,7 @@ class CreateJobScanRuns < ActiveRecord::Migration[8.1]
       t.timestamps
     end
 
-    add_index :job_scan_runs, [:job_source_id, :status]
+    add_index :job_scan_runs, [ :job_source_id, :status ]
     add_index :job_scan_runs, :status
   end
 end

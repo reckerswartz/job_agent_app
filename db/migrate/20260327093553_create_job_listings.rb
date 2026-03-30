@@ -22,8 +22,8 @@ class CreateJobListings < ActiveRecord::Migration[8.1]
       t.timestamps
     end
 
-    add_index :job_listings, [:job_source_id, :external_id], unique: true
-    add_index :job_listings, [:job_source_id, :status]
+    add_index :job_listings, [ :job_source_id, :external_id ], unique: true
+    add_index :job_listings, [ :job_source_id, :status ]
     add_index :job_listings, :match_score
     add_index :job_listings, :status
   end

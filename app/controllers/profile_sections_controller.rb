@@ -3,7 +3,7 @@ class ProfileSectionsController < ApplicationController
   layout "dashboard"
 
   before_action :set_profile
-  before_action :set_section, only: [:destroy]
+  before_action :set_section, only: [ :destroy ]
 
   def create
     @section = @profile.profile_sections.build(section_params)

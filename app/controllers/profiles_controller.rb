@@ -49,7 +49,7 @@ class ProfilesController < ApplicationController
     params.require(:profile).permit(
       :title, :headline, :summary, :source_text, :status,
       contact_details: Profile::CONTACT_FIELDS,
-      personal_details: [:date_of_birth, :nationality, :visa_status]
+      personal_details: [ :date_of_birth, :nationality, :visa_status ]
     )
   end
 end

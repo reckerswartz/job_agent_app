@@ -17,6 +17,6 @@ class CreateJobSearchCriteria < ActiveRecord::Migration[8.1]
       t.timestamps
     end
 
-    add_index :job_search_criteria, [:user_id, :is_default]
+    add_index :job_search_criteria, [ :user_id, :is_default ]
   end
 end

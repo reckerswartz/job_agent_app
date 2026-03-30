@@ -26,8 +26,8 @@ RSpec.describe ProfileEntry, type: :model do
 
   describe "#highlights" do
     it "returns highlights array from content" do
-      entry = build(:profile_entry, content: { "highlights" => ["Led team", "Shipped product"] })
-      expect(entry.highlights).to eq(["Led team", "Shipped product"])
+      entry = build(:profile_entry, content: { "highlights" => [ "Led team", "Shipped product" ] })
+      expect(entry.highlights).to eq([ "Led team", "Shipped product" ])
     end
 
     it "returns empty array when no highlights" do
@@ -38,8 +38,8 @@ RSpec.describe ProfileEntry, type: :model do
 
   describe "normalize_content" do
     it "strips blank highlights" do
-      entry = create(:profile_entry, content: { "highlights" => ["Good", "", "  ", "Great"] })
-      expect(entry.content["highlights"]).to eq(["Good", "Great"])
+      entry = create(:profile_entry, content: { "highlights" => [ "Good", "", "  ", "Great" ] })
+      expect(entry.content["highlights"]).to eq([ "Good", "Great" ])
     end
   end
 end

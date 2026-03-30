@@ -1,6 +1,6 @@
 module Admin
   class UsersController < BaseController
-    before_action :set_user, only: [:show, :toggle_role]
+    before_action :set_user, only: [ :show, :toggle_role ]
 
     def index
       @pagy, @users = pagy(User.order(created_at: :desc))

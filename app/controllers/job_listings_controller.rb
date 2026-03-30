@@ -2,7 +2,7 @@ class JobListingsController < ApplicationController
   before_action :authenticate_user!
   layout "dashboard"
 
-  before_action :set_listing, only: [:show, :update_status, :generate_cover_letter]
+  before_action :set_listing, only: [ :show, :update_status, :generate_cover_letter ]
 
   def index
     scope = JobListing.for_user(current_user)

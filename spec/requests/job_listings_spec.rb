@@ -65,14 +65,14 @@ RSpec.describe "JobListings", type: :request do
     let!(:listing2) { create(:job_listing, job_source: source, status: "new") }
 
     it "updates multiple listings" do
-      post bulk_update_job_listings_path, params: { ids: [listing1.id, listing2.id], new_status: "saved" }
+      post bulk_update_job_listings_path, params: { ids: [ listing1.id, listing2.id ], new_status: "saved" }
       expect(listing1.reload.status).to eq("saved")
       expect(listing2.reload.status).to eq("saved")
       expect(response).to redirect_to(job_listings_path)
     end
 
     it "rejects invalid status" do
-      post bulk_update_job_listings_path, params: { ids: [listing1.id], new_status: "invalid" }
+      post bulk_update_job_listings_path, params: { ids: [ listing1.id ], new_status: "invalid" }
       expect(response).to redirect_to(job_listings_path)
       expect(flash[:alert]).to be_present
     end

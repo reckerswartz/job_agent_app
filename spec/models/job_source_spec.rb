@@ -49,7 +49,7 @@ RSpec.describe JobSource, type: :model do
     it ".enabled returns only enabled sources" do
       enabled = create(:job_source, user: user, enabled: true)
       create(:job_source, :disabled, user: user)
-      expect(JobSource.enabled).to eq([enabled])
+      expect(JobSource.enabled).to eq([ enabled ])
     end
   end
 end

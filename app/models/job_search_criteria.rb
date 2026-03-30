@@ -24,7 +24,7 @@ class JobSearchCriteria < ApplicationRecord
     parts << job_type.humanize unless job_type == "full_time"
     parts << experience_level.humanize if experience_level.present?
     if salary_min.present? || salary_max.present?
-      range = [salary_min, salary_max].compact.map { |s| "$#{s.to_s.reverse.gsub(/(\d{3})(?=\d)/, '\\1,').reverse}" }
+      range = [ salary_min, salary_max ].compact.map { |s| "$#{s.to_s.reverse.gsub(/(\d{3})(?=\d)/, '\\1,').reverse}" }
       parts << range.join(" – ")
     end
     parts.join(" · ")

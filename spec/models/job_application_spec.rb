@@ -66,7 +66,7 @@ RSpec.describe JobApplication, type: :model do
       app = create(:job_application, job_listing: listing)
       other_listing = create(:job_listing)
       create(:job_application, job_listing: other_listing)
-      expect(JobApplication.for_user(user)).to eq([app])
+      expect(JobApplication.for_user(user)).to eq([ app ])
     end
   end
 end

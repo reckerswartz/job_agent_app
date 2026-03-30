@@ -15,7 +15,7 @@ class CreateJobSources < ActiveRecord::Migration[8.1]
       t.timestamps
     end
 
-    add_index :job_sources, [:user_id, :platform]
-    add_index :job_sources, [:user_id, :enabled]
+    add_index :job_sources, [ :user_id, :platform ]
+    add_index :job_sources, [ :user_id, :enabled ]
   end
 end

@@ -19,7 +19,7 @@ class Profile < ApplicationRecord
   end
 
   def display_name
-    full = [contact_field("first_name"), contact_field("surname")].reject(&:blank?).join(" ")
+    full = [ contact_field("first_name"), contact_field("surname") ].reject(&:blank?).join(" ")
     full.presence || user.display_name
   end
 
