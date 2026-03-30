@@ -44,11 +44,11 @@ module Llm
     end
 
     def multi_vision(images, prompt:, model:)
-      content = [{ type: "text", text: prompt }]
+      content = [ { type: "text", text: prompt } ]
       images.each do |img|
         content << { type: "image_url", image_url: { url: img } }
       end
-      messages = [{ role: "user", content: content }]
+      messages = [ { role: "user", content: content } ]
       chat(messages, model: model)
     end
 

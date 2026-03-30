@@ -12,7 +12,7 @@ class CreateInterventions < ActiveRecord::Migration[8.1]
       t.timestamps
     end
 
-    add_index :interventions, [:user_id, :status]
+    add_index :interventions, [ :user_id, :status ]
     add_index :interventions, :status
   end
 end

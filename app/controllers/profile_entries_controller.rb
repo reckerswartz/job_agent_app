@@ -4,7 +4,7 @@ class ProfileEntriesController < ApplicationController
 
   before_action :set_profile
   before_action :set_section
-  before_action :set_entry, only: [:update, :destroy]
+  before_action :set_entry, only: [ :update, :destroy ]
 
   def create
     @entry = @section.profile_entries.build(entry_params)

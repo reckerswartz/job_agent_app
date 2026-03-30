@@ -37,13 +37,13 @@ RSpec.describe Intervention, type: :model do
     it ".pending returns only pending interventions" do
       pending = create(:intervention, user: user)
       create(:intervention, :resolved, user: user)
-      expect(Intervention.pending).to eq([pending])
+      expect(Intervention.pending).to eq([ pending ])
     end
 
     it ".for_user scopes to user" do
       mine = create(:intervention, user: user)
       create(:intervention)
-      expect(Intervention.for_user(user)).to eq([mine])
+      expect(Intervention.for_user(user)).to eq([ mine ])
     end
   end
 

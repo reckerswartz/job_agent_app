@@ -2,7 +2,7 @@ class InterventionsController < ApplicationController
   before_action :authenticate_user!
   layout "dashboard"
 
-  before_action :set_intervention, only: [:show, :resolve, :dismiss]
+  before_action :set_intervention, only: [ :show, :resolve, :dismiss ]
 
   def index
     scope = current_user.interventions.recent.includes(:interventionable)

@@ -12,7 +12,7 @@ class CreateLlmModels < ActiveRecord::Migration[8.1]
       t.timestamps
     end
 
-    add_index :llm_models, [:llm_provider_id, :identifier], unique: true
+    add_index :llm_models, [ :llm_provider_id, :identifier ], unique: true
     add_index :llm_models, :active
   end
 end

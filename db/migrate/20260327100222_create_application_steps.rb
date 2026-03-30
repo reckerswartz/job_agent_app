@@ -14,6 +14,6 @@ class CreateApplicationSteps < ActiveRecord::Migration[8.1]
       t.timestamps
     end
 
-    add_index :application_steps, [:job_application_id, :step_number]
+    add_index :application_steps, [ :job_application_id, :step_number ]
   end
 end

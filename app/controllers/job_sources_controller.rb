@@ -2,7 +2,7 @@ class JobSourcesController < ApplicationController
   before_action :authenticate_user!
   layout "dashboard"
 
-  before_action :set_job_source, only: [:edit, :update, :destroy, :toggle]
+  before_action :set_job_source, only: [ :edit, :update, :destroy, :toggle ]
 
   def index
     @job_sources = current_user.job_sources.order(created_at: :desc)
@@ -53,6 +53,6 @@ class JobSourcesController < ApplicationController
 
   def job_source_params
     params.require(:job_source).permit(:name, :platform, :base_url, :scan_interval_hours,
-                                       credentials: [:username, :password])
+                                       credentials: [ :username, :password ])
   end
 end

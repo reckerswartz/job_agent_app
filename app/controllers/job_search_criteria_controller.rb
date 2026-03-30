@@ -2,7 +2,7 @@ class JobSearchCriteriaController < ApplicationController
   before_action :authenticate_user!
   layout "dashboard"
 
-  before_action :set_criteria, only: [:edit, :update, :destroy, :set_default]
+  before_action :set_criteria, only: [ :edit, :update, :destroy, :set_default ]
 
   def index
     @criteria = current_user.job_search_criteria.order(is_default: :desc, created_at: :desc)

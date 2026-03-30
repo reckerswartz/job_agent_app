@@ -39,24 +39,24 @@ RSpec.describe JobListing, type: :model do
     it "searches by title" do
       listing = create(:job_listing, job_source: source, title: "Ruby Developer")
       create(:job_listing, job_source: source, title: "Java Developer")
-      expect(JobListing.search("Ruby")).to eq([listing])
+      expect(JobListing.search("Ruby")).to eq([ listing ])
     end
 
     it "searches by company" do
       listing = create(:job_listing, job_source: source, title: "Dev", company: "Acme Corp")
       create(:job_listing, job_source: source, title: "Dev", company: "Other Inc")
-      expect(JobListing.search("Acme")).to eq([listing])
+      expect(JobListing.search("Acme")).to eq([ listing ])
     end
 
     it "searches by location" do
       listing = create(:job_listing, job_source: source, title: "Dev", location: "New York")
       create(:job_listing, job_source: source, title: "Dev", location: "London")
-      expect(JobListing.search("York")).to eq([listing])
+      expect(JobListing.search("York")).to eq([ listing ])
     end
 
     it "is case-insensitive" do
       listing = create(:job_listing, job_source: source, title: "RUBY Developer")
-      expect(JobListing.search("ruby")).to eq([listing])
+      expect(JobListing.search("ruby")).to eq([ listing ])
     end
 
     it "returns all when query is blank" do
@@ -73,7 +73,7 @@ RSpec.describe JobListing, type: :model do
     it ".by_status filters by status" do
       saved = create(:job_listing, :saved, job_source: source)
       create(:job_listing, job_source: source, status: "new")
-      expect(JobListing.by_status("saved")).to eq([saved])
+      expect(JobListing.by_status("saved")).to eq([ saved ])
     end
 
     it ".high_match returns listings with score >= 70" do
@@ -86,7 +86,7 @@ RSpec.describe JobListing, type: :model do
       mine = create(:job_listing, job_source: source)
       other_source = create(:job_source)
       create(:job_listing, job_source: other_source)
-      expect(JobListing.for_user(user)).to eq([mine])
+      expect(JobListing.for_user(user)).to eq([ mine ])
     end
   end
 end

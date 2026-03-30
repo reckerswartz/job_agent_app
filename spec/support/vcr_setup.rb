@@ -8,6 +8,6 @@ VCR.configure do |config|
   config.filter_sensitive_data("<NVIDIA_API_KEY>") { ENV["NVIDIA_API_KEY"] }
   config.default_cassette_options = {
     record: :new_episodes,
-    match_requests_on: [:method, :uri, :body]
+    match_requests_on: [ :method, :uri, :body ]
   }
 end
