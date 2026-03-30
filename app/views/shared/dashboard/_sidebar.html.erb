@@ -48,6 +48,30 @@
         <span class="sidebar__link-icon">&#x2699;</span> Settings
       <% end %>
     </li>
+
+    <% if user_signed_in? && current_user.admin? %>
+      <li class="sidebar__heading">Admin</li>
+      <li>
+        <%= link_to admin_root_path, class: "sidebar__link #{request.path == '/admin' ? 'sidebar__link--active' : ''}" do %>
+          <span class="sidebar__link-icon">&#x1F6E0;</span> Admin Dashboard
+        <% end %>
+      </li>
+      <li>
+        <%= link_to admin_users_path, class: "sidebar__link #{request.path.start_with?('/admin/users') ? 'sidebar__link--active' : ''}" do %>
+          <span class="sidebar__link-icon">&#x1F465;</span> Users
+        <% end %>
+      </li>
+      <li>
+        <%= link_to admin_llm_interactions_path, class: "sidebar__link #{request.path.start_with?('/admin/llm') ? 'sidebar__link--active' : ''}" do %>
+          <span class="sidebar__link-icon">&#x1F916;</span> LLM Logs
+        <% end %>
+      </li>
+      <li>
+        <%= link_to admin_scan_runs_path, class: "sidebar__link #{request.path.start_with?('/admin/scan') ? 'sidebar__link--active' : ''}" do %>
+          <span class="sidebar__link-icon">&#x1F4E1;</span> Scan Monitor
+        <% end %>
+      </li>
+    <% end %>
   </ul>
 
   <div class="sidebar__footer">

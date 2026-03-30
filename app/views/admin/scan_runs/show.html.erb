@@ -1,0 +1,41 @@
+<% content_for(:page_title, "Admin — Scan Run ##{@scan_run.id}") %>
+
+<div class="page-header mb-4">
+  <div class="d-flex justify-content-between align-items-start">
+    <div>
+      <h1 class="page-header__title">Scan Run #<%= @scan_run.id %></h1>
+      <p class="page-header__subtitle"><%= @scan_run.job_source.name %></p>
+    </div>
+    <%= link_to "Back to Scans", admin_scan_runs_path, class: "btn btn-sm btn-outline-secondary" %>
+  </div>
+</div>
+
+<div class="row g-3">
+  <div class="col-md-6">
+    <div class="card">
+      <div class="card-header"><h3 class="card-header__title mb-0">Run Details</h3></div>
+      <div class="card-body">
+        <dl class="listing-details">
+          <dt>Source</dt><dd><%= @scan_run.job_source.name %> (<%= @scan_run.job_source.platform.capitalize %>)</dd>
+          <dt>Status</dt><dd><span class="badge bg-<%= scan_status_color(@scan_run.status) %>"><%= @scan_run.status.capitalize %></span></dd>
+          <dt>Duration</dt><dd><%= @scan_run.duration_display %></dd>
+          <dt>Listings Found</dt><dd><%= @scan_run.listings_found %></dd>
+          <dt>New Listings</dt><dd><%= @scan_run.new_listings %></dd>
+          <% if @scan_run.started_at %><dt>Started</dt><dd><%= @scan_run.started_at.strftime("%Y-%m-%d %H:%M:%S") %></dd><% end %>
+          <% if @scan_run.finished_at %><dt>Finished</dt><dd><%= @scan_run.finished_at.strftime("%Y-%m-%d %H:%M:%S") %></dd><% end %>
+        </dl>
+      </div>
+    </div>
+  </div>
+  <% if @scan_run.failed? && @scan_run.error_details.any? %>
+    <div class="col-md-6">
+      <div class="card">
+        <div class="card-header"><h3 class="card-header__title mb-0 text-danger">Error</h3></div>
+        <div class="card-body">
+          <p class="mb-1"><strong><%= @scan_run.error_details["class"] %></strong></p>
+          <p class="text-muted"><%= @scan_run.error_details["message"] %></p>
+        </div>
+      </div>
+    </div>
+  <% end %>
+</div>

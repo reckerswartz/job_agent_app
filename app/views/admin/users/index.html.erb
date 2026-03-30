@@ -1,0 +1,38 @@
+<% content_for(:page_title, "Admin — Users") %>
+
+<div class="page-header mb-4">
+  <h1 class="page-header__title">Users</h1>
+  <p class="page-header__subtitle"><%= User.count %> total users</p>
+</div>
+
+<div class="card dash-table-card">
+  <div class="table-responsive">
+    <table class="table">
+      <thead>
+        <tr>
+          <th>Email</th>
+          <th>Role</th>
+          <th>Sign-ins</th>
+          <th>Last Sign-in</th>
+          <th>Sources</th>
+          <th>Listings</th>
+          <th>Joined</th>
+        </tr>
+      </thead>
+      <tbody>
+        <% @users.each do |user| %>
+          <tr>
+            <td><%= link_to user.email, admin_user_path(user), class: "fw-bold text-decoration-none" %></td>
+            <td><span class="badge bg-<%= user.admin? ? 'danger' : 'secondary' %>"><%= user.role %></span></td>
+            <td><%= user.sign_in_count %></td>
+            <td class="text-muted"><%= user.last_sign_in_at ? time_ago_in_words(user.last_sign_in_at) + " ago" : "Never" %></td>
+            <td><%= user.job_sources.count %></td>
+            <td><%= JobListing.for_user(user).count %></td>
+            <td class="text-muted"><%= time_ago_in_words(user.created_at) %> ago</td>
+          </tr>
+        <% end %>
+      </tbody>
+    </table>
+  </div>
+</div>
+<%= render "shared/pagination", pagy: @pagy %>

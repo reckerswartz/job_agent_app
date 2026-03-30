@@ -1,0 +1,73 @@
+<% content_for(:page_title, "Admin — #{@user.email}") %>
+
+<div class="page-header mb-4">
+  <div class="d-flex justify-content-between align-items-start">
+    <div>
+      <h1 class="page-header__title"><%= @user.display_name %></h1>
+      <p class="page-header__subtitle">
+        <%= @user.email %>
+        &middot;
+        <span class="badge bg-<%= @user.admin? ? 'danger' : 'secondary' %>"><%= @user.role %></span>
+      </p>
+    </div>
+    <div class="d-flex gap-2">
+      <%= button_to @user.admin? ? "Demote to User" : "Promote to Admin",
+          toggle_role_admin_user_path(@user), method: :patch,
+          class: "btn btn-sm btn-outline-warning",
+          data: { turbo_confirm: "Change role for #{@user.email}?" } %>
+      <%= link_to "Back to Users", admin_users_path, class: "btn btn-sm btn-outline-secondary" %>
+    </div>
+  </div>
+</div>
+
+<div class="row g-3">
+  <div class="col-md-4">
+    <div class="card">
+      <div class="card-header"><h3 class="card-header__title mb-0">Account</h3></div>
+      <div class="card-body">
+        <dl class="listing-details">
+          <dt>Email</dt><dd><%= @user.email %></dd>
+          <dt>Role</dt><dd><span class="badge bg-<%= @user.admin? ? 'danger' : 'secondary' %>"><%= @user.role %></span></dd>
+          <dt>Sign-in Count</dt><dd><%= @user.sign_in_count %></dd>
+          <dt>Last Sign-in</dt><dd><%= @user.last_sign_in_at&.strftime("%Y-%m-%d %H:%M") || "Never" %></dd>
+          <dt>Last IP</dt><dd><%= @user.last_sign_in_ip || "—" %></dd>
+          <dt>Joined</dt><dd><%= @user.created_at.strftime("%Y-%m-%d %H:%M") %></dd>
+        </dl>
+      </div>
+    </div>
+  </div>
+  <div class="col-md-4">
+    <div class="card">
+      <div class="card-header"><h3 class="card-header__title mb-0">Stats</h3></div>
+      <div class="card-body">
+        <dl class="listing-details">
+          <dt>Job Sources</dt><dd><%= @sources_count %></dd>
+          <dt>Job Listings</dt><dd><%= @listings_count %></dd>
+          <dt>Applications</dt><dd><%= @applications_count %></dd>
+        </dl>
+      </div>
+    </div>
+  </div>
+  <div class="col-md-4">
+    <div class="card">
+      <div class="card-header"><h3 class="card-header__title mb-0">Recent Scans</h3></div>
+      <div class="card-body p-0">
+        <% if @recent_scans.any? %>
+          <table class="table mb-0">
+            <tbody>
+              <% @recent_scans.each do |run| %>
+                <tr>
+                  <td><%= run.job_source.name %></td>
+                  <td><span class="badge bg-<%= scan_status_color(run.status) %>"><%= run.status %></span></td>
+                  <td class="text-muted"><%= time_ago_in_words(run.created_at) %> ago</td>
+                </tr>
+              <% end %>
+            </tbody>
+          </table>
+        <% else %>
+          <div class="p-3 text-center text-muted">No scans</div>
+        <% end %>
+      </div>
+    </div>
+  </div>
+</div>
