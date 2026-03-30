@@ -1,0 +1,78 @@
+// ==========================================================================
+// Onboarding Wizard
+// ==========================================================================
+
+.onboarding {
+  max-width: 700px;
+  margin: 0 auto;
+
+  &__progress {
+    padding: 0 1rem;
+  }
+
+  &__step {
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    flex: 0 0 auto;
+
+    &-number {
+      width: 32px;
+      height: 32px;
+      border-radius: 50%;
+      background-color: #dee2e6;
+      color: #6c757d;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      font-size: 0.8rem;
+      font-weight: 700;
+      margin-bottom: 0.25rem;
+    }
+
+    &-label {
+      font-size: 0.7rem;
+      color: #6c757d;
+      text-transform: uppercase;
+      letter-spacing: 0.04em;
+    }
+
+    &-line {
+      flex: 1;
+      height: 2px;
+      background-color: #dee2e6;
+      align-self: center;
+      margin: 0 0.5rem;
+      margin-bottom: 1.25rem;
+
+      &--done {
+        background-color: $primary;
+      }
+    }
+
+    &--active &-number {
+      background-color: $primary;
+      color: #fff;
+    }
+
+    &--active &-label {
+      color: $primary;
+      font-weight: 700;
+    }
+
+    &--done &-number {
+      background-color: $success;
+      color: #fff;
+    }
+
+    &--done &-label {
+      color: $success;
+    }
+  }
+
+  &__card {
+    border: none;
+    box-shadow: $box-shadow;
+    border-radius: $border-radius-lg;
+  }
+}

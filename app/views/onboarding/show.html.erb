@@ -1,0 +1,174 @@
+<% content_for(:title, "Get Started — Job Agent") %>
+
+<div class="onboarding">
+  <%# ── Progress Bar ── %>
+  <div class="onboarding__progress mb-4">
+    <% steps = %w[profile resume source criteria complete] %>
+    <div class="d-flex justify-content-between">
+      <% steps.each_with_index do |s, i| %>
+        <% current_idx = steps.index(@step) || 0 %>
+        <div class="onboarding__step <%= 'onboarding__step--active' if s == @step %> <%= 'onboarding__step--done' if i < current_idx %>">
+          <div class="onboarding__step-number"><%= i + 1 %></div>
+          <div class="onboarding__step-label"><%= s.capitalize %></div>
+        </div>
+        <% if i < steps.size - 1 %>
+          <div class="onboarding__step-line <%= 'onboarding__step-line--done' if i < current_idx %>"></div>
+        <% end %>
+      <% end %>
+    </div>
+  </div>
+
+  <%# ── Step Content ── %>
+  <div class="card onboarding__card">
+    <div class="card-body p-4 p-md-5">
+      <% if @step == "welcome" %>
+        <div class="text-center">
+          <div class="mb-3" style="font-size: 3rem;">&#x1F4BC;</div>
+          <h2 class="mb-2">Welcome to Job Agent!</h2>
+          <p class="text-muted mb-4">Let's set up your account in a few quick steps so we can start finding jobs for you.</p>
+          <%= link_to "Get Started", onboarding_path(step: "profile"), class: "btn btn-primary btn-lg" %>
+        </div>
+
+      <% elsif @step == "profile" %>
+        <h2 class="mb-1">Your Profile</h2>
+        <p class="text-muted mb-4">Tell us a bit about yourself.</p>
+        <%= form_with url: update_step_onboarding_path, method: :post do |f| %>
+          <input type="hidden" name="step" value="profile">
+          <div class="row g-3">
+            <div class="col-md-6">
+              <label class="form-label fw-bold">First Name</label>
+              <input type="text" name="profile[first_name]" class="form-control" placeholder="John" autofocus>
+            </div>
+            <div class="col-md-6">
+              <label class="form-label fw-bold">Last Name</label>
+              <input type="text" name="profile[surname]" class="form-control" placeholder="Doe">
+            </div>
+            <div class="col-md-6">
+              <label class="form-label fw-bold">Email</label>
+              <input type="email" name="profile[email]" class="form-control" placeholder="john@example.com" value="<%= current_user.email %>">
+            </div>
+            <div class="col-md-6">
+              <label class="form-label fw-bold">Phone</label>
+              <input type="text" name="profile[phone]" class="form-control" placeholder="+1 555-0123">
+            </div>
+            <div class="col-12">
+              <label class="form-label fw-bold">Headline</label>
+              <input type="text" name="profile[headline]" class="form-control" placeholder="Senior Ruby on Rails Developer">
+            </div>
+          </div>
+          <div class="d-flex justify-content-between mt-4">
+            <%= link_to "Skip", skip_step_onboarding_path(step: "profile"), class: "btn btn-outline-secondary", data: { turbo_method: :post } %>
+            <button type="submit" class="btn btn-primary">Next &rarr;</button>
+          </div>
+        <% end %>
+
+      <% elsif @step == "resume" %>
+        <h2 class="mb-1">Upload Your Resume</h2>
+        <p class="text-muted mb-4">We'll extract text from your PDF to build your profile automatically.</p>
+        <%= form_with url: update_step_onboarding_path, method: :post, multipart: true do |f| %>
+          <input type="hidden" name="step" value="resume">
+          <div class="mb-4">
+            <label class="form-label fw-bold">Resume PDF</label>
+            <input type="file" name="source_document" class="form-control" accept=".pdf,.txt">
+            <div class="form-text">PDF or text file. We'll extract the content automatically.</div>
+          </div>
+          <div class="d-flex justify-content-between">
+            <%= link_to "Skip", skip_step_onboarding_path(step: "resume"), class: "btn btn-outline-secondary", data: { turbo_method: :post } %>
+            <button type="submit" class="btn btn-primary">Next &rarr;</button>
+          </div>
+        <% end %>
+
+      <% elsif @step == "source" %>
+        <h2 class="mb-1">Add a Job Source</h2>
+        <p class="text-muted mb-4">Pick a job board to search. You can add more later.</p>
+        <%= form_with url: update_step_onboarding_path, method: :post do |f| %>
+          <input type="hidden" name="step" value="source">
+          <div class="row g-3">
+            <div class="col-md-6">
+              <label class="form-label fw-bold">Platform</label>
+              <select name="job_source[platform]" class="form-select">
+                <option value="">Select a platform...</option>
+                <% JobSource::PLATFORMS.each do |p| %>
+                  <option value="<%= p %>"><%= p.capitalize %></option>
+                <% end %>
+              </select>
+            </div>
+            <div class="col-md-6">
+              <label class="form-label fw-bold">Name (optional)</label>
+              <input type="text" name="job_source[name]" class="form-control" placeholder="e.g. My LinkedIn">
+            </div>
+          </div>
+          <div class="d-flex justify-content-between mt-4">
+            <%= link_to "Skip", skip_step_onboarding_path(step: "source"), class: "btn btn-outline-secondary", data: { turbo_method: :post } %>
+            <button type="submit" class="btn btn-primary">Next &rarr;</button>
+          </div>
+        <% end %>
+
+      <% elsif @step == "criteria" %>
+        <h2 class="mb-1">Search Criteria</h2>
+        <p class="text-muted mb-4">What kind of jobs are you looking for?</p>
+        <%= form_with url: update_step_onboarding_path, method: :post do |f| %>
+          <input type="hidden" name="step" value="criteria">
+          <div class="row g-3">
+            <div class="col-md-6">
+              <label class="form-label fw-bold">Keywords</label>
+              <input type="text" name="criteria[keywords]" class="form-control" placeholder="Ruby on Rails Developer" autofocus>
+            </div>
+            <div class="col-md-6">
+              <label class="form-label fw-bold">Location</label>
+              <input type="text" name="criteria[location]" class="form-control" placeholder="New York, NY">
+            </div>
+            <div class="col-md-6">
+              <label class="form-label fw-bold">Remote Preference</label>
+              <select name="criteria[remote_preference]" class="form-select">
+                <% JobSearchCriteria::REMOTE_PREFERENCES.each do |r| %>
+                  <option value="<%= r %>" <%= 'selected' if r == 'any' %>><%= r.humanize %></option>
+                <% end %>
+              </select>
+            </div>
+          </div>
+          <div class="d-flex justify-content-between mt-4">
+            <%= link_to "Skip", skip_step_onboarding_path(step: "criteria"), class: "btn btn-outline-secondary", data: { turbo_method: :post } %>
+            <button type="submit" class="btn btn-primary">Next &rarr;</button>
+          </div>
+        <% end %>
+
+      <% elsif @step == "complete" %>
+        <div class="text-center">
+          <div class="mb-3" style="font-size: 3rem;">&#x1F389;</div>
+          <h2 class="mb-2">You're All Set!</h2>
+          <p class="text-muted mb-4">Your account is ready. Head to the dashboard to start finding jobs.</p>
+
+          <% profile = current_user.profiles.first %>
+          <% source = current_user.job_sources.first %>
+          <% criteria = current_user.job_search_criteria.first %>
+
+          <div class="text-start mb-4 mx-auto" style="max-width: 400px;">
+            <div class="d-flex align-items-center mb-2">
+              <span class="me-2"><%= profile ? '&#x2705;' : '&#x2B1C;' %></span>
+              <span>Profile: <strong><%= profile&.display_name || 'Not set' %></strong></span>
+            </div>
+            <div class="d-flex align-items-center mb-2">
+              <span class="me-2"><%= profile&.source_document&.attached? ? '&#x2705;' : '&#x2B1C;' %></span>
+              <span>Resume: <strong><%= profile&.source_document&.attached? ? 'Uploaded' : 'Skipped' %></strong></span>
+            </div>
+            <div class="d-flex align-items-center mb-2">
+              <span class="me-2"><%= source ? '&#x2705;' : '&#x2B1C;' %></span>
+              <span>Job Source: <strong><%= source&.name || 'Skipped' %></strong></span>
+            </div>
+            <div class="d-flex align-items-center mb-2">
+              <span class="me-2"><%= criteria ? '&#x2705;' : '&#x2B1C;' %></span>
+              <span>Search Criteria: <strong><%= criteria&.name || 'Skipped' %></strong></span>
+            </div>
+          </div>
+
+          <%= form_with url: update_step_onboarding_path, method: :post do %>
+            <input type="hidden" name="step" value="complete">
+            <button type="submit" class="btn btn-primary btn-lg">Go to Dashboard &rarr;</button>
+          <% end %>
+        </div>
+
+      <% end %>
+    </div>
+  </div>
+</div>
