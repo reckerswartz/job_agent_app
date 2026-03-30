@@ -82,7 +82,12 @@
           <dt>Status</dt>
           <dd><span class="badge bg-<%= status_badge_color(@listing.status) %>"><%= @listing.status.capitalize %></span></dd>
           <dt>Source</dt>
-          <dd><span class="badge bg-<%= @listing.job_source.platform_color %> source-badge"><%= @listing.job_source.platform.capitalize %></span></dd>
+          <dd>
+            <span class="badge bg-<%= @listing.job_source.platform_color %> source-badge"><%= @listing.job_source.platform.capitalize %></span>
+            <% if @listing.easy_apply? %>
+              <span class="badge bg-success ms-1">Easy Apply</span>
+            <% end %>
+          </dd>
           <% if @listing.salary_range.present? %>
             <dt>Salary</dt>
             <dd><%= @listing.salary_range %></dd>
@@ -98,6 +103,10 @@
           <% if @listing.posted_at.present? %>
             <dt>Posted</dt>
             <dd><%= time_ago_in_words(@listing.posted_at) %> ago</dd>
+          <% end %>
+          <% if @listing.application_url.present? %>
+            <dt>Apply Link</dt>
+            <dd><%= link_to "Apply on Company Site", @listing.application_url, target: "_blank", class: "btn btn-sm btn-primary" %></dd>
           <% end %>
           <% if @listing.url.present? %>
             <dt>Link</dt>
