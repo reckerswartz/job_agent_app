@@ -1,0 +1,183 @@
+// ==========================================================================
+// Dark Theme Overrides
+// ==========================================================================
+
+[data-theme="dark"] {
+  // Base
+  --bs-body-bg: #1a1a2e;
+  --bs-body-color: #e0e0e0;
+
+  body, .page-dashboard {
+    background-color: #1a1a2e;
+    color: #e0e0e0;
+  }
+
+  // Cards
+  .card, .dash-table-card, .source-card, .intervention-card, .profile-section-card {
+    background-color: #16213e;
+    border-color: rgba(255, 255, 255, 0.08);
+    color: #e0e0e0;
+  }
+
+  .card-header {
+    border-color: rgba(255, 255, 255, 0.08);
+  }
+
+  // Topbar
+  .topbar {
+    background-color: #16213e;
+    border-color: rgba(255, 255, 255, 0.08);
+  }
+
+  .topbar__title {
+    color: #e0e0e0;
+  }
+
+  .topbar__search input {
+    background-color: #1a1a2e;
+    border-color: rgba(255, 255, 255, 0.1);
+    color: #e0e0e0;
+
+    &:focus {
+      background-color: #0f3460;
+      border-color: rgba($secondary, 0.5);
+    }
+  }
+
+  // Tables
+  .table {
+    --bs-table-bg: transparent;
+    --bs-table-color: #e0e0e0;
+    --bs-table-border-color: rgba(255, 255, 255, 0.08);
+    color: #e0e0e0;
+  }
+
+  .table thead th {
+    color: rgba(255, 255, 255, 0.6);
+    border-color: rgba(255, 255, 255, 0.1);
+  }
+
+  // Stat cards
+  .stat-card__value {
+    color: #fff;
+  }
+
+  .stat-card__label {
+    color: rgba(255, 255, 255, 0.5);
+  }
+
+  // Dashboard content
+  .dashboard-content {
+    background-color: #1a1a2e;
+  }
+
+  .dashboard-main {
+    background-color: #1a1a2e;
+  }
+
+  // Text
+  .text-muted {
+    color: rgba(255, 255, 255, 0.4) !important;
+  }
+
+  // Forms
+  .form-control, .form-select {
+    background-color: #16213e;
+    border-color: rgba(255, 255, 255, 0.15);
+    color: #e0e0e0;
+
+    &:focus {
+      background-color: #0f3460;
+      color: #fff;
+    }
+  }
+
+  .form-label {
+    color: #e0e0e0;
+  }
+
+  .form-text {
+    color: rgba(255, 255, 255, 0.4);
+  }
+
+  // Alerts
+  .alert-success {
+    background-color: rgba($success, 0.15);
+    border-color: rgba($success, 0.3);
+    color: lighten($success, 20%);
+  }
+
+  .alert-danger {
+    background-color: rgba($danger, 0.15);
+    border-color: rgba($danger, 0.3);
+    color: lighten($danger, 20%);
+  }
+
+  // Nav tabs
+  .nav-tabs {
+    border-color: rgba(255, 255, 255, 0.1);
+
+    .nav-link {
+      color: rgba(255, 255, 255, 0.6);
+
+      &:hover {
+        border-color: rgba(255, 255, 255, 0.2);
+        color: #fff;
+      }
+
+      &.active {
+        background-color: #16213e;
+        border-color: rgba(255, 255, 255, 0.1);
+        border-bottom-color: #16213e;
+        color: #fff;
+      }
+    }
+  }
+
+  // Listing details
+  .listing-details dt {
+    color: rgba(255, 255, 255, 0.4);
+  }
+
+  // Source empty card
+  .source-empty-card {
+    border-color: rgba(255, 255, 255, 0.1);
+  }
+
+  // Bulk action bar
+  .bg-light {
+    background-color: #16213e !important;
+  }
+
+  // Pagination
+  .page-link {
+    background-color: #16213e;
+    border-color: rgba(255, 255, 255, 0.1);
+    color: #e0e0e0;
+  }
+
+  .page-item.active .page-link {
+    background-color: $primary;
+    border-color: $primary;
+  }
+
+  // Dropdowns
+  .dropdown-menu {
+    background-color: #16213e;
+    border-color: rgba(255, 255, 255, 0.1);
+  }
+
+  .dropdown-item {
+    color: #e0e0e0;
+
+    &:hover {
+      background-color: rgba(255, 255, 255, 0.05);
+      color: #fff;
+    }
+  }
+
+  // Landing page (non-dashboard)
+  &.d-flex {
+    background-color: #1a1a2e;
+  }
+}

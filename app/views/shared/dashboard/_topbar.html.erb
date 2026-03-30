@@ -13,6 +13,11 @@
       <span class="topbar__search-icon">&#x1F50D;</span>
       <input type="text" class="form-control form-control-sm" placeholder="Search jobs...">
     </div>
+    <div data-controller="theme">
+      <button class="btn btn-sm btn-outline-secondary border-0" data-action="click->theme#toggle" title="Toggle dark mode">
+        <span data-theme-target="icon">&#x1F319;</span>
+      </button>
+    </div>
     <% if user_signed_in? %>
       <div class="dropdown">
         <div class="topbar__avatar" data-bs-toggle="dropdown" role="button" title="<%= current_user.display_name %>">

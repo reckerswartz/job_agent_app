@@ -67,6 +67,12 @@
 @import "components/auth";
 @import "components/file-upload";
 @import "components/onboarding";
+@import "components/toasts";
+
+// --------------------------------------------------------------------------
+// Dark Theme (must be after all component styles)
+// --------------------------------------------------------------------------
+@import "config/dark_theme";
 
 // --------------------------------------------------------------------------
 // 4. Dashboard Components

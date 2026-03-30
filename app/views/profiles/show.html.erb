@@ -15,6 +15,34 @@
   </div>
 </div>
 
+<%# ── Completeness Progress ── %>
+<% completeness = @profile.completeness_percentage %>
+<% if completeness < 100 %>
+  <div class="card mb-4">
+    <div class="card-body">
+      <div class="d-flex justify-content-between align-items-center mb-2">
+        <strong>Profile Completeness</strong>
+        <span class="fw-bold"><%= completeness %>%</span>
+      </div>
+      <div class="progress" style="height: 8px;">
+        <div class="progress-bar bg-<%= completeness >= 70 ? 'success' : (completeness >= 40 ? 'warning' : 'danger') %>"
+             style="width: <%= completeness %>%"></div>
+      </div>
+      <small class="text-muted mt-1 d-block">
+        <% missing = [] %>
+        <% missing << "contact details" unless @profile.contact_details.values_at("first_name", "surname", "email").all?(&:present?) %>
+        <% missing << "headline" unless @profile.headline.present? %>
+        <% missing << "summary" unless @profile.summary.present? %>
+        <% missing << "resume" unless @profile.source_document.attached? %>
+        <% missing << "profile sections" unless @profile.profile_sections.joins(:profile_entries).exists? %>
+        <% if missing.any? %>
+          Missing: <%= missing.join(", ") %>
+        <% end %>
+      </small>
+    </div>
+  </div>
+<% end %>
+
 <%# ── Contact Card ── %>
 <div class="card profile-card mb-4">
   <div class="card-body">

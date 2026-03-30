@@ -12,3 +12,12 @@ application.register("sidebar", SidebarController)
 
 import BulkSelectController from "./bulk_select_controller"
 application.register("bulk-select", BulkSelectController)
+
+import ThemeController from "./theme_controller"
+application.register("theme", ThemeController)
+
+import ToastController from "./toast_controller"
+application.register("toast", ToastController)
+
+import ShortcutsController from "./shortcuts_controller"
+application.register("shortcuts", ShortcutsController)
