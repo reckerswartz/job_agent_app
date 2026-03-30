@@ -101,7 +101,7 @@
           <% end %>
           <% if @listing.url.present? %>
             <dt>Link</dt>
-            <dd><%= link_to "View Original", @listing.url, target: "_blank", class: "btn btn-sm btn-outline-primary" %></dd>
+            <dd><%= link_to "View Original", safe_external_url(@listing.url), target: "_blank", rel: "noopener noreferrer", class: "btn btn-sm btn-outline-primary" %></dd>
           <% end %>
         </dl>
       </div>

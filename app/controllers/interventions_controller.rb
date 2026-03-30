@@ -16,7 +16,7 @@ class InterventionsController < ApplicationController
   end
 
   def resolve
-    input = params[:user_input]&.permit!&.to_h || {}
+    input = user_input_params
     @intervention.resolve!(input)
 
     retry_parent(@intervention)
@@ -33,6 +33,15 @@ class InterventionsController < ApplicationController
 
   def set_intervention
     @intervention = current_user.interventions.find(params[:id])
+  end
+
+  def user_input_params
+    return {} unless params[:user_input].present?
+
+    params.require(:user_input).permit(
+      :username, :password, :captcha_answer, :manually_solved,
+      :account_created, :field_value, :notes, :verified
+    ).to_h
   end
 
   def retry_parent(intervention)

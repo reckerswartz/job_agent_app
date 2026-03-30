@@ -4,7 +4,7 @@
   <div class="d-flex justify-content-between align-items-start">
     <div>
       <h1 class="page-header__title">
-        <span><%= raw @intervention.type_icon %></span>
+        <span><%= sanitize @intervention.type_icon %></span>
         <%= @intervention.type_label %>
       </h1>
       <p class="page-header__subtitle">
