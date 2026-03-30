@@ -21,3 +21,6 @@ application.register("toast", ToastController)
 
 import ShortcutsController from "./shortcuts_controller"
 application.register("shortcuts", ShortcutsController)
+
+import TopbarSearchController from "./topbar_search_controller"
+application.register("topbar-search", TopbarSearchController)

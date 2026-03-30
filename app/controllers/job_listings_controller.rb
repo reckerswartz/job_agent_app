@@ -6,6 +6,7 @@ class JobListingsController < ApplicationController
 
   def index
     scope = JobListing.for_user(current_user)
+                      .search(params[:q])
                       .by_status(params[:status])
                       .recent
                       .includes(:job_source)
@@ -13,6 +14,7 @@ class JobListingsController < ApplicationController
     scope = scope.where(job_source_id: params[:source_id]) if params[:source_id].present?
     @pagy, @listings = pagy(scope)
     @status_counts = JobListing.for_user(current_user).group(:status).count
+    @search_query = params[:q]
   end
 
   def show

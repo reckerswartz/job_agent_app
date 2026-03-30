@@ -10,6 +10,18 @@
   <% end %>
 </div>
 
+<%# ── Search Bar ── %>
+<div class="mb-3">
+  <%= form_with url: job_listings_path, method: :get, class: "d-flex gap-2", data: { turbo_frame: "_top" } do %>
+    <input type="hidden" name="status" value="<%= params[:status] %>">
+    <input type="text" name="q" value="<%= @search_query %>" class="form-control" placeholder="Search by title, company, or location..." autofocus>
+    <button type="submit" class="btn btn-primary">Search</button>
+    <% if @search_query.present? %>
+      <%= link_to "Clear", job_listings_path(status: params[:status]), class: "btn btn-outline-secondary" %>
+    <% end %>
+  <% end %>
+</div>
+
 <%# ── Status Filter Tabs ── %>
 <ul class="nav nav-tabs mb-4">
   <li class="nav-item">

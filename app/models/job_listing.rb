@@ -12,6 +12,10 @@ class JobListing < ApplicationRecord
   scope :recent, -> { order(posted_at: :desc, created_at: :desc) }
   scope :high_match, -> { where("match_score >= ?", 70) }
   scope :for_user, ->(user) { joins(:job_source).where(job_sources: { user_id: user.id }) }
+  scope :search, ->(query) {
+    return all if query.blank?
+    where("job_listings.title ILIKE :q OR job_listings.company ILIKE :q OR job_listings.location ILIKE :q", q: "%#{sanitize_sql_like(query)}%")
+  }
 
   def match_level
     return nil if match_score.nil?

@@ -9,9 +9,11 @@
   </div>
 
   <div class="topbar__right">
-    <div class="topbar__search">
+    <div class="topbar__search" data-controller="topbar-search">
       <span class="topbar__search-icon">&#x1F50D;</span>
-      <input type="text" class="form-control form-control-sm" placeholder="Search jobs...">
+      <input type="text" class="form-control form-control-sm" placeholder="Search jobs..."
+             data-topbar-search-target="input"
+             data-action="keydown->topbar-search#submit">
     </div>
     <div data-controller="theme">
       <button class="btn btn-sm btn-outline-secondary border-0" data-action="click->theme#toggle" title="Toggle dark mode">
