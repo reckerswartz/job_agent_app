@@ -75,7 +75,8 @@ module JobScanner
 
     # ── Mode 1: Playwright logged-in session ──────────────────────────
     def try_logged_in_scan
-      @session = BrowserSession.new
+      @session = BrowserSession.new(headless: true)
+
       @session.navigate("#{LINKEDIN_BASE}/feed/", wait_until: "domcontentloaded")
       sleep(2)
 
