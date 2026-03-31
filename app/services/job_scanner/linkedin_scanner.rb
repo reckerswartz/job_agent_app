@@ -3,60 +3,27 @@ module JobScanner
     LINKEDIN_BASE = "https://www.linkedin.com".freeze
     PUBLIC_JOBS_BASE = "https://www.linkedin.com/jobs/search/".freeze
     LOGGED_IN_JOBS_BASE = "https://www.linkedin.com/jobs/search/".freeze
-    MAX_DETAIL_SCRAPES = 10
+    MAX_DETAIL_SCRAPES = 5
 
     def scan
       listings = []
-      @session = BrowserSession.new
-
-      # Navigate to LinkedIn first to check login state
-      @session.navigate("#{LINKEDIN_BASE}/feed/")
-      sleep(2)
-
-      @logged_in = !@session.login_required?
-      Rails.logger.info("[LinkedinScanner] Logged in: #{@logged_in}")
-
-      if !@logged_in
-        # Try public job search (no login required for basic listings)
-        Rails.logger.info("[LinkedinScanner] Using public job search (not logged in)")
-      end
 
       search_url = build_search_url
-      page_data = fetch_page(search_url)
-      return listings if page_data.nil?
+      Rails.logger.info("[LinkedinScanner] Fetching: #{search_url}")
 
-      # After navigating to search, check again for auth walls
-      if @session.login_required? && !@logged_in
-        # Public search still works on LinkedIn without login for basic results
-        # Only create intervention if we get NO results
-        if (page_data[:listings] || []).empty?
-          create_login_intervention!
-          return listings
-        end
+      # Use direct HTTP fetch for public LinkedIn job search (much faster than headless browser)
+      html = fetch_html(search_url)
+      return listings if html.nil?
+
+      # Parse job cards from HTML using regex (no JS evaluation needed)
+      raw_listings = parse_job_cards(html)
+      Rails.logger.info("[LinkedinScanner] Parsed #{raw_listings.size} listings from HTML")
+
+      raw_listings.each do |raw|
+        listings << normalize_listing(raw.merge(source_platform: "linkedin"))
       end
-
-      if @session.captcha_detected?
-        create_captcha_intervention!
-        return listings
-      end
-
-      MAX_PAGES.times do |page_num|
-        page_listings = extract_listings(page_data)
-        listings.concat(page_listings)
-
-        break unless has_next_page?(page_data)
-        break if page_num >= MAX_PAGES - 1
-
-        page_data = fetch_next_page(page_data, page_num + 1)
-        break if page_data.nil?
-      end
-
-      # Scrape job detail pages for descriptions, easy apply detection
-      listings = enrich_with_details(listings)
 
       listings
-    ensure
-      @session&.close
     end
 
     protected
@@ -217,95 +184,112 @@ module JobScanner
 
     private
 
+    def fetch_html(url)
+      uri = URI(url)
+      http = Net::HTTP.new(uri.host, uri.port)
+      http.use_ssl = true
+      http.read_timeout = 30
+      http.open_timeout = 15
+
+      request = Net::HTTP::Get.new(uri)
+      request["User-Agent"] = "Mozilla/5.0 (X11; Linux x86_64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/120.0.0.0 Safari/537.36"
+      request["Accept"] = "text/html,application/xhtml+xml,application/xml;q=0.9,*/*;q=0.8"
+      request["Accept-Language"] = "en-US,en;q=0.5"
+
+      response = http.request(request)
+      Rails.logger.info("[LinkedinScanner] HTTP #{response.code} for #{url}")
+
+      if response.code.to_i == 200
+        response.body
+      elsif response.code.to_i == 429
+        Rails.logger.warn("[LinkedinScanner] Rate limited (429)")
+        nil
+      else
+        Rails.logger.warn("[LinkedinScanner] HTTP #{response.code}")
+        nil
+      end
+    rescue => e
+      Rails.logger.error("[LinkedinScanner] fetch_html failed: #{e.message}")
+      nil
+    end
+
+    def parse_job_cards(html)
+      listings = []
+
+      # LinkedIn public search returns <li> elements containing base-search-card class
+      html.scan(/<li[^>]*>(?:(?!<\/li>).)*base-search-card(?:(?!<\/li>).)*<\/li>/m).each do |card_html|
+        listing = extract_from_card(card_html)
+        listings << listing if listing[:title].present?
+      end
+
+      listings.first(25)
+    end
+
+    def extract_from_card(card_html)
+      title = card_html[/class="[^"]*base-search-card__title[^"]*"[^>]*>([^<]+)/m, 1]&.strip
+      title ||= card_html[/<h3[^>]*>([^<]+)/m, 1]&.strip
+      title ||= card_html[/class="[^"]*job-search-card__title[^"]*"[^>]*>([^<]+)/m, 1]&.strip
+
+      company = card_html[/class="[^"]*base-search-card__subtitle[^"]*"[^>]*>\s*<a[^>]*>([^<]+)/m, 1]&.strip
+      company ||= card_html[/class="[^"]*hidden-nested-link[^"]*"[^>]*>([^<]+)/m, 1]&.strip
+      company ||= card_html[/class="[^"]*base-search-card__subtitle[^"]*"[^>]*>([^<]+)/m, 1]&.strip
+      company ||= card_html[/<h4[^>]*>([^<]+)/m, 1]&.strip
+
+      location = card_html[/class="[^"]*job-search-card__location[^"]*"[^>]*>([^<]+)/m, 1]&.strip
+
+      url = card_html[/href="(https:\/\/www\.linkedin\.com\/jobs\/view\/[^"?]+)/m, 1]
+      url ||= card_html[/href="(https:\/\/[^"]*linkedin[^"]*jobs[^"?]+)/m, 1]
+
+      posted_at = card_html[/<time[^>]*datetime="([^"]+)"/m, 1]
+
+      job_id = url&.match(/\/jobs\/view\/(\d+)/)&.[](1)
+
+      salary = card_html[/class="[^"]*salary[^"]*"[^>]*>([^<]+)/m, 1]&.strip
+
+      easy_apply = card_html.include?("Easy Apply") || card_html.include?("easy-apply")
+
+      {
+        title: title,
+        company: company,
+        location: location,
+        url: url,
+        posted_at: posted_at,
+        external_id: job_id ? "li_#{job_id}" : nil,
+        salary_range: salary,
+        easy_apply: easy_apply
+      }
+    end
+
     def enrich_with_details(listings)
       listings.first(MAX_DETAIL_SCRAPES).each_with_index do |listing, i|
         next if listing[:url].blank?
 
         begin
-          @session.navigate(listing[:url])
-          sleep(2)
+          detail_html = fetch_html(listing[:url])
+          next if detail_html.nil?
 
-          details = @session.evaluate(job_detail_script) || {}
-          details = details.is_a?(Hash) ? details.symbolize_keys : {}
+          # Extract description from detail page HTML
+          desc = detail_html[/class="[^"]*show-more-less-html__markup[^"]*"[^>]*>(.*?)<\/div>/m, 1]
+          desc ||= detail_html[/class="[^"]*description__text[^"]*"[^>]*>(.*?)<\/section>/m, 1]
+          if desc.present?
+            listing[:description] = desc.gsub(/<[^>]+>/, " ").gsub(/\s+/, " ").strip.truncate(3000)
+          end
 
-          listing[:description] = details[:description].to_s.strip.presence if details[:description].present?
-          listing[:requirements] = details[:requirements].to_s.strip.presence if details[:requirements].present?
-          listing[:easy_apply] = details[:easy_apply] if details.key?(:easy_apply)
-          listing[:application_url] = details[:application_url].to_s.strip.presence if details[:application_url].present?
-          listing[:employment_type] = details[:employment_type].to_s.strip.presence if details[:employment_type].present?
-          listing[:remote_type] = detect_remote_type(listing[:location].to_s, details[:workplace_type].to_s)
-          listing[:resume_upload_supported] = listing[:easy_apply] # Easy Apply typically supports resume upload
+          # Check for Easy Apply
+          listing[:easy_apply] = true if detail_html.include?("Easy Apply")
+          listing[:resume_upload_supported] = listing[:easy_apply]
+
+          # Detect remote type from detail page
+          listing[:remote_type] = detect_remote_type(listing[:location].to_s, detail_html)
 
           Rails.logger.info("[LinkedinScanner] Enriched #{i + 1}/#{[listings.size, MAX_DETAIL_SCRAPES].min}: #{listing[:title]}")
+          sleep(1) # Rate limit between detail page fetches
         rescue => e
-          Rails.logger.warn("[LinkedinScanner] Detail scrape failed for #{listing[:url]}: #{e.message}")
+          Rails.logger.warn("[LinkedinScanner] Detail fetch failed for #{listing[:url]}: #{e.message}")
         end
       end
 
       listings
-    end
-
-    def job_detail_script
-      <<~JS
-        (() => {
-          // Description
-          const descEl = document.querySelector(
-            '.show-more-less-html__markup, .description__text, ' +
-            '.jobs-description__content, .jobs-box__html-content, ' +
-            '[data-job-description]'
-          );
-
-          // Apply button analysis
-          const applyBtn = document.querySelector(
-            '.jobs-apply-button, .jobs-apply-button--top-card, ' +
-            'button[data-control-name="jobdetails_topcard_inapply"], ' +
-            '.jobs-s-apply button'
-          );
-          const easyApply = applyBtn ?
-            (applyBtn.textContent.toLowerCase().includes('easy apply') ||
-             applyBtn.classList.contains('jobs-apply-button--easy-apply')) : false;
-
-          // External application URL
-          let applicationUrl = null;
-          const externalLink = document.querySelector(
-            'a[data-control-name="jobdetails_topcard_external_apply"], ' +
-            '.jobs-apply-button[href], a.jobs-apply-button'
-          );
-          if (externalLink && externalLink.href && !easyApply) {
-            applicationUrl = externalLink.href;
-          }
-
-          // Job criteria (employment type, seniority, etc.)
-          const criteriaItems = document.querySelectorAll(
-            '.description__job-criteria-item, .jobs-unified-top-card__job-insight, ' +
-            '.job-criteria__item'
-          );
-          let employmentType = null;
-          let workplaceType = null;
-          criteriaItems.forEach(item => {
-            const label = item.querySelector('.description__job-criteria-subheader, h3');
-            const value = item.querySelector('.description__job-criteria-text, span');
-            if (label && value) {
-              const labelText = label.textContent.trim().toLowerCase();
-              if (labelText.includes('employment type') || labelText.includes('job type')) {
-                employmentType = value.textContent.trim();
-              }
-              if (labelText.includes('workplace') || labelText.includes('job location')) {
-                workplaceType = value.textContent.trim();
-              }
-            }
-          });
-
-          return {
-            description: descEl ? descEl.innerText.trim() : null,
-            requirements: null,
-            easy_apply: easyApply,
-            application_url: applicationUrl,
-            employment_type: employmentType,
-            workplace_type: workplaceType
-          };
-        })()
-      JS
     end
 
     def detect_remote_type(location, workplace_type)
