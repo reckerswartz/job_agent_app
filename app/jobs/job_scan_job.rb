@@ -1,6 +1,8 @@
 class JobScanJob < ApplicationJob
   queue_as :scanning
 
+  SCAN_TIMEOUT = 180 # 3 minutes max per scan
+
   def perform(job_source_id, job_search_criteria_id = nil)
     source = JobSource.find(job_source_id)
     criteria = job_search_criteria_id ? JobSearchCriteria.find(job_search_criteria_id) : nil
@@ -12,8 +14,10 @@ class JobScanJob < ApplicationJob
     )
 
     begin
-      scanner = scanner_for(source, criteria)
-      raw_listings = scanner.scan
+      raw_listings = Timeout.timeout(SCAN_TIMEOUT) do
+        scanner = scanner_for(source, criteria)
+        scanner.scan
+      end
 
       found_count = raw_listings.size
       new_count = 0

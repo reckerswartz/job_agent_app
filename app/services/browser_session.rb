@@ -1,3 +1,5 @@
+require "playwright"
+
 class BrowserSession
   LOGIN_INDICATORS = %w[/login /signin /auth /sign-in /log-in].freeze
   CAPTCHA_INDICATORS = [ "captcha", "verify you're human", "i'm not a robot", "recaptcha", "hcaptcha" ].freeze
@@ -6,7 +8,11 @@ class BrowserSession
 
   def initialize(headless: true)
     @playwright = Playwright.create(playwright_cli_executable_path: find_playwright_cli)
-    @browser = @playwright.chromium.launch(headless: headless)
+    launch_options = { headless: headless }
+    # Use system Chrome if Playwright's bundled browser is not available
+    chrome_path = find_chrome_executable
+    launch_options[:executablePath] = chrome_path if chrome_path
+    @browser = @playwright.chromium.launch(**launch_options)
     @context = @browser.new_context(
       user_agent: "Mozilla/5.0 (X11; Linux x86_64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/120.0.0.0 Safari/537.36",
       viewport: { width: 1280, height: 800 }
@@ -115,5 +121,15 @@ class BrowserSession
     return "npx" if npx_path.present? && File.exist?(npx_path)
 
     "npx"
+  end
+
+  def find_chrome_executable
+    candidates = %w[
+      /usr/bin/google-chrome-stable
+      /usr/bin/google-chrome
+      /usr/bin/chromium-browser
+      /usr/bin/chromium
+    ]
+    candidates.find { |path| File.exist?(path) }
   end
 end
