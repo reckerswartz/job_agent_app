@@ -4,6 +4,7 @@ class LlmModel < ApplicationRecord
 
   belongs_to :llm_provider
   has_many :llm_interactions, dependent: :nullify
+  has_many :llm_verifications, dependent: :destroy
 
   validates :name, presence: true
   validates :identifier, presence: true, uniqueness: { scope: :llm_provider_id }
