@@ -1,5 +1,15 @@
 module JobApplier
   class Base
+    SAMPLE_RESUME_PATH = Rails.root.join("public/sample_resume_to_test/pankaj_senior_ruby_on_rails_developer_8_converted.pdf")
+    FILE_UPLOAD_SELECTORS = [
+      "input[type='file'][name*='resume']",
+      "input[type='file'][name*='cv']",
+      "input[type='file'][id*='resume']",
+      "input[type='file'][id*='cv']",
+      "input[type='file'][accept*='pdf']",
+      "input[type='file']"
+    ].freeze
+
     def initialize(job_application)
       @application = job_application
       @listing = job_application.job_listing
@@ -38,9 +48,15 @@ module JobApplier
         form_data
       end
 
-      if profile.source_document.attached?
+      if resume_upload_path
         record_step("upload_resume", "Uploading resume document") do
-          { filename: profile.source_document.filename.to_s, note: "Resume upload attempted" }
+          selector = upload_resume_document(resume_upload_path)
+          {
+            filename: File.basename(resume_upload_path),
+            file_path: resume_upload_path,
+            selector: selector,
+            uploaded: selector.present?
+          }
         end
       end
 
@@ -117,6 +133,19 @@ module JobApplier
           end
         end
       end
+    end
+
+    def upload_resume_document(file_path)
+      FILE_UPLOAD_SELECTORS.find do |selector|
+        @session.upload_file(selector, file_path)
+      end
+    end
+
+    def resume_upload_path
+      path = SAMPLE_RESUME_PATH.to_s
+      return path if File.exist?(path)
+
+      nil
     end
 
     def try_submit

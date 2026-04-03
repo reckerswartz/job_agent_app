@@ -15,6 +15,8 @@
   </div>
 </div>
 
+<%= render "profiles/processing_banner", profile: @profile %>
+
 <%# ── Completeness Progress ── %>
 <% completeness = @profile.completeness_percentage %>
 <% if completeness < 100 %>

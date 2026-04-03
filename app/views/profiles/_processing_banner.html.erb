@@ -1,0 +1,33 @@
+<% if profile.processing? || profile.processing_status == "complete" || profile.processing_status == "failed" %>
+  <div class="card mb-4 border-0" id="processing-banner">
+    <div class="card-body py-3">
+      <% if profile.processing_status == "parsing" %>
+        <div class="d-flex align-items-center gap-2">
+          <div class="spinner-border spinner-border-sm text-primary" role="status"></div>
+          <strong>Parsing your resume...</strong>
+          <span class="text-muted small">Extracting text from your document</span>
+        </div>
+        <meta http-equiv="refresh" content="5">
+      <% elsif profile.processing_status == "structuring" %>
+        <div class="d-flex align-items-center gap-2">
+          <div class="spinner-border spinner-border-sm text-info" role="status"></div>
+          <strong>Structuring with AI...</strong>
+          <span class="text-muted small">Building your profile sections automatically</span>
+        </div>
+        <meta http-equiv="refresh" content="5">
+      <% elsif profile.processing_status == "complete" %>
+        <div class="d-flex align-items-center gap-2 text-success">
+          <span>&#x2705;</span>
+          <strong>Processing complete!</strong>
+          <span class="text-muted small">Your profile sections have been populated.</span>
+        </div>
+      <% elsif profile.processing_status == "failed" %>
+        <div class="d-flex align-items-center gap-2 text-danger">
+          <span>&#x26A0;</span>
+          <strong>Processing failed</strong>
+          <span class="text-muted small">There was an issue processing your resume. Try uploading again.</span>
+        </div>
+      <% end %>
+    </div>
+  </div>
+<% end %>
