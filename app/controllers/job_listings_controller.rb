@@ -3,7 +3,7 @@ class JobListingsController < ApplicationController
   before_action :authenticate_user!
   layout "dashboard"
 
-  before_action :set_listing, only: [ :show, :update_status, :generate_cover_letter, :analyze_match ]
+  before_action :set_listing, only: [ :show, :update_status, :generate_cover_letter, :analyze_match, :tailor_resume, :download_cover_letter, :download_resume ]
 
   def index
     scope = JobListing.for_user(current_user)
@@ -58,6 +58,44 @@ class JobListingsController < ApplicationController
 
     CoverLetterJob.perform_later(@listing.id, profile.id)
     redirect_to job_listing_path(@listing), notice: "Cover letter generation started. Refresh in a moment to see the result."
+  end
+
+  def tailor_resume
+    profile = current_user.profiles.first
+    unless profile
+      redirect_to job_listing_path(@listing), alert: "Please create a profile first."
+      return
+    end
+
+    result = ResumeTailorService.new(@listing, profile).tailor
+    if result
+      redirect_to job_listing_path(@listing), notice: "Resume tailored for this job."
+    else
+      redirect_to job_listing_path(@listing), alert: "Resume tailoring unavailable. Check LLM configuration."
+    end
+  end
+
+  def download_cover_letter
+    cover_letter = @listing.cover_letters.recent.first
+    cover_letter ||= CoverLetter.new(job_listing: @listing, profile: current_user.profiles.first,
+                                      content: @listing.metadata&.dig("cover_letter") || "No cover letter generated yet.")
+
+    pdf_data = Pdf::CoverLetterPdf.new(cover_letter).render
+    send_data pdf_data, filename: "cover_letter_#{@listing.company&.parameterize}_#{Date.current}.pdf",
+              type: "application/pdf", disposition: "inline"
+  end
+
+  def download_resume
+    profile = current_user.profiles.first
+    unless profile
+      redirect_to job_listing_path(@listing), alert: "Please create a profile first."
+      return
+    end
+
+    tailored_data = @listing.match_breakdown&.dig("tailored_resume")
+    pdf_data = Pdf::ResumePdf.new(profile, tailored_data).render
+    send_data pdf_data, filename: "resume_#{profile.display_name.parameterize}_#{Date.current}.pdf",
+              type: "application/pdf", disposition: "inline"
   end
 
   def export

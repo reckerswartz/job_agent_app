@@ -4,6 +4,7 @@ class JobListing < ApplicationRecord
   belongs_to :job_source
   has_one :user, through: :job_source
   has_one :job_application, dependent: :destroy
+  has_many :cover_letters, dependent: :destroy
 
   validates :title, presence: true
   validates :status, inclusion: { in: STATUSES }
