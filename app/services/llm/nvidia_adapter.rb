@@ -26,7 +26,12 @@ module Llm
         }
       else
         error_msg = result[:body].dig("error", "message") || result[:body].dig("detail") || result[:body].to_s
-        raise StandardError, "NVIDIA API error (#{result[:status]}): #{error_msg}"
+        raise Llm::ApiError.new(
+          "NVIDIA API error (#{result[:status]}): #{error_msg}",
+          http_status: result[:status],
+          provider_name: provider.name,
+          model_identifier: model.identifier
+        )
       end
     end
 

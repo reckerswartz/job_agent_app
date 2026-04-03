@@ -1,0 +1,12 @@
+<% content_for(:title, "Unable to Process — Job Agent") %>
+
+<div class="text-center">
+  <div class="mb-3" style="font-size: 3rem;">&#x1F6AB;</div>
+  <h2 class="mb-2">Unable to Process</h2>
+  <p class="text-muted mb-4">The request could not be processed. This may be due to invalid data or a security check. Please try again.</p>
+  <% if user_signed_in? %>
+    <%= link_to "Go to Dashboard", dashboard_path, class: "btn btn-primary" %>
+  <% else %>
+    <%= link_to "Go Home", root_path, class: "btn btn-primary" %>
+  <% end %>
+</div>
