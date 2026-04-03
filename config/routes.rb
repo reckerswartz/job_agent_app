@@ -41,6 +41,9 @@ Rails.application.routes.draw do
       patch :update_status
       post :generate_cover_letter
       post :analyze_match
+      post :tailor_resume
+      get :download_cover_letter
+      get :download_resume
     end
     collection do
       post :bulk_update

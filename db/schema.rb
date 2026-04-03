@@ -10,7 +10,7 @@
 #
 # It's strongly recommended that you check this file into your version control system.
 
-ActiveRecord::Schema[8.1].define(version: 2026_04_03_180304) do
+ActiveRecord::Schema[8.1].define(version: 2026_04_03_184445) do
   # These are extensions that must be enabled in order to support this database
   enable_extension "pg_catalog.plpgsql"
 
@@ -81,6 +81,18 @@ ActiveRecord::Schema[8.1].define(version: 2026_04_03_180304) do
     t.datetime "updated_at", null: false
     t.index ["job_application_id", "step_number"], name: "index_application_steps_on_job_application_id_and_step_number"
     t.index ["job_application_id"], name: "index_application_steps_on_job_application_id"
+  end
+
+  create_table "cover_letters", force: :cascade do |t|
+    t.text "content", null: false
+    t.datetime "created_at", null: false
+    t.bigint "job_listing_id", null: false
+    t.bigint "profile_id", null: false
+    t.string "status"
+    t.string "tone"
+    t.datetime "updated_at", null: false
+    t.index ["job_listing_id"], name: "index_cover_letters_on_job_listing_id"
+    t.index ["profile_id"], name: "index_cover_letters_on_profile_id"
   end
 
   create_table "interventions", force: :cascade do |t|
@@ -367,6 +379,8 @@ ActiveRecord::Schema[8.1].define(version: 2026_04_03_180304) do
   add_foreign_key "active_storage_variant_records", "active_storage_blobs", column: "blob_id"
   add_foreign_key "activity_logs", "users"
   add_foreign_key "application_steps", "job_applications"
+  add_foreign_key "cover_letters", "job_listings"
+  add_foreign_key "cover_letters", "profiles"
   add_foreign_key "interventions", "users"
   add_foreign_key "job_applications", "job_listings"
   add_foreign_key "job_applications", "profiles"
