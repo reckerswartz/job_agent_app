@@ -14,14 +14,9 @@
     <% end %>
   </div>
 <% else %>
-  <div class="card source-empty-card">
-    <div class="card-body text-center py-5">
-      <div class="source-empty-card__icon mb-3">&#x1F50D;</div>
-      <h3>No job sources yet</h3>
-      <p class="text-muted mb-3">Add a job board to start searching for jobs automatically.</p>
-      <%= link_to "Add Your First Source", new_job_source_path, class: "btn btn-primary" %>
-    </div>
-  </div>
+  <%= render "shared/empty_state", icon: "&#x1F50D;", title: "No job sources yet",
+      message: "Add a job board to start searching for jobs automatically.",
+      cta_text: "Add Your First Source", cta_path: new_job_source_path %>
 <% end %>
 
 <% if @job_sources.any? %>

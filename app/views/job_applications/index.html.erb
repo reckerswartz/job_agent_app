@@ -3,20 +3,13 @@
 <%= render "shared/page_header", title: "Applications", subtitle: "#{@applications.size} applications" %>
 
 <%# ── Status Filter Tabs ── %>
-<ul class="nav nav-tabs mb-4">
-  <li class="nav-item">
-    <%= link_to "All (#{@status_counts.values.sum})", job_applications_path,
-        class: "nav-link #{params[:status].blank? ? 'active' : ''}" %>
-  </li>
-  <% JobApplication::STATUSES.each do |s| %>
-    <% count = @status_counts[s] || 0 %>
-    <% next if count == 0 && s != params[:status] %>
-    <li class="nav-item">
-      <%= link_to "#{s.humanize} (#{count})", job_applications_path(status: s),
-          class: "nav-link #{params[:status] == s ? 'active' : ''}" %>
-    </li>
-  <% end %>
-</ul>
+<% app_tabs = [{ label: "All", count: @status_counts.values.sum, path: job_applications_path, active: params[:status].blank? }] %>
+<% JobApplication::STATUSES.each do |s| %>
+  <% count = @status_counts[s] || 0 %>
+  <% next if count == 0 && s != params[:status] %>
+  <% app_tabs << { label: s.humanize, count: count, path: job_applications_path(status: s), active: params[:status] == s } %>
+<% end %>
+<%= render "shared/filter_tabs", tabs: app_tabs %>
 
 <% if @applications.any? %>
   <div class="card dash-table-card">
@@ -60,12 +53,7 @@
   </div>
   <%= render "shared/pagination", pagy: @pagy %>
 <% else %>
-  <div class="card source-empty-card">
-    <div class="card-body text-center py-5">
-      <div class="source-empty-card__icon mb-3">&#x1F4E8;</div>
-      <h3>No applications yet</h3>
-      <p class="text-muted mb-3">Apply to jobs from the listings page to start tracking your applications.</p>
-      <%= link_to "Browse Job Listings", job_listings_path, class: "btn btn-primary" %>
-    </div>
-  </div>
+  <%= render "shared/empty_state", icon: "&#x1F4E8;", title: "No applications yet",
+      message: "Apply to jobs from the listings page to start tracking your applications.",
+      cta_text: "Browse Job Listings", cta_path: job_listings_path %>
 <% end %>

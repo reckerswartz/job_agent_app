@@ -3,51 +3,18 @@
 <%= render "shared/page_header", title: "Dashboard" %>
 
 <%# ── Stats Row ── %>
+<% user_stats = [
+  { value: @jobs_found, label: "Jobs Found", icon: "&#x1F50D;", color: "primary" },
+  { value: @high_matches, label: "High Matches", icon: "&#x2705;", color: "success" },
+  { value: @applied, label: "Applied", icon: "&#x1F4E8;", color: "info" },
+  { value: @pending_interventions, label: "Needs Attention", icon: "&#x26A0;", color: "warning" }
+] %>
 <div class="row g-3 mb-4">
-  <div class="col-sm-6 col-xl-3">
-    <div class="card stat-card">
-      <div class="card-body">
-        <div class="stat-card__icon stat-card__icon--primary">&#x1F50D;</div>
-        <div class="stat-card__body">
-          <div class="stat-card__value"><%= @jobs_found %></div>
-          <div class="stat-card__label">Jobs Found</div>
-        </div>
-      </div>
+  <% user_stats.each do |s| %>
+    <div class="col-sm-6 col-xl-3">
+      <%= render "shared/stat_card", value: s[:value], label: s[:label], icon: s[:icon], color: s[:color] %>
     </div>
-  </div>
-  <div class="col-sm-6 col-xl-3">
-    <div class="card stat-card">
-      <div class="card-body">
-        <div class="stat-card__icon stat-card__icon--success">&#x2705;</div>
-        <div class="stat-card__body">
-          <div class="stat-card__value"><%= @high_matches %></div>
-          <div class="stat-card__label">High Matches</div>
-        </div>
-      </div>
-    </div>
-  </div>
-  <div class="col-sm-6 col-xl-3">
-    <div class="card stat-card">
-      <div class="card-body">
-        <div class="stat-card__icon stat-card__icon--info">&#x1F4E8;</div>
-        <div class="stat-card__body">
-          <div class="stat-card__value"><%= @applied %></div>
-          <div class="stat-card__label">Applied</div>
-        </div>
-      </div>
-    </div>
-  </div>
-  <div class="col-sm-6 col-xl-3">
-    <div class="card stat-card">
-      <div class="card-body">
-        <div class="stat-card__icon stat-card__icon--warning">&#x26A0;</div>
-        <div class="stat-card__body">
-          <div class="stat-card__value"><%= @pending_interventions %></div>
-          <div class="stat-card__label">Needs Attention</div>
-        </div>
-      </div>
-    </div>
-  </div>
+  <% end %>
 </div>
 
 <%# ── Main content: Table + Activity Feed ── %>

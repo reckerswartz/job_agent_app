@@ -20,20 +20,13 @@
 </div>
 
 <%# ── Status Filter Tabs ── %>
-<ul class="nav nav-tabs mb-4">
-  <li class="nav-item">
-    <%= link_to "All (#{@status_counts.values.sum})", job_listings_path,
-        class: "nav-link #{params[:status].blank? ? 'active' : ''}" %>
-  </li>
-  <% JobListing::STATUSES.each do |s| %>
-    <% count = @status_counts[s] || 0 %>
-    <% next if count == 0 && s != params[:status] %>
-    <li class="nav-item">
-      <%= link_to "#{s.capitalize} (#{count})", job_listings_path(status: s),
-          class: "nav-link #{params[:status] == s ? 'active' : ''}" %>
-    </li>
-  <% end %>
-</ul>
+<% listing_tabs = [{ label: "All", count: @status_counts.values.sum, path: job_listings_path, active: params[:status].blank? }] %>
+<% JobListing::STATUSES.each do |s| %>
+  <% count = @status_counts[s] || 0 %>
+  <% next if count == 0 && s != params[:status] %>
+  <% listing_tabs << { label: s.capitalize, count: count, path: job_listings_path(status: s), active: params[:status] == s } %>
+<% end %>
+<%= render "shared/filter_tabs", tabs: listing_tabs %>
 
 <% if @listings.any? %>
   <div data-controller="bulk-select">
@@ -95,12 +88,7 @@
   </div>
   <%= render "shared/pagination", pagy: @pagy %>
 <% else %>
-  <div class="card source-empty-card">
-    <div class="card-body text-center py-5">
-      <div class="source-empty-card__icon mb-3">&#x1F4CB;</div>
-      <h3>No job listings yet</h3>
-      <p class="text-muted mb-3">Add job sources and run a scan to discover listings.</p>
-      <%= link_to "Go to Job Sources", job_sources_path, class: "btn btn-primary" %>
-    </div>
-  </div>
+  <%= render "shared/empty_state", icon: "&#x1F4CB;", title: "No job listings yet",
+      message: "Add job sources and run a scan to discover listings.",
+      cta_text: "Go to Job Sources", cta_path: job_sources_path %>
 <% end %>

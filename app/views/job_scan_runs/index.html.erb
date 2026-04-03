@@ -36,11 +36,6 @@
     </div>
   </div>
 <% else %>
-  <div class="card source-empty-card">
-    <div class="card-body text-center py-5">
-      <div class="source-empty-card__icon mb-3">&#x1F504;</div>
-      <h3>No scans yet</h3>
-      <p class="text-muted mb-3">Click "Scan Now" to run your first scan on this source.</p>
-    </div>
-  </div>
+  <%= render "shared/empty_state", icon: "&#x1F504;", title: "No scans yet",
+      message: "Click \"Scan Now\" to run your first scan on this source." %>
 <% end %>
