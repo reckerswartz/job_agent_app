@@ -135,56 +135,15 @@ end
 
 profile.update!(status: "complete")
 
-# ── LLM Providers & Models (NVIDIA Build API) ──
+# ── LLM Provider (NVIDIA Build API) ──
+# Models are synced dynamically via Admin > LLM Models > Sync, or `rails llm:sync`
 nvidia = LlmProvider.find_or_create_by!(slug: "nvidia") do |p|
   p.name = "NVIDIA Build"
   p.adapter = "nvidia"
   p.base_url = "https://integrate.api.nvidia.com/v1"
   p.api_key_setting = "nvidia_api_key"
 end
-
-# Vision/Multimodal models
-LlmModel.find_or_create_by!(llm_provider: nvidia, identifier: "nvidia/llama-3.2-nv-vision-72b-preview") do |m|
-  m.name = "Llama 3.2 NV Vision 72B"
-  m.supports_text = true
-  m.supports_vision = true
-  m.model_type = "multimodal"
-  m.role = "primary_vision"
-  m.context_window = 128_000
-end
-LlmModel.find_or_create_by!(llm_provider: nvidia, identifier: "meta/llama-4-maverick-17b-128e-instruct") do |m|
-  m.name = "Llama 4 Maverick 17B"
-  m.supports_text = true
-  m.supports_vision = true
-  m.model_type = "multimodal"
-  m.context_window = 128_000
-end
-
-# Text models
-LlmModel.find_or_create_by!(llm_provider: nvidia, identifier: "nvidia/llama-3.3-nemotron-super-49b-v1") do |m|
-  m.name = "Llama 3.3 Nemotron Super 49B"
-  m.supports_text = true
-  m.supports_vision = false
-  m.model_type = "text"
-  m.role = "primary_text"
-  m.context_window = 32_000
-end
-LlmModel.find_or_create_by!(llm_provider: nvidia, identifier: "meta/llama-3.1-70b-instruct") do |m|
-  m.name = "Llama 3.1 70B Instruct"
-  m.supports_text = true
-  m.supports_vision = false
-  m.model_type = "text"
-  m.context_window = 128_000
-end
-LlmModel.find_or_create_by!(llm_provider: nvidia, identifier: "deepseek-ai/deepseek-r1") do |m|
-  m.name = "DeepSeek R1"
-  m.supports_text = true
-  m.supports_vision = false
-  m.model_type = "text"
-  m.role = "verification"
-  m.context_window = 64_000
-end
-puts "  NVIDIA Build: #{nvidia.llm_models.count} models"
+puts "  NVIDIA provider: #{nvidia.name} (models: #{nvidia.llm_models.count} — run `rails llm:sync` to populate)"
 
 puts ""
 puts "=== Seed Complete ==="

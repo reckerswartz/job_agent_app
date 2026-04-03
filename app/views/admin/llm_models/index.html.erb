@@ -1,78 +1,116 @@
 <% content_for(:page_title, "Admin — LLM Models") %>
 
-<div class="page-header mb-4">
-  <h1 class="page-header__title">LLM Model Configuration</h1>
-  <p class="page-header__subtitle">Configure which models handle text processing, vision tasks, and verification</p>
-</div>
-
-<div class="card dash-table-card">
-  <div class="table-responsive">
-    <table class="table">
-      <thead>
-        <tr>
-          <th>Model</th>
-          <th>Identifier</th>
-          <th>Type</th>
-          <th>Provider</th>
-          <th>Active</th>
-          <th>Role</th>
-          <th></th>
-        </tr>
-      </thead>
-      <tbody>
-        <% @models.each do |model| %>
-          <tr>
-            <td class="fw-bold"><%= model.name %></td>
-            <td class="small text-muted"><%= model.identifier %></td>
-            <td>
-              <% color = { "text" => "primary", "vision" => "warning", "multimodal" => "info" }[model.model_type] || "secondary" %>
-              <span class="badge bg-<%= color %>"><%= model.model_type.capitalize %></span>
-            </td>
-            <td><%= model.llm_provider.name %></td>
-            <td>
-              <%= form_with model: [:admin, model], method: :patch, class: "d-inline" do |f| %>
-                <%= f.hidden_field :active, value: !model.active %>
-                <%= f.hidden_field :role, value: model.role %>
-                <button type="submit" class="btn btn-sm <%= model.active? ? 'btn-success' : 'btn-outline-secondary' %>">
-                  <%= model.active? ? "On" : "Off" %>
-                </button>
-              <% end %>
-            </td>
-            <td>
-              <%= form_with model: [:admin, model], method: :patch, class: "d-inline" do |f| %>
-                <%= f.hidden_field :active, value: model.active %>
-                <%= f.select :role,
-                    options_for_select(
-                      [["— None —", ""], ["Primary Text", "primary_text"], ["Primary Vision", "primary_vision"], ["Verification", "verification"]],
-                      model.role
-                    ),
-                    {},
-                    class: "form-select form-select-sm d-inline-block", style: "width: 160px;",
-                    onchange: "this.form.requestSubmit()" %>
-              <% end %>
-            </td>
-            <td>
-              <% if model.role.present? %>
-                <span class="badge bg-success">Assigned</span>
-              <% end %>
-            </td>
-          </tr>
-        <% end %>
-      </tbody>
-    </table>
+<div class="page-header d-flex justify-content-between align-items-start mb-4">
+  <div>
+    <h1 class="page-header__title">LLM Model Configuration</h1>
+    <p class="page-header__subtitle">Configure which models handle text processing, vision tasks, and verification</p>
+  </div>
+  <div class="d-flex gap-2">
+    <%= button_to "Sync Models from API", sync_admin_llm_models_path, method: :post, class: "btn btn-primary btn-sm" %>
+    <%= button_to "Verify All", verify_all_admin_llm_models_path, method: :post, class: "btn btn-outline-info btn-sm" %>
   </div>
 </div>
 
+<% if @models.any? %>
+  <div class="card dash-table-card">
+    <div class="table-responsive">
+      <table class="table">
+        <thead>
+          <tr>
+            <th>Model</th>
+            <th>Type</th>
+            <th>Status</th>
+            <th>Active</th>
+            <th>Role</th>
+            <th>Priority</th>
+            <th>Verify</th>
+          </tr>
+        </thead>
+        <tbody>
+          <% @models.each do |model| %>
+            <tr>
+              <td>
+                <div class="fw-bold"><%= model.name %></div>
+                <div class="small text-muted text-truncate" style="max-width: 250px;"><%= model.identifier %></div>
+              </td>
+              <td>
+                <% type_color = { "text" => "primary", "vision" => "warning", "multimodal" => "info" }[model.model_type] || "secondary" %>
+                <span class="badge bg-<%= type_color %>"><%= model.model_type.capitalize %></span>
+              </td>
+              <td>
+                <% vs = model.verification_status || "untested" %>
+                <% vs_color = { "ok" => "success", "failed" => "danger", "timeout" => "warning", "untested" => "secondary" }[vs] || "secondary" %>
+                <span class="badge bg-<%= vs_color %>"><%= vs.capitalize %></span>
+                <% if model.last_verified_at %>
+                  <div class="small text-muted"><%= time_ago_in_words(model.last_verified_at) %> ago</div>
+                <% end %>
+              </td>
+              <td>
+                <%= form_with model: [:admin, model], method: :patch, class: "d-inline" do |f| %>
+                  <%= f.hidden_field :active, value: !model.active %>
+                  <%= f.hidden_field :role, value: model.role %>
+                  <%= f.hidden_field :priority, value: model.priority %>
+                  <button type="submit" class="btn btn-sm <%= model.active? ? 'btn-success' : 'btn-outline-secondary' %>">
+                    <%= model.active? ? "On" : "Off" %>
+                  </button>
+                <% end %>
+              </td>
+              <td>
+                <%= form_with model: [:admin, model], method: :patch, class: "d-inline" do |f| %>
+                  <%= f.hidden_field :active, value: model.active %>
+                  <%= f.hidden_field :priority, value: model.priority %>
+                  <%= f.select :role,
+                      options_for_select(
+                        [["— None —", ""], ["Primary Text", "primary_text"], ["Primary Vision", "primary_vision"], ["Verification", "verification"]],
+                        model.role
+                      ),
+                      {},
+                      class: "form-select form-select-sm", style: "width: 150px;",
+                      onchange: "this.form.requestSubmit()" %>
+                <% end %>
+              </td>
+              <td>
+                <%= form_with model: [:admin, model], method: :patch, class: "d-inline" do |f| %>
+                  <%= f.hidden_field :active, value: model.active %>
+                  <%= f.hidden_field :role, value: model.role %>
+                  <%= f.number_field :priority, value: model.priority, class: "form-control form-control-sm", style: "width: 70px;",
+                      min: 0, max: 100, onchange: "this.form.requestSubmit()" %>
+                <% end %>
+              </td>
+              <td>
+                <%= button_to "Test", verify_one_admin_llm_model_path(model), method: :post, class: "btn btn-sm btn-outline-secondary" %>
+              </td>
+            </tr>
+          <% end %>
+        </tbody>
+      </table>
+    </div>
+  </div>
+<% else %>
+  <div class="card">
+    <div class="card-body text-center py-5">
+      <p class="text-muted mb-3">No models configured yet. Click "Sync Models from API" to fetch available models.</p>
+      <%= button_to "Sync Models from API", sync_admin_llm_models_path, method: :post, class: "btn btn-primary" %>
+    </div>
+  </div>
+<% end %>
+
 <div class="card mt-4">
-  <div class="card-header"><h3 class="card-header__title mb-0">How Roles Work</h3></div>
+  <div class="card-header"><h3 class="card-header__title mb-0">How It Works</h3></div>
   <div class="card-body">
     <dl class="listing-details mb-0">
+      <dt>Sync Models</dt>
+      <dd>Fetches all available models from the NVIDIA API and updates the local database</dd>
       <dt>Primary Text</dt>
-      <dd>Used for resume text structuring, cover letter generation, and text-based matching</dd>
+      <dd>Used for resume structuring, cover letter generation, and text-based matching</dd>
       <dt>Primary Vision</dt>
       <dd>Used for extracting text from resume images (JPG, PNG, WebP)</dd>
       <dt>Verification</dt>
       <dd>Optional second model that cross-checks extracted data for accuracy</dd>
+      <dt>Priority</dt>
+      <dd>Higher number = preferred. Used for fallback selection when primary model fails (0-100)</dd>
+      <dt>Verify</dt>
+      <dd>Sends a test message to check if the model responds correctly</dd>
     </dl>
   </div>
 </div>
