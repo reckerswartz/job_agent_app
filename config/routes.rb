@@ -67,6 +67,12 @@ Rails.application.routes.draw do
     end
   end
 
+  # Notifications
+  resources :notifications, only: [:index] do
+    collection { patch :mark_all_read }
+    member { patch :mark_read }
+  end
+
   # Interventions
   resources :interventions, only: [ :index, :show ] do
     member do

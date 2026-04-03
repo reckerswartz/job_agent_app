@@ -10,7 +10,7 @@
 #
 # It's strongly recommended that you check this file into your version control system.
 
-ActiveRecord::Schema[8.1].define(version: 2026_04_03_123622) do
+ActiveRecord::Schema[8.1].define(version: 2026_04_03_152925) do
   # These are extensions that must be enabled in order to support this database
   enable_extension "pg_catalog.plpgsql"
 
@@ -260,6 +260,18 @@ ActiveRecord::Schema[8.1].define(version: 2026_04_03_123622) do
     t.index ["llm_model_id"], name: "index_llm_verifications_on_llm_model_id"
   end
 
+  create_table "notifications", force: :cascade do |t|
+    t.string "action_url"
+    t.text "body"
+    t.string "category"
+    t.datetime "created_at", null: false
+    t.datetime "read_at"
+    t.string "title", null: false
+    t.datetime "updated_at", null: false
+    t.bigint "user_id", null: false
+    t.index ["user_id"], name: "index_notifications_on_user_id"
+  end
+
   create_table "profile_entries", force: :cascade do |t|
     t.jsonb "content", default: {}, null: false
     t.datetime "created_at", null: false
@@ -351,6 +363,7 @@ ActiveRecord::Schema[8.1].define(version: 2026_04_03_123622) do
   add_foreign_key "llm_interactions", "users"
   add_foreign_key "llm_models", "llm_providers"
   add_foreign_key "llm_verifications", "llm_models"
+  add_foreign_key "notifications", "users"
   add_foreign_key "profile_entries", "profile_sections"
   add_foreign_key "profile_sections", "profiles"
   add_foreign_key "profiles", "users"

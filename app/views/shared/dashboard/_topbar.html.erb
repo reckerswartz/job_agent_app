@@ -21,6 +21,50 @@
       </button>
     </div>
     <% if user_signed_in? %>
+      <% unread_count = current_user.notifications.unread.count %>
+      <div class="dropdown">
+        <button class="btn btn-sm btn-outline-secondary border-0 position-relative" data-bs-toggle="dropdown" title="Notifications">
+          &#x1F514;
+          <% if unread_count > 0 %>
+            <span class="position-absolute top-0 start-100 translate-middle badge rounded-pill bg-danger" style="font-size: 0.6rem;">
+              <%= unread_count > 99 ? "99+" : unread_count %>
+            </span>
+          <% end %>
+        </button>
+        <div class="dropdown-menu dropdown-menu-end" style="width: 320px; max-height: 400px; overflow-y: auto;">
+          <div class="d-flex justify-content-between align-items-center px-3 py-2 border-bottom">
+            <strong class="small">Notifications</strong>
+            <% if unread_count > 0 %>
+              <%= button_to "Mark all read", mark_all_read_notifications_path, method: :patch, class: "btn btn-sm btn-link p-0 text-decoration-none small" %>
+            <% end %>
+          </div>
+          <% current_user.notifications.recent.limit(10).each do |notif| %>
+            <% if notif.action_url.present? %>
+              <%= link_to notif.action_url, class: "dropdown-item py-2 #{'bg-light' unless notif.read?}" do %>
+                <div class="fw-semibold small"><%= notif.title %></div>
+                <% if notif.body.present? %>
+                  <div class="text-muted small text-truncate"><%= notif.body %></div>
+                <% end %>
+                <div class="text-muted" style="font-size: 0.7rem;"><%= time_ago_in_words(notif.created_at) %> ago</div>
+              <% end %>
+            <% else %>
+              <div class="dropdown-item py-2 <%= 'bg-light' unless notif.read? %>">
+                <div class="fw-semibold small"><%= notif.title %></div>
+                <% if notif.body.present? %>
+                  <div class="text-muted small text-truncate"><%= notif.body %></div>
+                <% end %>
+                <div class="text-muted" style="font-size: 0.7rem;"><%= time_ago_in_words(notif.created_at) %> ago</div>
+              </div>
+            <% end %>
+          <% end %>
+          <% if current_user.notifications.none? %>
+            <div class="dropdown-item text-center text-muted py-3 small">No notifications yet</div>
+          <% end %>
+          <div class="border-top px-3 py-2 text-center">
+            <%= link_to "View all notifications", notifications_path, class: "small text-decoration-none" %>
+          </div>
+        </div>
+      </div>
       <div class="dropdown">
         <div class="topbar__avatar" data-bs-toggle="dropdown" role="button" title="<%= current_user.display_name %>">
           <%= current_user.initials %>
