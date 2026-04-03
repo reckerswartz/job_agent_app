@@ -1,0 +1,33 @@
+// ==========================================================================
+// Accessibility
+// ==========================================================================
+
+// Global focus-visible ring for keyboard navigation
+*:focus-visible {
+  outline: 2px solid $secondary;
+  outline-offset: 2px;
+}
+
+// Remove outline for mouse clicks (only show for keyboard)
+*:focus:not(:focus-visible) {
+  outline: none;
+}
+
+// Skip-to-content link (hidden until focused)
+.skip-link {
+  position: absolute;
+  left: -9999px;
+  top: 0;
+  z-index: 9999;
+  padding: 0.75rem 1.5rem;
+  background-color: $primary;
+  color: #fff;
+  font-weight: 700;
+  text-decoration: none;
+  border-radius: 0 0 $border-radius $border-radius;
+
+  &:focus {
+    left: 50%;
+    transform: translateX(-50%);
+  }
+}
