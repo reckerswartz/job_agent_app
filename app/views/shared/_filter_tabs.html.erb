@@ -1,0 +1,8 @@
+<ul class="nav nav-tabs mb-4">
+  <% tabs.each do |tab| %>
+    <li class="nav-item">
+      <%= link_to "#{tab[:label]} (#{tab[:count]})", tab[:path],
+          class: "nav-link #{tab[:active] ? 'active' : ''}" %>
+    </li>
+  <% end %>
+</ul>

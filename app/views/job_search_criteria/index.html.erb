@@ -17,12 +17,7 @@
     <% end %>
   </div>
 <% else %>
-  <div class="card source-empty-card">
-    <div class="card-body text-center py-5">
-      <div class="source-empty-card__icon mb-3">&#x1F3AF;</div>
-      <h3>No search criteria yet</h3>
-      <p class="text-muted mb-3">Define keywords, location, and preferences to target the right jobs.</p>
-      <%= link_to "Create Your First Criteria", new_job_search_criterium_path, class: "btn btn-primary" %>
-    </div>
-  </div>
+  <%= render "shared/empty_state", icon: "&#x1F3AF;", title: "No search criteria yet",
+      message: "Define keywords, location, and preferences to target the right jobs.",
+      cta_text: "Create Your First Criteria", cta_path: new_job_search_criterium_path %>
 <% end %>

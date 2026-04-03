@@ -3,20 +3,13 @@
 <%= render "shared/page_header", title: "Interventions", subtitle: "Items requiring your attention" %>
 
 <%# ── Status Filter Tabs ── %>
-<ul class="nav nav-tabs mb-4">
-  <li class="nav-item">
-    <%= link_to "All (#{@status_counts.values.sum})", interventions_path,
-        class: "nav-link #{params[:status].blank? ? 'active' : ''}" %>
-  </li>
-  <% Intervention::STATUSES.each do |s| %>
-    <% count = @status_counts[s] || 0 %>
-    <% next if count == 0 && s != params[:status] %>
-    <li class="nav-item">
-      <%= link_to "#{s.capitalize} (#{count})", interventions_path(status: s),
-          class: "nav-link #{params[:status] == s ? 'active' : ''}" %>
-    </li>
-  <% end %>
-</ul>
+<% int_tabs = [{ label: "All", count: @status_counts.values.sum, path: interventions_path, active: params[:status].blank? }] %>
+<% Intervention::STATUSES.each do |s| %>
+  <% count = @status_counts[s] || 0 %>
+  <% next if count == 0 && s != params[:status] %>
+  <% int_tabs << { label: s.capitalize, count: count, path: interventions_path(status: s), active: params[:status] == s } %>
+<% end %>
+<%= render "shared/filter_tabs", tabs: int_tabs %>
 
 <% if @interventions.any? %>
   <div class="row g-3">
@@ -57,11 +50,6 @@
   </div>
   <%= render "shared/pagination", pagy: @pagy %>
 <% else %>
-  <div class="card source-empty-card">
-    <div class="card-body text-center py-5">
-      <div class="source-empty-card__icon mb-3">&#x2705;</div>
-      <h3>No pending interventions</h3>
-      <p class="text-muted mb-0">Everything is running smoothly. No manual action needed.</p>
-    </div>
-  </div>
+  <%= render "shared/empty_state", icon: "&#x2705;", title: "No pending interventions",
+      message: "Everything is running smoothly. No manual action needed." %>
 <% end %>
