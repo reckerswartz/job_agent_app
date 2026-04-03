@@ -8,6 +8,11 @@ module Admin
       scope = scope.where("email ILIKE :q", q: "%#{params[:q]}%") if params[:q].present?
       scope = apply_sorting(scope, %w[email role sign_in_count created_at], default_column: "created_at")
       @pagy, @users = pagy(scope, limit: per_page_limit)
+
+      # Preload counts to avoid N+1 queries in the view
+      user_ids = @users.map(&:id)
+      @source_counts = JobSource.where(user_id: user_ids).group(:user_id).count
+      @listing_counts = JobListing.joins(:job_source).where(job_sources: { user_id: user_ids }).group("job_sources.user_id").count
     end
 
     def show

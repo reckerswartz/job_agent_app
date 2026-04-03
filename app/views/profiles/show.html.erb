@@ -9,7 +9,7 @@
   </div>
   <div class="d-flex gap-2">
     <% if @profile.source_text.present? && llm_available? %>
-      <%= button_to "Structure with AI", structure_with_ai_profile_path, method: :post, class: "btn btn-outline-primary" %>
+      <%= button_to "Structure with AI", structure_with_ai_profile_path, method: :post, class: "btn btn-outline-primary", form: { data: { controller: "loading-button", action: "submit->loading-button#submit", loading_button_text_value: "Structuring..." } } %>
     <% end %>
     <%= link_to "Edit Profile", edit_profile_path, class: "btn btn-primary" %>
   </div>

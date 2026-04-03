@@ -27,3 +27,6 @@ application.register("topbar-search", TopbarSearchController)
 
 import DataTableController from "./data_table_controller"
 application.register("data-table", DataTableController)
+
+import LoadingButtonController from "./loading_button_controller"
+application.register("loading-button", LoadingButtonController)
