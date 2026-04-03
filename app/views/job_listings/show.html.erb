@@ -115,5 +115,83 @@
         </dl>
       </div>
     </div>
+
+    <%# ── Match Analysis Card ── %>
+    <% if @listing.match_score %>
+      <div class="card mb-4">
+        <div class="card-header d-flex justify-content-between align-items-center">
+          <h3 class="card-header__title mb-0">Match Analysis</h3>
+          <% if llm_available? %>
+            <%= button_to "Analyze with AI", analyze_match_job_listing_path(@listing), method: :post,
+                class: "btn btn-sm btn-outline-primary",
+                form: { data: { controller: "loading-button", action: "submit->loading-button#submit", loading_button_text_value: "Analyzing..." } } %>
+          <% end %>
+        </div>
+        <div class="card-body">
+          <% bd = @listing.match_breakdown || {} %>
+
+          <%# ── Category Breakdown ── %>
+          <% %w[title skills location salary recency source].each do |cat| %>
+            <% cat_data = bd[cat] || bd[cat.to_sym] %>
+            <% next unless cat_data %>
+            <div class="mb-3">
+              <div class="d-flex justify-content-between align-items-center mb-1">
+                <span class="fw-semibold small"><%= cat.capitalize %></span>
+                <span class="small text-muted"><%= cat_data["score"] || cat_data[:score] %>% (<%= cat_data["weight"] || cat_data[:weight] %>% weight)</span>
+              </div>
+              <div class="progress" style="height: 6px;">
+                <% s = cat_data["score"] || cat_data[:score] || 0 %>
+                <div class="progress-bar bg-<%= s >= 70 ? 'success' : (s >= 40 ? 'warning' : 'danger') %>" style="width: <%= s %>%;"></div>
+              </div>
+              <% detail = cat_data["detail"] || cat_data[:detail] %>
+              <% if detail.present? %>
+                <div class="text-muted" style="font-size: 0.7rem;"><%= detail %></div>
+              <% end %>
+              <% matched = cat_data["matched"] || cat_data[:matched] %>
+              <% missing = cat_data["missing"] || cat_data[:missing] %>
+              <% if matched.present? %>
+                <div style="font-size: 0.7rem;">
+                  <span class="text-success"><%= matched.join(", ") %></span>
+                  <% if missing.present? %>
+                    <span class="text-muted"> | </span>
+                    <span class="text-danger"><%= missing.join(", ") %></span>
+                  <% end %>
+                </div>
+              <% end %>
+            </div>
+          <% end %>
+
+          <%# ── LLM Analysis (if available) ── %>
+          <% llm = bd["llm_analysis"] || bd[:llm_analysis] %>
+          <% if llm.present? %>
+            <hr>
+            <div class="mb-2">
+              <% rec = llm["recommendation"] || llm[:recommendation] %>
+              <% rec_color = { "strong_match" => "success", "good_match" => "primary", "partial_match" => "warning", "weak_match" => "danger" }[rec] || "secondary" %>
+              <span class="badge bg-<%= rec_color %>"><%= rec&.humanize %></span>
+              <span class="small text-muted ms-2">AI Analysis</span>
+            </div>
+            <% summary = llm["summary"] || llm[:summary] %>
+            <% if summary.present? %>
+              <p class="small mb-2"><%= summary %></p>
+            <% end %>
+            <% reasons = llm["reasons"] || llm[:reasons] %>
+            <% if reasons.present? %>
+              <ul class="small mb-2">
+                <% reasons.each { |r| %><li><%= r %></li><% } %>
+              </ul>
+            <% end %>
+            <% gaps = llm["skill_gaps"] || llm[:skill_gaps] %>
+            <% if gaps.present? %>
+              <div class="small"><strong>Skill gaps:</strong> <span class="text-danger"><%= gaps.join(", ") %></span></div>
+            <% end %>
+            <% salary = llm["salary_estimate"] || llm[:salary_estimate] %>
+            <% if salary.present? && salary != "null" %>
+              <div class="small mt-1"><strong>Est. salary:</strong> <%= salary %></div>
+            <% end %>
+          <% end %>
+        </div>
+      </div>
+    <% end %>
   </div>
 </div>

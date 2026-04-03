@@ -11,6 +11,7 @@ class JobListing < ApplicationRecord
   scope :by_status, ->(status) { where(status: status) if status.present? }
   scope :recent, -> { order(posted_at: :desc, created_at: :desc) }
   scope :high_match, -> { where("match_score >= ?", 70) }
+  scope :recommended, -> { where("match_score >= ?", 50).order(match_score: :desc) }
   scope :for_user, ->(user) { joins(:job_source).where(job_sources: { user_id: user.id }) }
   scope :search, ->(query) {
     return all if query.blank?

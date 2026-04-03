@@ -3,7 +3,7 @@ class JobListingsController < ApplicationController
   before_action :authenticate_user!
   layout "dashboard"
 
-  before_action :set_listing, only: [ :show, :update_status, :generate_cover_letter ]
+  before_action :set_listing, only: [ :show, :update_status, :generate_cover_letter, :analyze_match ]
 
   def index
     scope = JobListing.for_user(current_user)
@@ -27,6 +27,21 @@ class JobListingsController < ApplicationController
       redirect_back fallback_location: job_listings_path, notice: "Status updated to #{params[:new_status]}."
     else
       redirect_back fallback_location: job_listings_path, alert: "Invalid status."
+    end
+  end
+
+  def analyze_match
+    profile = current_user.profiles.first
+    unless profile
+      redirect_to job_listing_path(@listing), alert: "Please create a profile first."
+      return
+    end
+
+    analysis = Llm::Pipeline::JobMatch.new(@listing, profile).analyze
+    if analysis
+      redirect_to job_listing_path(@listing), notice: "AI match analysis complete."
+    else
+      redirect_to job_listing_path(@listing), alert: "AI analysis unavailable. Check LLM configuration."
     end
   end
 

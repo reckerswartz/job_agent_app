@@ -40,6 +40,7 @@ Rails.application.routes.draw do
     member do
       patch :update_status
       post :generate_cover_letter
+      post :analyze_match
     end
     collection do
       post :bulk_update
