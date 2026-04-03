@@ -97,6 +97,19 @@ Rails.application.routes.draw do
     resources :scan_runs, only: [ :index, :show ]
   end
 
+  # API
+  namespace :api do
+    namespace :v1 do
+      resources :job_listings, only: [:index, :show]
+      resources :job_applications, only: [:index, :show, :create]
+      resources :job_sources, only: [:index, :show] do
+        post :scan, on: :member
+      end
+      resource :profile, only: [:show]
+      resources :scan_runs, only: [:index, :show]
+    end
+  end
+
   # Settings
   resource :settings, only: [ :edit, :update ]
 
