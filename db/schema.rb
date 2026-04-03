@@ -10,7 +10,7 @@
 #
 # It's strongly recommended that you check this file into your version control system.
 
-ActiveRecord::Schema[8.1].define(version: 2026_04_03_031726) do
+ActiveRecord::Schema[8.1].define(version: 2026_04_03_042611) do
   # These are extensions that must be enabled in order to support this database
   enable_extension "pg_catalog.plpgsql"
 
@@ -214,15 +214,18 @@ ActiveRecord::Schema[8.1].define(version: 2026_04_03_031726) do
     t.integer "context_window"
     t.datetime "created_at", null: false
     t.string "identifier", null: false
+    t.datetime "last_verified_at"
     t.bigint "llm_provider_id", null: false
     t.integer "max_images"
     t.string "model_type", default: "text", null: false
     t.string "name", null: false
+    t.integer "priority", default: 0, null: false
     t.string "role"
     t.jsonb "settings", default: {}, null: false
     t.boolean "supports_text", default: true, null: false
     t.boolean "supports_vision", default: false, null: false
     t.datetime "updated_at", null: false
+    t.string "verification_status", default: "untested"
     t.index ["active"], name: "index_llm_models_on_active"
     t.index ["llm_provider_id", "identifier"], name: "index_llm_models_on_llm_provider_id_and_identifier", unique: true
     t.index ["llm_provider_id"], name: "index_llm_models_on_llm_provider_id"

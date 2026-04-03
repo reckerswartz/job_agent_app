@@ -6,10 +6,15 @@ module Llm
     end
 
     def self.for_feature(feature_name, vision: false)
-      provider = LlmProvider.active.find { |p| p.available? }
+      provider = LlmProvider.active.find(&:available?)
       return nil unless provider
 
-      new(provider)
+      client = new(provider)
+      # Pre-select model based on feature type
+      if vision
+        return nil unless provider.default_vision_model
+      end
+      client
     end
 
     def chat(messages, model: nil, user: nil, profile: nil, feature: "general")
@@ -24,6 +29,21 @@ module Llm
         result
       rescue => e
         interaction.mark_failed!(e.message)
+
+        # Try fallback model
+        fallback = provider.fallback_text_models.where.not(id: model.id).first
+        if fallback
+          Rails.logger.warn("[Llm::Client] Primary model #{model.identifier} failed, trying fallback #{fallback.identifier}")
+          fb_interaction = create_interaction(user: user, profile: profile, feature: feature, model: fallback, prompt: messages.last&.dig(:content))
+          begin
+            result = adapter.chat(messages, model: fallback)
+            fb_interaction.mark_completed!(result[:content], result[:token_usage], result[:latency_ms])
+            return result
+          rescue => fb_e
+            fb_interaction.mark_failed!(fb_e.message)
+          end
+        end
+
         raise
       end
     end

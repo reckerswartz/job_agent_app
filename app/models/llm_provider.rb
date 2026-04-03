@@ -20,10 +20,16 @@ class LlmProvider < ApplicationRecord
   end
 
   def default_text_model
-    llm_models.active.where(supports_text: true).first
+    llm_models.active.by_role("primary_text").order(priority: :desc).first ||
+      llm_models.active.text_capable.order(priority: :desc).first
   end
 
   def default_vision_model
-    llm_models.active.where(supports_vision: true).first
+    llm_models.active.by_role("primary_vision").order(priority: :desc).first ||
+      llm_models.active.vision_capable.order(priority: :desc).first
+  end
+
+  def fallback_text_models
+    llm_models.active.text_capable.where.not(role: "primary_text").order(priority: :desc)
   end
 end
