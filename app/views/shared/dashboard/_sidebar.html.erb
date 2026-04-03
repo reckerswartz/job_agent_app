@@ -67,8 +67,13 @@
         <% end %>
       </li>
       <li>
-        <%= link_to admin_llm_interactions_path, class: "sidebar__link #{request.path.start_with?('/admin/llm') ? 'sidebar__link--active' : ''}" do %>
+        <%= link_to admin_llm_interactions_path, class: "sidebar__link #{request.path == '/admin/llm_interactions' ? 'sidebar__link--active' : ''}" do %>
           <span class="sidebar__link-icon">&#x1F916;</span> LLM Logs
+        <% end %>
+      </li>
+      <li>
+        <%= link_to admin_llm_models_path, class: "sidebar__link #{request.path == '/admin/llm_models' ? 'sidebar__link--active' : ''}" do %>
+          <span class="sidebar__link-icon">&#x2699;</span> LLM Models
         <% end %>
       </li>
       <li>

@@ -63,8 +63,9 @@ class BrowserSession
 
   def upload_file(selector, file_path)
     page.set_input_files(selector, file_path, timeout: 10_000)
-  rescue Playwright::TimeoutError
-    Rails.logger.warn("[BrowserSession] Upload timeout for selector: #{selector}")
+    true
+  rescue => e
+    Rails.logger.warn("[BrowserSession] Upload failed for selector #{selector}: #{e.message}")
     false
   end
 

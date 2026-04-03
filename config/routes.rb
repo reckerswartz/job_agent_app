@@ -82,6 +82,7 @@ Rails.application.routes.draw do
       member { patch :toggle_role }
     end
     resources :llm_interactions, only: [ :index, :show ]
+    resources :llm_models, only: [ :index, :update ]
     resources :scan_runs, only: [ :index, :show ]
   end
 

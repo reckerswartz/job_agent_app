@@ -1,6 +1,7 @@
 class Profile < ApplicationRecord
   SOURCE_MODES = %w[scratch paste upload].freeze
   STATUSES = %w[draft complete].freeze
+  PROCESSING_STATUSES = %w[idle parsing structuring complete failed].freeze
   CONTACT_FIELDS = %w[first_name surname email phone city country linkedin website].freeze
 
   belongs_to :user
@@ -11,6 +12,11 @@ class Profile < ApplicationRecord
   validates :title, presence: true
   validates :source_mode, inclusion: { in: SOURCE_MODES }
   validates :status, inclusion: { in: STATUSES }
+  validates :processing_status, inclusion: { in: PROCESSING_STATUSES }
+
+  def processing?
+    processing_status.in?(%w[parsing structuring])
+  end
 
   before_validation :normalize_json_attributes
 
