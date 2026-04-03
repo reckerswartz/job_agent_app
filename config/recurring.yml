@@ -21,3 +21,11 @@ production:
     class: DailyMatchDigestJob
     queue: default
     schedule: at 8am every day
+  auto_apply:
+    class: AutoApplyJob
+    queue: applying
+    schedule: every 4 hours
+  stale_listing_cleanup:
+    class: StaleListingCleanupJob
+    queue: default
+    schedule: at 3am every day
