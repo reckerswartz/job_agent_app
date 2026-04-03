@@ -39,6 +39,9 @@ module JobAgentApp
     # Don't generate system test files.
     config.generators.system_tests = nil
 
+    # Route exceptions to ErrorsController for branded error pages
+    config.exceptions_app = self.routes
+
     # Use RSpec as the test framework
     config.generators do |g|
       g.test_framework :rspec,

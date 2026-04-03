@@ -5,6 +5,8 @@ class ApplicationController < ActionController::Base
   allow_browser versions: :modern
   before_action :check_onboarding!, if: :user_signed_in?
 
+  rescue_from ActiveRecord::RecordNotFound, with: :record_not_found
+
   layout :layout_by_resource
 
   private
@@ -32,5 +34,13 @@ class ApplicationController < ActionController::Base
 
   def after_sign_out_path_for(resource_or_scope)
     root_path
+  end
+
+  def record_not_found
+    if user_signed_in?
+      redirect_to dashboard_path, alert: "The requested item could not be found."
+    else
+      redirect_to root_path, alert: "The page you requested could not be found."
+    end
   end
 end
