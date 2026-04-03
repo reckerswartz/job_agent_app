@@ -1,0 +1,47 @@
+<% content_for(:page_title, "Activity") %>
+
+<%= render "shared/page_header", title: "Activity", subtitle: "Your action history" %>
+
+<%# ── Category Filter Tabs ── %>
+<% act_tabs = [{ label: "All", count: @category_counts.values.sum, path: activity_logs_path, active: params[:category].blank? }] %>
+<% ActivityLog::CATEGORIES.each do |cat| %>
+  <% count = @category_counts[cat] || 0 %>
+  <% next if count == 0 %>
+  <% act_tabs << { label: cat.capitalize, count: count, path: activity_logs_path(category: cat), active: params[:category] == cat } %>
+<% end %>
+<%= render "shared/filter_tabs", tabs: act_tabs %>
+
+<% if @activity_logs.any? %>
+  <div class="card dash-table-card">
+    <div class="table-responsive">
+      <table class="table">
+        <thead>
+          <tr>
+            <th scope="col"><%= link_to "When#{sort_indicator('created_at')}", sort_url('created_at', activity_logs_path), class: "text-decoration-none text-dark" %></th>
+            <th scope="col"><%= link_to "Action#{sort_indicator('action')}", sort_url('action', activity_logs_path), class: "text-decoration-none text-dark" %></th>
+            <th scope="col">Description</th>
+            <th scope="col">Category</th>
+          </tr>
+        </thead>
+        <tbody>
+          <% @activity_logs.each do |log| %>
+            <tr>
+              <td class="text-muted small"><%= time_ago_in_words(log.created_at) %> ago</td>
+              <td class="fw-semibold small"><%= log.action.humanize %></td>
+              <td class="small"><%= log.description %></td>
+              <td>
+                <% if log.category.present? %>
+                  <span class="badge bg-secondary"><%= log.category %></span>
+                <% end %>
+              </td>
+            </tr>
+          <% end %>
+        </tbody>
+      </table>
+    </div>
+  </div>
+  <%= render "shared/pagination", pagy: @pagy %>
+<% else %>
+  <%= render "shared/empty_state", icon: "&#x1F4DD;", title: "No activity yet",
+      message: "Your actions will appear here as you use the app." %>
+<% end %>

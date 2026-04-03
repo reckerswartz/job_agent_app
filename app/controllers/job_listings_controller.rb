@@ -23,7 +23,11 @@ class JobListingsController < ApplicationController
 
   def update_status
     if JobListing::STATUSES.include?(params[:new_status])
+      old_status = @listing.status
       @listing.update!(status: params[:new_status])
+      ActivityLogger.log(user: current_user, action: "listing_status_changed", category: "listing",
+        description: "Changed #{@listing.title} from #{old_status} to #{params[:new_status]}",
+        trackable: @listing, metadata: { old_status: old_status, new_status: params[:new_status] })
       redirect_back fallback_location: job_listings_path, notice: "Status updated to #{params[:new_status]}."
     else
       redirect_back fallback_location: job_listings_path, alert: "Invalid status."

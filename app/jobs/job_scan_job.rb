@@ -74,6 +74,11 @@ class JobScanJob < ApplicationJob
         action_url: "/job_listings"
       )
 
+      # Activity log
+      ActivityLogger.log(user: source.user, action: "scan_completed", category: "scan",
+        description: "Scanned #{source.name}: #{found_count} found, #{new_count} new",
+        trackable: scan_run, metadata: { found: found_count, new_count: new_count })
+
     rescue => e
       Rails.logger.error("[JobScanJob] Failed for source #{source.id}: #{e.message}")
       scan_run.mark_failed!(e)

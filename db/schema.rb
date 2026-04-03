@@ -10,7 +10,7 @@
 #
 # It's strongly recommended that you check this file into your version control system.
 
-ActiveRecord::Schema[8.1].define(version: 2026_04_03_163029) do
+ActiveRecord::Schema[8.1].define(version: 2026_04_03_180304) do
   # These are extensions that must be enabled in order to support this database
   enable_extension "pg_catalog.plpgsql"
 
@@ -40,6 +40,22 @@ ActiveRecord::Schema[8.1].define(version: 2026_04_03_163029) do
     t.bigint "blob_id", null: false
     t.string "variation_digest", null: false
     t.index ["blob_id", "variation_digest"], name: "index_active_storage_variant_records_uniqueness", unique: true
+  end
+
+  create_table "activity_logs", force: :cascade do |t|
+    t.string "action", null: false
+    t.string "category"
+    t.datetime "created_at", null: false
+    t.text "description"
+    t.string "ip_address"
+    t.jsonb "metadata", default: {}
+    t.bigint "trackable_id"
+    t.string "trackable_type"
+    t.datetime "updated_at", null: false
+    t.bigint "user_id", null: false
+    t.index ["trackable_type", "trackable_id"], name: "index_activity_logs_on_trackable_type_and_trackable_id"
+    t.index ["user_id", "created_at"], name: "index_activity_logs_on_user_id_and_created_at"
+    t.index ["user_id"], name: "index_activity_logs_on_user_id"
   end
 
   create_table "app_settings", force: :cascade do |t|
@@ -349,6 +365,7 @@ ActiveRecord::Schema[8.1].define(version: 2026_04_03_163029) do
 
   add_foreign_key "active_storage_attachments", "active_storage_blobs", column: "blob_id"
   add_foreign_key "active_storage_variant_records", "active_storage_blobs", column: "blob_id"
+  add_foreign_key "activity_logs", "users"
   add_foreign_key "application_steps", "job_applications"
   add_foreign_key "interventions", "users"
   add_foreign_key "job_applications", "job_listings"

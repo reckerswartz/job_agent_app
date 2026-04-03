@@ -68,6 +68,9 @@ Rails.application.routes.draw do
     end
   end
 
+  # Activity
+  resources :activity_logs, only: [:index], path: "activity"
+
   # Notifications
   resources :notifications, only: [:index] do
     collection { patch :mark_all_read }
@@ -102,6 +105,7 @@ Rails.application.routes.draw do
       end
     end
     resources :scan_runs, only: [ :index, :show ]
+    resources :audit_logs, only: [:index]
   end
 
   # API
