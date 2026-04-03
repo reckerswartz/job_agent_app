@@ -4,10 +4,27 @@ module Admin
 
     def index
       scope = LlmModel.includes(:llm_provider)
+
+      # Filter tabs
+      @filter = params[:show].presence || "active"
+      case @filter
+      when "active"   then scope = scope.where(active: true)
+      when "tested"   then scope = scope.where(active: true, verification_status: "ok")
+      when "inactive" then scope = scope.where(active: false)
+      end
+
       scope = scope.where("llm_models.name ILIKE :q OR llm_models.identifier ILIKE :q", q: "%#{params[:q]}%") if params[:q].present?
       scope = apply_sorting(scope, %w[name model_type priority verification_status active], default_column: "priority")
       @pagy, @models = pagy(scope, limit: per_page_limit)
       @provider = LlmProvider.active.first
+
+      # Tab counts
+      @counts = {
+        all: LlmModel.count,
+        active: LlmModel.where(active: true).count,
+        tested: LlmModel.where(active: true, verification_status: "ok").count,
+        inactive: LlmModel.where(active: false).count
+      }
     end
 
     def update

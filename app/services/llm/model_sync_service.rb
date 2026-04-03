@@ -28,6 +28,7 @@ module Llm
         model.supports_vision = model.model_type.in?(%w[vision multimodal])
         model.active = true if was_new
         model.context_window = m.dig("context_length") || m.dig("max_model_len")
+        model.owned_by = m["owned_by"].presence || id_str.split("/").first
 
         model.save!
         was_new ? added += 1 : updated += 1

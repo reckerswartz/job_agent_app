@@ -2,60 +2,10 @@
 
 <div class="page-header mb-4">
   <h1 class="page-header__title">Settings</h1>
-  <p class="page-header__subtitle">Manage API keys and application preferences</p>
+  <p class="page-header__subtitle">Manage your notification preferences</p>
 </div>
 
 <div class="card profile-section-card">
-  <div class="card-header">
-    <h3 class="card-header__title mb-0">API Keys</h3>
-  </div>
-  <div class="card-body">
-    <p class="text-muted mb-4">
-      Enter your API keys below. Keys are encrypted at rest. Leave blank to keep the current value.
-      You can also set these via environment variables.
-    </p>
-
-    <%= form_with url: settings_path, method: :patch do |f| %>
-      <% @settings.each do |setting| %>
-        <div class="mb-4">
-          <label for="settings_<%= setting.key %>" class="form-label fw-bold">
-            <%= setting.key.titleize %>
-          </label>
-          <% if setting.description.present? %>
-            <div class="form-text mb-1"><%= setting.description %></div>
-          <% end %>
-          <div class="input-group">
-            <input type="password"
-                   name="settings[<%= setting.key %>]"
-                   id="settings_<%= setting.key %>"
-                   class="form-control"
-                   placeholder="<%= setting.persisted? && setting.encrypted_value.present? ? setting.masked_value : 'Enter API key...' %>"
-                   autocomplete="off">
-            <% if setting.persisted? && setting.encrypted_value.present? %>
-              <span class="input-group-text bg-success text-white">
-                &#x2713; Set
-              </span>
-            <% else %>
-              <span class="input-group-text text-muted">
-                Not set
-              </span>
-            <% end %>
-          </div>
-          <% env_var = AppSetting::KNOWN_KEYS.dig(setting.key, :env_var) %>
-          <% if env_var && ENV[env_var].present? %>
-            <div class="form-text text-success">Also available via ENV: <%= env_var %></div>
-          <% end %>
-        </div>
-      <% end %>
-
-      <div class="d-flex gap-2">
-        <%= f.submit "Save Settings", class: "btn btn-primary" %>
-      </div>
-    <% end %>
-  </div>
-</div>
-
-<div class="card profile-section-card mt-4">
   <div class="card-header">
     <h3 class="card-header__title mb-0">Email Notifications</h3>
   </div>

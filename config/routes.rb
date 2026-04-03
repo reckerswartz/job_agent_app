@@ -81,6 +81,9 @@ Rails.application.routes.draw do
     resources :users, only: [ :index, :show ] do
       member { patch :toggle_role }
     end
+    get "api_keys", to: "api_keys#index", as: :api_keys
+    patch "api_keys", to: "api_keys#update"
+    post "api_keys/test_connection", to: "api_keys#test_connection", as: :test_connection_api_keys
     resources :llm_interactions, only: [ :index, :show ]
     resources :llm_models, only: [ :index, :update ] do
       collection do

@@ -1,0 +1,80 @@
+<% content_for(:page_title, "Admin — API Keys") %>
+
+<div class="page-header d-flex justify-content-between align-items-start mb-4">
+  <div>
+    <h1 class="page-header__title">API Keys</h1>
+    <p class="page-header__subtitle">Manage provider API keys. Only admins can view or change these.</p>
+  </div>
+  <%= button_to "Test Connection", admin_test_connection_api_keys_path, method: :post, class: "btn btn-outline-info btn-sm" %>
+</div>
+
+<%# ── Provider Status ── %>
+<div class="row g-3 mb-4">
+  <% @providers.each do |provider| %>
+    <div class="col-md-6">
+      <div class="card">
+        <div class="card-body d-flex align-items-center gap-3">
+          <% if provider.available? %>
+            <span class="badge bg-success" style="font-size: 1.1rem;">&#x2713;</span>
+          <% else %>
+            <span class="badge bg-warning text-dark" style="font-size: 1.1rem;">&#x26A0;</span>
+          <% end %>
+          <div>
+            <div class="fw-bold"><%= provider.name %></div>
+            <div class="small text-muted"><%= provider.base_url %></div>
+            <div class="small">
+              <% if provider.available? %>
+                <span class="text-success">Connected</span> &middot; <%= provider.llm_models.active.count %> active models
+              <% else %>
+                <span class="text-warning">Not configured</span> — set the API key below
+              <% end %>
+            </div>
+          </div>
+        </div>
+      </div>
+    </div>
+  <% end %>
+</div>
+
+<%# ── API Key Form ── %>
+<div class="card">
+  <div class="card-header"><h3 class="card-header__title mb-0">API Keys</h3></div>
+  <div class="card-body">
+    <div class="alert alert-light border mb-4">
+      <strong>Security:</strong> API keys are encrypted at rest using Rails ActiveRecord Encryption.
+      Keys can also be provided via environment variables (takes precedence).
+    </div>
+
+    <%= form_with url: admin_api_keys_path, method: :patch do |f| %>
+      <% @settings.each do |setting| %>
+        <div class="mb-4">
+          <label for="settings_<%= setting.key %>" class="form-label fw-semibold">
+            <%= setting.key.titleize %>
+          </label>
+          <% if setting.description.present? %>
+            <div class="form-text mb-1"><%= setting.description %></div>
+          <% end %>
+          <div class="input-group">
+            <input type="password"
+                   name="settings[<%= setting.key %>]"
+                   id="settings_<%= setting.key %>"
+                   class="form-control"
+                   placeholder="<%= setting.persisted? && setting.encrypted_value.present? ? setting.masked_value : 'Enter API key...' %>"
+                   autocomplete="off">
+            <% if setting.persisted? && setting.encrypted_value.present? %>
+              <span class="input-group-text bg-success text-white">&#x2713; Set</span>
+            <% else %>
+              <span class="input-group-text text-muted">Not set</span>
+            <% end %>
+          </div>
+          <% env_var = AppSetting::KNOWN_KEYS.dig(setting.key, :env_var) %>
+          <% if env_var && ENV[env_var].present? %>
+            <div class="form-text text-success mt-1">Also available via ENV: <code><%= env_var %></code></div>
+          <% end %>
+        </div>
+      <% end %>
+
+      <%= f.submit "Save API Keys", class: "btn btn-primary" %>
+    <% end %>
+  </div>
+</div>
