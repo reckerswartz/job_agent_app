@@ -1,8 +1,11 @@
 <% content_for(:page_title, "Admin — Users") %>
 
-<div class="page-header mb-4">
-  <h1 class="page-header__title">Users</h1>
-  <p class="page-header__subtitle"><%= User.count %> total users</p>
+<%= render "shared/page_header", title: "Users", subtitle: "#{User.count} total users" %>
+
+<div data-controller="data-table" class="mb-3 d-flex gap-2 align-items-center">
+  <input type="text" class="form-control form-control-sm" style="max-width: 280px;"
+         placeholder="Search by email..." value="<%= params[:q] %>"
+         data-data-table-target="searchInput" data-action="input->data-table#search">
 </div>
 
 <div class="card dash-table-card">
@@ -10,13 +13,13 @@
     <table class="table">
       <thead>
         <tr>
-          <th>Email</th>
-          <th>Role</th>
-          <th>Sign-ins</th>
-          <th>Last Sign-in</th>
-          <th>Sources</th>
-          <th>Listings</th>
-          <th>Joined</th>
+          <th scope="col"><%= link_to "Email#{sort_indicator('email')}", sort_url('email', admin_users_path), class: "text-decoration-none text-dark" %></th>
+          <th scope="col"><%= link_to "Role#{sort_indicator('role')}", sort_url('role', admin_users_path), class: "text-decoration-none text-dark" %></th>
+          <th scope="col"><%= link_to "Sign-ins#{sort_indicator('sign_in_count')}", sort_url('sign_in_count', admin_users_path), class: "text-decoration-none text-dark" %></th>
+          <th scope="col">Last Sign-in</th>
+          <th scope="col">Sources</th>
+          <th scope="col">Listings</th>
+          <th scope="col"><%= link_to "Joined#{sort_indicator('created_at')}", sort_url('created_at', admin_users_path), class: "text-decoration-none text-dark" %></th>
         </tr>
       </thead>
       <tbody>
@@ -30,6 +33,9 @@
             <td><%= JobListing.for_user(user).count %></td>
             <td class="text-muted"><%= time_ago_in_words(user.created_at) %> ago</td>
           </tr>
+        <% end %>
+        <% if @users.empty? %>
+          <tr><td colspan="7" class="text-center text-muted">No users found</td></tr>
         <% end %>
       </tbody>
     </table>

@@ -58,7 +58,7 @@
       <li class="sidebar__heading">Admin</li>
       <li>
         <%= link_to admin_root_path, class: "sidebar__link #{request.path == '/admin' ? 'sidebar__link--active' : ''}" do %>
-          <span class="sidebar__link-icon">&#x1F6E0;</span> Admin Dashboard
+          <span class="sidebar__link-icon">&#x1F6E0;</span> Dashboard
         <% end %>
       </li>
       <li>
@@ -66,19 +66,23 @@
           <span class="sidebar__link-icon">&#x1F465;</span> Users
         <% end %>
       </li>
+
+      <li class="sidebar__heading">Configuration</li>
       <li>
         <%= link_to admin_api_keys_path, class: "sidebar__link #{request.path == '/admin/api_keys' ? 'sidebar__link--active' : ''}" do %>
           <span class="sidebar__link-icon">&#x1F511;</span> API Keys
         <% end %>
       </li>
       <li>
-        <%= link_to admin_llm_interactions_path, class: "sidebar__link #{request.path == '/admin/llm_interactions' ? 'sidebar__link--active' : ''}" do %>
-          <span class="sidebar__link-icon">&#x1F916;</span> LLM Logs
-        <% end %>
-      </li>
-      <li>
         <%= link_to admin_llm_models_path, class: "sidebar__link #{request.path == '/admin/llm_models' ? 'sidebar__link--active' : ''}" do %>
           <span class="sidebar__link-icon">&#x2699;</span> LLM Models
+        <% end %>
+      </li>
+
+      <li class="sidebar__heading">Monitoring</li>
+      <li>
+        <%= link_to admin_llm_interactions_path, class: "sidebar__link #{request.path == '/admin/llm_interactions' ? 'sidebar__link--active' : ''}" do %>
+          <span class="sidebar__link-icon">&#x1F916;</span> LLM Logs
         <% end %>
       </li>
       <li>
