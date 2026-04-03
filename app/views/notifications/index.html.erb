@@ -1,0 +1,51 @@
+<% content_for(:page_title, "Notifications") %>
+
+<%= render "shared/page_header", title: "Notifications", subtitle: "#{current_user.notifications.count} total" %>
+
+<% if @notifications.any? %>
+  <div class="card dash-table-card">
+    <div class="table-responsive">
+      <table class="table">
+        <thead>
+          <tr>
+            <th scope="col" style="width: 40px;"></th>
+            <th scope="col">Notification</th>
+            <th scope="col">Category</th>
+            <th scope="col">When</th>
+          </tr>
+        </thead>
+        <tbody>
+          <% @notifications.each do |notif| %>
+            <tr class="<%= 'fw-semibold' unless notif.read? %>">
+              <td>
+                <% unless notif.read? %>
+                  <span class="badge rounded-pill bg-primary" style="width: 8px; height: 8px; padding: 0;"></span>
+                <% end %>
+              </td>
+              <td>
+                <% if notif.action_url.present? %>
+                  <%= link_to notif.title, notif.action_url, class: "text-decoration-none" %>
+                <% else %>
+                  <%= notif.title %>
+                <% end %>
+                <% if notif.body.present? %>
+                  <div class="text-muted small"><%= notif.body.truncate(100) %></div>
+                <% end %>
+              </td>
+              <td>
+                <% if notif.category.present? %>
+                  <span class="badge bg-secondary"><%= notif.category %></span>
+                <% end %>
+              </td>
+              <td class="text-muted small"><%= time_ago_in_words(notif.created_at) %> ago</td>
+            </tr>
+          <% end %>
+        </tbody>
+      </table>
+    </div>
+  </div>
+  <%= render "shared/pagination", pagy: @pagy %>
+<% else %>
+  <%= render "shared/empty_state", icon: "&#x1F514;", title: "No notifications yet",
+      message: "You'll see notifications here when scans complete, applications are submitted, or actions are needed." %>
+<% end %>

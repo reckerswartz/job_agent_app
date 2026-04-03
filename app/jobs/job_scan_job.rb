@@ -66,6 +66,14 @@ class JobScanJob < ApplicationJob
         listings_found: found_count, new_listings: new_count
       })
 
+      # In-app notification
+      NotificationCreator.create(
+        user: source.user, category: "scan",
+        title: "Scan complete: #{source.name}",
+        body: "Found #{found_count} listings (#{new_count} new)",
+        action_url: "/job_listings"
+      )
+
     rescue => e
       Rails.logger.error("[JobScanJob] Failed for source #{source.id}: #{e.message}")
       scan_run.mark_failed!(e)
