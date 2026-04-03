@@ -55,6 +55,25 @@
   }
 }
 
+// ── Mobile: table scroll hint ──
+.table-responsive {
+  @media (max-width: 767.98px) {
+    position: relative;
+
+    &::after {
+      content: "";
+      position: absolute;
+      top: 0;
+      right: 0;
+      bottom: 0;
+      width: 24px;
+      background: linear-gradient(to right, transparent, rgba(0, 0, 0, 0.04));
+      pointer-events: none;
+      z-index: 1;
+    }
+  }
+}
+
 // Job match score badge
 .match-score {
   display: inline-flex;
