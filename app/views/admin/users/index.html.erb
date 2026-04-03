@@ -29,8 +29,8 @@
             <td><span class="badge bg-<%= user.admin? ? 'danger' : 'secondary' %>"><%= user.role %></span></td>
             <td><%= user.sign_in_count %></td>
             <td class="text-muted"><%= user.last_sign_in_at ? time_ago_in_words(user.last_sign_in_at) + " ago" : "Never" %></td>
-            <td><%= user.job_sources.count %></td>
-            <td><%= JobListing.for_user(user).count %></td>
+            <td><%= @source_counts[user.id] || 0 %></td>
+            <td><%= @listing_counts[user.id] || 0 %></td>
             <td class="text-muted"><%= time_ago_in_words(user.created_at) %> ago</td>
           </tr>
         <% end %>

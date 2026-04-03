@@ -6,8 +6,8 @@
     <p class="page-header__subtitle">Configure which models handle text processing, vision tasks, and verification</p>
   </div>
   <div class="d-flex gap-2">
-    <%= button_to "Sync Models from API", sync_admin_llm_models_path, method: :post, class: "btn btn-primary btn-sm" %>
-    <%= button_to "Verify All", verify_all_admin_llm_models_path, method: :post, class: "btn btn-outline-info btn-sm" %>
+    <%= button_to "Sync Models from API", sync_admin_llm_models_path, method: :post, class: "btn btn-primary btn-sm", form: { data: { controller: "loading-button", action: "submit->loading-button#submit", loading_button_text_value: "Syncing..." } } %>
+    <%= button_to "Verify All", verify_all_admin_llm_models_path, method: :post, class: "btn btn-outline-info btn-sm", form: { data: { controller: "loading-button", action: "submit->loading-button#submit", loading_button_text_value: "Verifying..." } } %>
   </div>
 </div>
 
