@@ -176,6 +176,83 @@
     }
   }
 
+  // Auth pages (sign in, sign up, onboarding, error pages)
+  .auth-page {
+    background-color: #1a1a2e;
+  }
+
+  .auth-card {
+    background-color: #16213e;
+    color: #e0e0e0;
+  }
+
+  // Onboarding
+  .onboarding__card {
+    background-color: #16213e;
+    color: #e0e0e0;
+  }
+
+  .onboarding__upload-zone-inner {
+    border-color: rgba(255, 255, 255, 0.15);
+    background-color: rgba(255, 255, 255, 0.03);
+
+    &:hover {
+      border-color: rgba($secondary, 0.4);
+      background-color: rgba($secondary, 0.05);
+    }
+  }
+
+  .onboarding__platform-card-inner {
+    border-color: rgba(255, 255, 255, 0.1);
+    background-color: transparent;
+
+    &:hover {
+      border-color: rgba($secondary, 0.4);
+    }
+  }
+
+  .onboarding__platform-card input:checked + .onboarding__platform-card-inner {
+    border-color: $secondary;
+    background-color: rgba($secondary, 0.08);
+  }
+
+  // Progress bar
+  .progress {
+    background-color: rgba(255, 255, 255, 0.1);
+  }
+
+  // Form switches
+  .form-check-input {
+    background-color: rgba(255, 255, 255, 0.15);
+    border-color: rgba(255, 255, 255, 0.2);
+  }
+
+  // Dashboard footer
+  .dashboard-footer {
+    background-color: #16213e;
+    border-color: rgba(255, 255, 255, 0.08);
+    color: rgba(255, 255, 255, 0.4);
+  }
+
+  // Sortable column header links
+  th a.text-dark {
+    color: rgba(255, 255, 255, 0.6) !important;
+
+    &:hover {
+      color: #fff !important;
+    }
+  }
+
+  // Stat card icon — slightly brighter in dark
+  .stat-card__icon {
+    opacity: 0.9;
+  }
+
+  // Notification dropdown unread highlight
+  .dropdown-item.bg-light {
+    background-color: rgba(255, 255, 255, 0.06) !important;
+  }
+
   // Landing page (non-dashboard)
   &.d-flex {
     background-color: #1a1a2e;

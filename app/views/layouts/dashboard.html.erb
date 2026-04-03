@@ -20,6 +20,7 @@
   </head>
 
   <body class="page-dashboard" data-controller="sidebar shortcuts">
+    <a href="#main-content" class="skip-link">Skip to content</a>
     <div class="dashboard-wrapper">
       <%# ── Sidebar ── %>
       <%= render "shared/dashboard/sidebar" %>
@@ -51,7 +52,7 @@
         </div>
 
         <%# ── Page content ── %>
-        <div class="dashboard-content">
+        <div class="dashboard-content" id="main-content">
           <%= yield %>
         </div>
 

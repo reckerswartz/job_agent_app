@@ -23,7 +23,7 @@
     <% if user_signed_in? %>
       <% unread_count = current_user.notifications.unread.count %>
       <div class="dropdown">
-        <button class="btn btn-sm btn-outline-secondary border-0 position-relative" data-bs-toggle="dropdown" title="Notifications">
+        <button class="btn btn-sm btn-outline-secondary border-0 position-relative" data-bs-toggle="dropdown" title="Notifications" aria-label="Notifications">
           &#x1F514;
           <% if unread_count > 0 %>
             <span class="position-absolute top-0 start-100 translate-middle badge rounded-pill bg-danger" style="font-size: 0.6rem;">
