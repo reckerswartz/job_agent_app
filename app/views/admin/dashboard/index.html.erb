@@ -1,72 +1,30 @@
 <% content_for(:page_title, "Admin Dashboard") %>
 
-<div class="page-header mb-4">
-  <h1 class="page-header__title">Admin Dashboard</h1>
-  <p class="page-header__subtitle">System overview</p>
-</div>
+<%= render "shared/page_header", title: "Admin Dashboard", subtitle: "System overview" %>
 
 <%# ── Stats Row ── %>
 <div class="row g-3 mb-4">
-  <div class="col-sm-6 col-xl-2">
-    <div class="card stat-card">
-      <div class="card-body">
-        <div class="stat-card__body">
-          <div class="stat-card__value"><%= @total_users %></div>
-          <div class="stat-card__label">Users</div>
+  <% stats = [
+    { value: @total_users, label: "Users", icon: "&#x1F465;", color: "primary" },
+    { value: @total_listings, label: "Listings", icon: "&#x1F4CB;", color: "info" },
+    { value: @total_applications, label: "Applications", icon: "&#x1F4E8;", color: "success" },
+    { value: @total_scans, label: "Scans", icon: "&#x1F50D;", color: "secondary" },
+    { value: @pending_interventions, label: "Pending", icon: "&#x26A0;", color: "warning" },
+    { value: @llm_stats[:total], label: "LLM Calls", icon: "&#x1F916;", color: "danger" }
+  ] %>
+  <% stats.each do |s| %>
+    <div class="col-sm-6 col-xl-2">
+      <div class="card stat-card">
+        <div class="card-body">
+          <div class="stat-card__icon stat-card__icon--<%= s[:color] %>"><%= raw s[:icon] %></div>
+          <div class="stat-card__body">
+            <div class="stat-card__value"><%= s[:value] %></div>
+            <div class="stat-card__label"><%= s[:label] %></div>
+          </div>
         </div>
       </div>
     </div>
-  </div>
-  <div class="col-sm-6 col-xl-2">
-    <div class="card stat-card">
-      <div class="card-body">
-        <div class="stat-card__body">
-          <div class="stat-card__value"><%= @total_listings %></div>
-          <div class="stat-card__label">Listings</div>
-        </div>
-      </div>
-    </div>
-  </div>
-  <div class="col-sm-6 col-xl-2">
-    <div class="card stat-card">
-      <div class="card-body">
-        <div class="stat-card__body">
-          <div class="stat-card__value"><%= @total_applications %></div>
-          <div class="stat-card__label">Applications</div>
-        </div>
-      </div>
-    </div>
-  </div>
-  <div class="col-sm-6 col-xl-2">
-    <div class="card stat-card">
-      <div class="card-body">
-        <div class="stat-card__body">
-          <div class="stat-card__value"><%= @total_scans %></div>
-          <div class="stat-card__label">Scans</div>
-        </div>
-      </div>
-    </div>
-  </div>
-  <div class="col-sm-6 col-xl-2">
-    <div class="card stat-card">
-      <div class="card-body">
-        <div class="stat-card__body">
-          <div class="stat-card__value"><%= @pending_interventions %></div>
-          <div class="stat-card__label">Pending</div>
-        </div>
-      </div>
-    </div>
-  </div>
-  <div class="col-sm-6 col-xl-2">
-    <div class="card stat-card">
-      <div class="card-body">
-        <div class="stat-card__body">
-          <div class="stat-card__value"><%= @llm_stats[:total] %></div>
-          <div class="stat-card__label">LLM Calls</div>
-        </div>
-      </div>
-    </div>
-  </div>
+  <% end %>
 </div>
 
 <div class="row g-3">
@@ -74,7 +32,7 @@
   <div class="col-xl-6">
     <div class="card dash-table-card">
       <div class="card-header">
-        <h2 class="card-header__title">Recent Users</h2>
+        <h3 class="card-header__title mb-0">Recent Users</h3>
         <%= link_to "View All", admin_users_path, class: "btn btn-sm btn-outline-primary" %>
       </div>
       <div class="table-responsive">
@@ -101,7 +59,7 @@
   <div class="col-xl-6">
     <div class="card dash-table-card">
       <div class="card-header">
-        <h2 class="card-header__title">Recent Scans</h2>
+        <h3 class="card-header__title mb-0">Recent Scans</h3>
         <%= link_to "View All", admin_scan_runs_path, class: "btn btn-sm btn-outline-primary" %>
       </div>
       <div class="table-responsive">
@@ -134,7 +92,7 @@
   <div class="col-12">
     <div class="card">
       <div class="card-header">
-        <h2 class="card-header__title">LLM Usage</h2>
+        <h3 class="card-header__title mb-0">LLM Usage</h3>
         <%= link_to "View Logs", admin_llm_interactions_path, class: "btn btn-sm btn-outline-primary" %>
       </div>
       <div class="card-body">

@@ -1,9 +1,13 @@
 module Admin
   class UsersController < BaseController
+    include DataTableable
     before_action :set_user, only: [ :show, :toggle_role ]
 
     def index
-      @pagy, @users = pagy(User.order(created_at: :desc))
+      scope = User.all
+      scope = scope.where("email ILIKE :q", q: "%#{params[:q]}%") if params[:q].present?
+      scope = apply_sorting(scope, %w[email role sign_in_count created_at], default_column: "created_at")
+      @pagy, @users = pagy(scope, limit: per_page_limit)
     end
 
     def show

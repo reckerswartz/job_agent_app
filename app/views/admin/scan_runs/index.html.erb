@@ -1,23 +1,20 @@
 <% content_for(:page_title, "Admin — Scan Runs") %>
 
-<div class="page-header mb-4">
-  <h1 class="page-header__title">Scan Runs</h1>
-  <p class="page-header__subtitle"><%= JobScanRun.count %> total scans</p>
-</div>
+<%= render "shared/page_header", title: "Scan Runs", subtitle: "#{JobScanRun.count} total scans" %>
 
 <div class="card dash-table-card">
   <div class="table-responsive">
     <table class="table">
       <thead>
         <tr>
-          <th>ID</th>
-          <th>Source</th>
-          <th>Platform</th>
-          <th>Status</th>
-          <th>Duration</th>
-          <th>Found</th>
-          <th>New</th>
-          <th>Started</th>
+          <th scope="col"><%= link_to "ID#{sort_indicator('id')}", sort_url('id', admin_scan_runs_path), class: "text-decoration-none text-dark" %></th>
+          <th scope="col">Source</th>
+          <th scope="col">Platform</th>
+          <th scope="col"><%= link_to "Status#{sort_indicator('status')}", sort_url('status', admin_scan_runs_path), class: "text-decoration-none text-dark" %></th>
+          <th scope="col">Duration</th>
+          <th scope="col"><%= link_to "Found#{sort_indicator('listings_found')}", sort_url('listings_found', admin_scan_runs_path), class: "text-decoration-none text-dark" %></th>
+          <th scope="col"><%= link_to "New#{sort_indicator('new_listings')}", sort_url('new_listings', admin_scan_runs_path), class: "text-decoration-none text-dark" %></th>
+          <th scope="col"><%= link_to "Started#{sort_indicator('started_at')}", sort_url('started_at', admin_scan_runs_path), class: "text-decoration-none text-dark" %></th>
         </tr>
       </thead>
       <tbody>

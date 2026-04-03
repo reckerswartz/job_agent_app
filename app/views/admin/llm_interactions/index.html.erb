@@ -1,9 +1,6 @@
 <% content_for(:page_title, "Admin — LLM Interactions") %>
 
-<div class="page-header mb-4">
-  <h1 class="page-header__title">LLM Interactions</h1>
-  <p class="page-header__subtitle"><%= LlmInteraction.count %> total interactions</p>
-</div>
+<%= render "shared/page_header", title: "LLM Interactions", subtitle: "#{LlmInteraction.count} total interactions" %>
 
 <div class="card dash-table-card">
   <div class="table-responsive">
