@@ -39,6 +39,9 @@ class JobApplicationsController < ApplicationController
     )
 
     JobApplyJob.perform_later(application.id)
+    ActivityLogger.log(user: current_user, action: "application_created", category: "application",
+      description: "Applied to #{listing.title} at #{listing.company}",
+      trackable: application, metadata: { listing_title: listing.title, listing_company: listing.company })
     redirect_to job_application_path(application), notice: "Application queued. Processing will begin shortly."
   end
 

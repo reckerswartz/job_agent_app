@@ -1,0 +1,51 @@
+<% content_for(:page_title, "Admin — Audit Log") %>
+
+<%= render "shared/page_header", title: "Audit Log", subtitle: "All user activity across the system" %>
+
+<%# ── Category Filter Tabs ── %>
+<% audit_tabs = [{ label: "All", count: @category_counts.values.sum, path: admin_audit_logs_path, active: params[:category].blank? }] %>
+<% ActivityLog::CATEGORIES.each do |cat| %>
+  <% count = @category_counts[cat] || 0 %>
+  <% next if count == 0 %>
+  <% audit_tabs << { label: cat.capitalize, count: count, path: admin_audit_logs_path(category: cat), active: params[:category] == cat } %>
+<% end %>
+<%= render "shared/filter_tabs", tabs: audit_tabs %>
+
+<% if @logs.any? %>
+  <div class="card dash-table-card">
+    <div class="table-responsive">
+      <table class="table">
+        <thead>
+          <tr>
+            <th scope="col"><%= link_to "When#{sort_indicator('created_at')}", sort_url('created_at', admin_audit_logs_path), class: "text-decoration-none text-dark" %></th>
+            <th scope="col">User</th>
+            <th scope="col"><%= link_to "Action#{sort_indicator('action')}", sort_url('action', admin_audit_logs_path), class: "text-decoration-none text-dark" %></th>
+            <th scope="col">Description</th>
+            <th scope="col">Category</th>
+            <th scope="col">IP</th>
+          </tr>
+        </thead>
+        <tbody>
+          <% @logs.each do |log| %>
+            <tr>
+              <td class="text-muted small"><%= time_ago_in_words(log.created_at) %> ago</td>
+              <td class="small"><%= log.user&.email&.truncate(25) %></td>
+              <td class="fw-semibold small"><%= log.action.humanize %></td>
+              <td class="small"><%= log.description&.truncate(80) %></td>
+              <td>
+                <% if log.category.present? %>
+                  <span class="badge bg-secondary"><%= log.category %></span>
+                <% end %>
+              </td>
+              <td class="text-muted small"><%= log.ip_address || "—" %></td>
+            </tr>
+          <% end %>
+        </tbody>
+      </table>
+    </div>
+  </div>
+  <%= render "shared/pagination", pagy: @pagy %>
+<% else %>
+  <%= render "shared/empty_state", icon: "&#x1F4DD;", title: "No activity logged yet",
+      message: "Activity will appear here as users interact with the system." %>
+<% end %>

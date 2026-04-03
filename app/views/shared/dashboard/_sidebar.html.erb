@@ -34,6 +34,11 @@
 
     <li>
       <% pending_count = user_signed_in? ? current_user.interventions.pending.count : 0 %>
+      <%= link_to activity_logs_path, class: "sidebar__link #{request.path == '/activity' ? 'sidebar__link--active' : ''}" do %>
+        <span class="sidebar__link-icon">&#x1F4DD;</span> Activity
+      <% end %>
+    </li>
+    <li>
       <%= link_to interventions_path, class: "sidebar__link #{request.path.start_with?('/interventions') ? 'sidebar__link--active' : ''}" do %>
         <span class="sidebar__link-icon">&#x26A0;</span> Interventions
         <% if pending_count > 0 %>
@@ -88,6 +93,11 @@
       <li>
         <%= link_to admin_scan_runs_path, class: "sidebar__link #{request.path.start_with?('/admin/scan') ? 'sidebar__link--active' : ''}" do %>
           <span class="sidebar__link-icon">&#x1F4E1;</span> Scan Monitor
+        <% end %>
+      </li>
+      <li>
+        <%= link_to admin_audit_logs_path, class: "sidebar__link #{request.path == '/admin/audit_logs' ? 'sidebar__link--active' : ''}" do %>
+          <span class="sidebar__link-icon">&#x1F4DC;</span> Audit Log
         <% end %>
       </li>
     <% end %>
