@@ -60,6 +60,12 @@ class JobScanJob < ApplicationJob
         NotificationMailer.scan_completed(source.user, scan_run).deliver_later
       end
 
+      # Fire webhook: scan.completed
+      WebhookDispatcher.fire(source.user, "scan.completed", {
+        scan_run_id: scan_run.id, source_name: source.name, platform: source.platform,
+        listings_found: found_count, new_listings: new_count
+      })
+
     rescue => e
       Rails.logger.error("[JobScanJob] Failed for source #{source.id}: #{e.message}")
       scan_run.mark_failed!(e)

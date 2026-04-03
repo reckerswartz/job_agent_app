@@ -10,7 +10,7 @@
 #
 # It's strongly recommended that you check this file into your version control system.
 
-ActiveRecord::Schema[8.1].define(version: 2026_04_03_084319) do
+ActiveRecord::Schema[8.1].define(version: 2026_04_03_123622) do
   # These are extensions that must be enabled in order to support this database
   enable_extension "pg_catalog.plpgsql"
 
@@ -302,6 +302,7 @@ ActiveRecord::Schema[8.1].define(version: 2026_04_03_084319) do
   end
 
   create_table "users", force: :cascade do |t|
+    t.string "api_token"
     t.datetime "created_at", null: false
     t.datetime "current_sign_in_at"
     t.string "current_sign_in_ip"
@@ -317,8 +318,20 @@ ActiveRecord::Schema[8.1].define(version: 2026_04_03_084319) do
     t.integer "role", default: 0, null: false
     t.integer "sign_in_count", default: 0, null: false
     t.datetime "updated_at", null: false
+    t.index ["api_token"], name: "index_users_on_api_token", unique: true
     t.index ["email"], name: "index_users_on_email", unique: true
     t.index ["reset_password_token"], name: "index_users_on_reset_password_token", unique: true
+  end
+
+  create_table "webhook_endpoints", force: :cascade do |t|
+    t.boolean "active", default: true, null: false
+    t.datetime "created_at", null: false
+    t.jsonb "events", default: []
+    t.string "secret"
+    t.datetime "updated_at", null: false
+    t.string "url", null: false
+    t.bigint "user_id", null: false
+    t.index ["user_id"], name: "index_webhook_endpoints_on_user_id"
   end
 
   add_foreign_key "active_storage_attachments", "active_storage_blobs", column: "blob_id"
@@ -341,4 +354,5 @@ ActiveRecord::Schema[8.1].define(version: 2026_04_03_084319) do
   add_foreign_key "profile_entries", "profile_sections"
   add_foreign_key "profile_sections", "profiles"
   add_foreign_key "profiles", "users"
+  add_foreign_key "webhook_endpoints", "users"
 end

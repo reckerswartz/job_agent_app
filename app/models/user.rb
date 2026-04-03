@@ -23,6 +23,16 @@ class User < ApplicationRecord
     display_name.split.map(&:first).join.upcase.first(2)
   end
 
+  def generate_api_token!
+    update!(api_token: SecureRandom.hex(32))
+    api_token
+  end
+
+  def masked_api_token
+    return nil if api_token.blank?
+    "#{api_token.first(8)}#{"*" * 48}#{api_token.last(8)}"
+  end
+
   private
 
   def assign_initial_role
