@@ -17,6 +17,14 @@ class User < ApplicationRecord
     notification_settings.fetch(key.to_s, true)
   end
 
+  def auto_apply_enabled?
+    notification_settings.fetch("auto_apply_enabled", false) == true
+  end
+
+  def auto_apply_threshold
+    notification_settings.fetch("auto_apply_threshold", 80).to_i
+  end
+
   def display_name
     email.split("@").first.humanize
   end

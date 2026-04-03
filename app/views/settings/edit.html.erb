@@ -1,7 +1,47 @@
 <% content_for(:page_title, "Settings") %>
 
-<%= render "shared/page_header", title: "Settings", subtitle: "Manage your notification preferences" %>
+<%= render "shared/page_header", title: "Settings", subtitle: "Manage your preferences and automations" %>
 
+<%# ── Automations ── %>
+<div class="card profile-section-card mb-4">
+  <div class="card-header">
+    <h3 class="card-header__title mb-0">Automations</h3>
+  </div>
+  <div class="card-body">
+    <p class="text-muted mb-4">Configure automatic actions. Auto-apply will submit Easy Apply applications for high-match listings.</p>
+
+    <%= form_with url: settings_path, method: :patch do |f| %>
+      <div class="form-check form-switch mb-3">
+        <input type="hidden" name="notifications[auto_apply_enabled]" value="false">
+        <input type="checkbox" class="form-check-input" role="switch"
+               name="notifications[auto_apply_enabled]" id="auto_apply_enabled"
+               value="true"
+               <%= "checked" if current_user.auto_apply_enabled? %>>
+        <label class="form-check-label" for="auto_apply_enabled">
+          <strong>Auto-Apply to Easy Apply Jobs</strong>
+          <div class="form-text">Automatically apply to new Easy Apply listings that meet your match threshold.</div>
+        </label>
+      </div>
+
+      <div class="mb-3" style="max-width: 300px;">
+        <label for="auto_apply_threshold" class="form-label fw-semibold">Minimum Match Score</label>
+        <div class="input-group">
+          <input type="number" name="notifications[auto_apply_threshold]" id="auto_apply_threshold"
+                 class="form-control" min="50" max="100" step="5"
+                 value="<%= current_user.auto_apply_threshold %>">
+          <span class="input-group-text">%</span>
+        </div>
+        <div class="form-text">Only auto-apply to listings with match score at or above this value (50-100).</div>
+      </div>
+
+      <div class="d-flex gap-2">
+        <%= f.submit "Save Automations", class: "btn btn-primary" %>
+      </div>
+    <% end %>
+  </div>
+</div>
+
+<%# ── Email Notifications ── %>
 <div class="card profile-section-card">
   <div class="card-header">
     <h3 class="card-header__title mb-0">Email Notifications</h3>
