@@ -1,4 +1,5 @@
 class JobListingsController < ApplicationController
+  include DataTableable
   before_action :authenticate_user!
   layout "dashboard"
 
@@ -8,11 +9,11 @@ class JobListingsController < ApplicationController
     scope = JobListing.for_user(current_user)
                       .search(params[:q])
                       .by_status(params[:status])
-                      .recent
                       .includes(:job_source)
 
     scope = scope.where(job_source_id: params[:source_id]) if params[:source_id].present?
-    @pagy, @listings = pagy(scope)
+    scope = apply_sorting(scope, %w[title company match_score posted_at created_at], default_column: "created_at")
+    @pagy, @listings = pagy(scope, limit: per_page_limit)
     @status_counts = JobListing.for_user(current_user).group(:status).count
     @search_query = params[:q]
   end

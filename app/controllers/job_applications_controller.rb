@@ -1,4 +1,5 @@
 class JobApplicationsController < ApplicationController
+  include DataTableable
   before_action :authenticate_user!
   layout "dashboard"
 
@@ -7,9 +8,9 @@ class JobApplicationsController < ApplicationController
   def index
     scope = JobApplication.for_user(current_user)
                           .by_status(params[:status])
-                          .recent
                           .includes(job_listing: :job_source)
-    @pagy, @applications = pagy(scope)
+    scope = apply_sorting(scope, %w[status created_at], default_column: "created_at")
+    @pagy, @applications = pagy(scope, limit: per_page_limit)
     @status_counts = JobApplication.for_user(current_user).group(:status).count
   end
 

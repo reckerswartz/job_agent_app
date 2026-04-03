@@ -1,12 +1,9 @@
 <% content_for(:page_title, "Job Sources") %>
 
-<div class="page-header d-flex justify-content-between align-items-start mb-4">
-  <div>
-    <h1 class="page-header__title">Job Sources</h1>
-    <p class="page-header__subtitle">Manage the job boards you want to search</p>
-  </div>
+<% actions = capture do %>
   <%= link_to "Add Source", new_job_source_path, class: "btn btn-primary" %>
-</div>
+<% end %>
+<%= render "shared/page_header", title: "Job Sources", subtitle: "Manage the job boards you want to search", actions: actions %>
 
 <% if @job_sources.any? %>
   <div class="row g-3">

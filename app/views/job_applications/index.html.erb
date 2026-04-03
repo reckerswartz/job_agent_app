@@ -1,11 +1,6 @@
 <% content_for(:page_title, "Applications") %>
 
-<div class="page-header d-flex justify-content-between align-items-start mb-4">
-  <div>
-    <h1 class="page-header__title">Applications</h1>
-    <p class="page-header__subtitle"><%= @applications.size %> applications</p>
-  </div>
-</div>
+<%= render "shared/page_header", title: "Applications", subtitle: "#{@applications.size} applications" %>
 
 <%# ── Status Filter Tabs ── %>
 <ul class="nav nav-tabs mb-4">
@@ -29,12 +24,12 @@
       <table class="table">
         <thead>
           <tr>
-            <th>Position</th>
-            <th>Company</th>
-            <th>Status</th>
-            <th>Steps</th>
-            <th>Applied</th>
-            <th>Actions</th>
+            <th scope="col">Position</th>
+            <th scope="col">Company</th>
+            <th scope="col"><%= link_to "Status#{sort_indicator('status')}", sort_url('status', job_applications_path), class: "text-decoration-none text-dark" %></th>
+            <th scope="col">Steps</th>
+            <th scope="col"><%= link_to "Applied#{sort_indicator('created_at')}", sort_url('created_at', job_applications_path), class: "text-decoration-none text-dark" %></th>
+            <th scope="col">Actions</th>
           </tr>
         </thead>
         <tbody>
