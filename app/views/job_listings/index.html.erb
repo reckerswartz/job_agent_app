@@ -1,14 +1,11 @@
 <% content_for(:page_title, "Job Listings") %>
 
-<div class="page-header d-flex justify-content-between align-items-start mb-4">
-  <div>
-    <h1 class="page-header__title">Job Listings</h1>
-    <p class="page-header__subtitle"><%= @listings.size %> listings found</p>
-  </div>
+<% actions = capture do %>
   <% if @listings.any? %>
     <%= link_to "Export CSV", export_job_listings_path(status: params[:status]), class: "btn btn-outline-secondary btn-sm" %>
   <% end %>
-</div>
+<% end %>
+<%= render "shared/page_header", title: "Job Listings", subtitle: "#{@listings.size} listings found", actions: actions %>
 
 <%# ── Search Bar ── %>
 <div class="mb-3">
@@ -52,14 +49,14 @@
         <table class="table">
           <thead>
             <tr>
-              <th style="width:40px"><input type="checkbox" class="form-check-input" data-bulk-select-target="selectAll" data-action="change->bulk-select#toggleAll"></th>
-              <th>Position</th>
-              <th>Company</th>
-              <th>Location</th>
-              <th>Match</th>
-              <th>Source</th>
-              <th>Status</th>
-              <th>Posted</th>
+              <th scope="col" style="width:40px"><input type="checkbox" class="form-check-input" data-bulk-select-target="selectAll" data-action="change->bulk-select#toggleAll"></th>
+              <th scope="col"><%= link_to "Position#{sort_indicator('title')}", sort_url('title', job_listings_path), class: "text-decoration-none text-dark" %></th>
+              <th scope="col"><%= link_to "Company#{sort_indicator('company')}", sort_url('company', job_listings_path), class: "text-decoration-none text-dark" %></th>
+              <th scope="col">Location</th>
+              <th scope="col"><%= link_to "Match#{sort_indicator('match_score')}", sort_url('match_score', job_listings_path), class: "text-decoration-none text-dark" %></th>
+              <th scope="col">Source</th>
+              <th scope="col">Status</th>
+              <th scope="col"><%= link_to "Posted#{sort_indicator('posted_at')}", sort_url('posted_at', job_listings_path), class: "text-decoration-none text-dark" %></th>
             </tr>
           </thead>
           <tbody>

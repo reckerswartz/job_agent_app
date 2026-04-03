@@ -1,11 +1,6 @@
 <% content_for(:page_title, "Interventions") %>
 
-<div class="page-header d-flex justify-content-between align-items-start mb-4">
-  <div>
-    <h1 class="page-header__title">Interventions</h1>
-    <p class="page-header__subtitle">Items requiring your attention</p>
-  </div>
-</div>
+<%= render "shared/page_header", title: "Interventions", subtitle: "Items requiring your attention" %>
 
 <%# ── Status Filter Tabs ── %>
 <ul class="nav nav-tabs mb-4">
