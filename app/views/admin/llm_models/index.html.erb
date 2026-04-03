@@ -11,18 +11,31 @@
   </div>
 </div>
 
+<div data-controller="data-table" class="mb-3 d-flex gap-2 align-items-center">
+  <input type="text" class="form-control form-control-sm" style="max-width: 280px;"
+         placeholder="Search models..." value="<%= params[:q] %>"
+         data-data-table-target="searchInput" data-action="input->data-table#search">
+  <select class="form-select form-select-sm" style="width: 90px;"
+          data-data-table-target="perPage" data-action="change->data-table#changePerPage">
+    <% [10, 20, 50, 100].each do |n| %>
+      <option value="<%= n %>" <%= 'selected' if per_page_limit == n %>><%= n %></option>
+    <% end %>
+  </select>
+  <span class="text-muted small">per page</span>
+</div>
+
 <% if @models.any? %>
   <div class="card dash-table-card">
     <div class="table-responsive">
       <table class="table">
         <thead>
           <tr>
-            <th>Model</th>
-            <th>Type</th>
+            <th><%= link_to "Model#{sort_indicator('name')}", sort_url('name', admin_llm_models_path), class: "text-decoration-none text-dark" %></th>
+            <th><%= link_to "Type#{sort_indicator('model_type')}", sort_url('model_type', admin_llm_models_path), class: "text-decoration-none text-dark" %></th>
             <th>Status</th>
-            <th>Active</th>
+            <th><%= link_to "Active#{sort_indicator('active')}", sort_url('active', admin_llm_models_path), class: "text-decoration-none text-dark" %></th>
             <th>Role</th>
-            <th>Priority</th>
+            <th><%= link_to "Priority#{sort_indicator('priority')}", sort_url('priority', admin_llm_models_path), class: "text-decoration-none text-dark" %></th>
             <th>Verify</th>
           </tr>
         </thead>
@@ -86,6 +99,8 @@
       </table>
     </div>
   </div>
+  </div>
+  <%= render "shared/pagination", pagy: @pagy %>
 <% else %>
   <div class="card">
     <div class="card-body text-center py-5">

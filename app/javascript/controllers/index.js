@@ -24,3 +24,6 @@ application.register("shortcuts", ShortcutsController)
 
 import TopbarSearchController from "./topbar_search_controller"
 application.register("topbar-search", TopbarSearchController)
+
+import DataTableController from "./data_table_controller"
+application.register("data-table", DataTableController)
