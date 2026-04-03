@@ -2,27 +2,27 @@ class OnboardingController < ApplicationController
   before_action :authenticate_user!
   layout "auth"
 
-  STEPS = %w[welcome profile resume source criteria complete].freeze
+  STEPS = %w[resume profile source complete].freeze
 
   def show
     @step = determine_current_step
+    @profile = current_user.profiles.first_or_create!(title: "My Resume")
   end
 
   def update_step
     @step = params[:step]
+    @profile = current_user.profiles.first_or_create!(title: "My Resume")
 
     case @step
-    when "profile"
-      save_profile
     when "resume"
       save_resume
+    when "profile"
+      save_profile
     when "source"
       save_source
-    when "criteria"
-      save_criteria
     when "complete"
       current_user.update!(onboarding_completed: true)
-      redirect_to dashboard_path, notice: "Welcome to Job Agent! You're all set."
+      redirect_to dashboard_path, notice: "Welcome to Job Agent! Your dashboard is ready."
       return
     end
 
@@ -40,49 +40,53 @@ class OnboardingController < ApplicationController
 
   def determine_current_step
     step = params[:step]
-    STEPS.include?(step) ? step : "welcome"
-  end
-
-  def save_profile
-    profile = current_user.profiles.first_or_create!(title: "My Resume")
-    profile.update!(
-      headline: params.dig(:profile, :headline),
-      contact_details: profile.contact_details.merge(
-        "first_name" => params.dig(:profile, :first_name).to_s.strip,
-        "surname" => params.dig(:profile, :surname).to_s.strip,
-        "email" => params.dig(:profile, :email).to_s.strip,
-        "phone" => params.dig(:profile, :phone).to_s.strip
-      )
-    )
+    STEPS.include?(step) ? step : STEPS.first
   end
 
   def save_resume
-    profile = current_user.profiles.first_or_create!(title: "My Resume")
     if params[:source_document].present?
-      profile.source_document.attach(params[:source_document])
-      profile.update!(source_mode: "upload")
-      ResumeParseJob.perform_later(profile.id)
+      @profile.source_document.attach(params[:source_document])
+      @profile.update!(source_mode: "upload")
+      ResumeParseJob.perform_later(@profile.id)
     end
   end
 
-  def save_source
-    return if params.dig(:job_source, :platform).blank?
+  def save_profile
+    updates = {}
+    updates[:headline] = params.dig(:profile, :headline) if params.dig(:profile, :headline).present?
+    updates[:summary] = params.dig(:profile, :summary) if params.dig(:profile, :summary).present?
 
-    current_user.job_sources.create!(
-      name: params.dig(:job_source, :name).presence || "My #{params.dig(:job_source, :platform).capitalize}",
-      platform: params.dig(:job_source, :platform)
+    contact = @profile.contact_details.merge(
+      "first_name" => params.dig(:profile, :first_name).to_s.strip,
+      "surname" => params.dig(:profile, :surname).to_s.strip,
+      "email" => params.dig(:profile, :email).to_s.strip,
+      "phone" => params.dig(:profile, :phone).to_s.strip,
+      "city" => params.dig(:profile, :city).to_s.strip,
+      "country" => params.dig(:profile, :country).to_s.strip
     )
+    updates[:contact_details] = contact
+    @profile.update!(updates)
   end
 
-  def save_criteria
-    return if params.dig(:criteria, :keywords).blank?
+  def save_source
+    platform = params.dig(:job_source, :platform)
+    return if platform.blank?
 
-    current_user.job_search_criteria.create!(
-      name: "#{params.dig(:criteria, :keywords)} search",
-      keywords: params.dig(:criteria, :keywords),
-      location: params.dig(:criteria, :location),
-      remote_preference: params.dig(:criteria, :remote_preference).presence || "any",
-      is_default: true
+    source = current_user.job_sources.create!(
+      name: "My #{platform.capitalize}",
+      platform: platform
     )
+
+    # Create search criteria from optional fields
+    keywords = params.dig(:criteria, :keywords)
+    if keywords.present?
+      current_user.job_search_criteria.create!(
+        name: "#{keywords} search",
+        keywords: keywords,
+        location: params.dig(:criteria, :location),
+        remote_preference: params.dig(:criteria, :remote_preference).presence || "any",
+        is_default: true
+      )
+    end
   end
 end

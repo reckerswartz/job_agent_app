@@ -6,10 +6,10 @@ RSpec.describe "Onboarding", type: :request do
       let(:user) { create(:user, :not_onboarded) }
       before { sign_in user }
 
-      it "renders the onboarding wizard" do
+      it "renders the resume upload step first" do
         get onboarding_path
         expect(response).to have_http_status(:success)
-        expect(response.body).to include("Welcome to Job Agent")
+        expect(response.body).to include("start with your resume")
       end
     end
 
@@ -50,33 +50,35 @@ RSpec.describe "Onboarding", type: :request do
     let(:user) { create(:user, :not_onboarded) }
     before { sign_in user }
 
-    it "saves profile data and advances to next step" do
+    it "saves profile data and advances to source step" do
       post update_step_onboarding_path, params: {
         step: "profile",
         profile: { first_name: "John", surname: "Doe", email: "john@example.com", headline: "Developer" }
       }
-      expect(response).to redirect_to(onboarding_path(step: "resume"))
+      expect(response).to redirect_to(onboarding_path(step: "source"))
 
       profile = user.profiles.first
       expect(profile.contact_field("first_name")).to eq("John")
       expect(profile.headline).to eq("Developer")
     end
 
-    it "saves job source and advances" do
+    it "saves job source and advances to complete" do
       post update_step_onboarding_path, params: {
         step: "source",
-        job_source: { platform: "linkedin", name: "My LinkedIn" }
-      }
-      expect(response).to redirect_to(onboarding_path(step: "criteria"))
-      expect(user.job_sources.count).to eq(1)
-    end
-
-    it "saves search criteria and advances" do
-      post update_step_onboarding_path, params: {
-        step: "criteria",
-        criteria: { keywords: "Ruby Developer", location: "NYC", remote_preference: "remote" }
+        job_source: { platform: "linkedin" }
       }
       expect(response).to redirect_to(onboarding_path(step: "complete"))
+      expect(user.job_sources.count).to eq(1)
+      expect(user.job_sources.first.name).to eq("My Linkedin")
+    end
+
+    it "saves source with optional criteria" do
+      post update_step_onboarding_path, params: {
+        step: "source",
+        job_source: { platform: "indeed" },
+        criteria: { keywords: "Ruby Developer", location: "NYC" }
+      }
+      expect(user.job_sources.count).to eq(1)
       expect(user.job_search_criteria.count).to eq(1)
     end
 
@@ -91,9 +93,14 @@ RSpec.describe "Onboarding", type: :request do
     let(:user) { create(:user, :not_onboarded) }
     before { sign_in user }
 
-    it "advances to next step without saving" do
+    it "advances from resume to profile" do
+      post skip_step_onboarding_path, params: { step: "resume" }
+      expect(response).to redirect_to(onboarding_path(step: "profile"))
+    end
+
+    it "advances from profile to source" do
       post skip_step_onboarding_path, params: { step: "profile" }
-      expect(response).to redirect_to(onboarding_path(step: "resume"))
+      expect(response).to redirect_to(onboarding_path(step: "source"))
     end
   end
 end
