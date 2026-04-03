@@ -75,10 +75,10 @@ module JobScanner
 
     # ── Mode 1: Playwright logged-in session ──────────────────────────
     def try_logged_in_scan
-      @session = BrowserSession.new(headless: true)
+      @session = BrowserSession.new(headless: false)
 
       @session.navigate("#{LINKEDIN_BASE}/feed/", wait_until: "domcontentloaded")
-      sleep(2)
+      sleep(3)
 
       unless logged_in?
         Rails.logger.info("[LinkedinScanner] Not logged in — skipping browser mode")
