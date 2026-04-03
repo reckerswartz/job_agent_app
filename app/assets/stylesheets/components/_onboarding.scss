@@ -3,11 +3,12 @@
 // ==========================================================================
 
 .onboarding {
-  max-width: 700px;
+  max-width: 640px;
   margin: 0 auto;
+  padding: 1rem 0;
 
   &__progress {
-    padding: 0 1rem;
+    padding: 0 0.5rem;
   }
 
   &__step {
@@ -17,42 +18,46 @@
     flex: 0 0 auto;
 
     &-number {
-      width: 32px;
-      height: 32px;
+      width: 36px;
+      height: 36px;
       border-radius: 50%;
-      background-color: #dee2e6;
+      background-color: #e9ecef;
       color: #6c757d;
       display: flex;
       align-items: center;
       justify-content: center;
-      font-size: 0.8rem;
+      font-size: 0.85rem;
       font-weight: 700;
-      margin-bottom: 0.25rem;
+      margin-bottom: 0.375rem;
+      transition: background-color 0.2s, color 0.2s;
     }
 
     &-label {
-      font-size: 0.7rem;
+      font-size: 0.65rem;
       color: #6c757d;
       text-transform: uppercase;
-      letter-spacing: 0.04em;
+      letter-spacing: 0.05em;
+      font-weight: 600;
     }
 
     &-line {
       flex: 1;
       height: 2px;
-      background-color: #dee2e6;
+      background-color: #e9ecef;
       align-self: center;
       margin: 0 0.5rem;
-      margin-bottom: 1.25rem;
+      margin-bottom: 1.5rem;
+      transition: background-color 0.3s;
 
       &--done {
-        background-color: $primary;
+        background-color: $success;
       }
     }
 
     &--active &-number {
       background-color: $primary;
       color: #fff;
+      box-shadow: 0 0 0 4px rgba($primary, 0.15);
     }
 
     &--active &-label {
@@ -72,7 +77,76 @@
 
   &__card {
     border: none;
-    box-shadow: $box-shadow;
+    box-shadow: $box-shadow-lg;
     border-radius: $border-radius-lg;
+  }
+
+  // ── Upload Zone ──
+  &__upload-zone {
+    position: relative;
+    cursor: pointer;
+
+    &-inner {
+      border: 2px dashed #ced4da;
+      border-radius: $border-radius-lg;
+      padding: 2.5rem 1.5rem;
+      text-align: center;
+      transition: border-color 0.2s, background-color 0.2s;
+      background-color: #fafbfc;
+
+      &:hover {
+        border-color: $primary;
+        background-color: rgba($primary, 0.03);
+      }
+    }
+
+    &-icon {
+      font-size: 2.5rem;
+      margin-bottom: 0.5rem;
+    }
+
+    &-text {
+      font-size: 1rem;
+      color: $dark;
+    }
+
+    &-input {
+      position: absolute;
+      inset: 0;
+      opacity: 0;
+      cursor: pointer;
+      width: 100%;
+      height: 100%;
+    }
+  }
+
+  // ── Platform Cards ──
+  &__platform-card {
+    display: block;
+    cursor: pointer;
+
+    &-inner {
+      border: 2px solid #e9ecef;
+      border-radius: $border-radius-lg;
+      padding: 1.25rem 1rem;
+      text-align: center;
+      transition: border-color 0.2s, box-shadow 0.2s;
+
+      &:hover {
+        border-color: $secondary;
+        box-shadow: $box-shadow-sm;
+      }
+    }
+
+    &-icon {
+      font-size: 1.75rem;
+      margin-bottom: 0.375rem;
+    }
+
+    input:checked + &-inner {
+      border-color: $primary;
+      background-color: rgba($primary, 0.04);
+      box-shadow: 0 0 0 3px rgba($primary, 0.12);
+    }
   }
 }
