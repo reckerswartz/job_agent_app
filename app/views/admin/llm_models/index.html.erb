@@ -11,6 +11,26 @@
   </div>
 </div>
 
+<%# ── Filter Tabs ── %>
+<ul class="nav nav-tabs mb-3">
+  <li class="nav-item">
+    <%= link_to "All (#{@counts[:all]})", admin_llm_models_path(show: "all"),
+        class: "nav-link #{@filter == 'all' ? 'active' : ''}" %>
+  </li>
+  <li class="nav-item">
+    <%= link_to "Active (#{@counts[:active]})", admin_llm_models_path(show: "active"),
+        class: "nav-link #{@filter == 'active' ? 'active' : ''}" %>
+  </li>
+  <li class="nav-item">
+    <%= link_to "Tested (#{@counts[:tested]})", admin_llm_models_path(show: "tested"),
+        class: "nav-link #{@filter == 'tested' ? 'active' : ''}" %>
+  </li>
+  <li class="nav-item">
+    <%= link_to "Inactive (#{@counts[:inactive]})", admin_llm_models_path(show: "inactive"),
+        class: "nav-link #{@filter == 'inactive' ? 'active' : ''}" %>
+  </li>
+</ul>
+
 <div data-controller="data-table" class="mb-3 d-flex gap-2 align-items-center">
   <input type="text" class="form-control form-control-sm" style="max-width: 280px;"
          placeholder="Search models..." value="<%= params[:q] %>"
@@ -44,7 +64,12 @@
             <tr>
               <td>
                 <div class="fw-bold"><%= model.name %></div>
-                <div class="small text-muted text-truncate" style="max-width: 250px;"><%= model.identifier %></div>
+                <div class="small text-muted text-truncate" style="max-width: 250px;">
+                  <%= model.identifier %>
+                  <% if model.owned_by.present? %>
+                    <span class="badge bg-light text-dark border ms-1"><%= model.owned_by %></span>
+                  <% end %>
+                </div>
               </td>
               <td>
                 <% type_color = { "text" => "primary", "vision" => "warning", "multimodal" => "info" }[model.model_type] || "secondary" %>

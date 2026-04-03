@@ -11,6 +11,8 @@ class LlmModel < ApplicationRecord
   validates :model_type, inclusion: { in: MODEL_TYPES }
   validates :role, inclusion: { in: ROLES }, allow_nil: true
 
+  before_save :ensure_unique_primary_role, if: -> { role_changed? && role.in?(%w[primary_text primary_vision]) }
+
   scope :active, -> { where(active: true) }
   scope :text_capable, -> { where(supports_text: true) }
   scope :vision_capable, -> { where(supports_vision: true) }
@@ -27,5 +29,13 @@ class LlmModel < ApplicationRecord
 
   def multimodal?
     model_type == "multimodal"
+  end
+
+  private
+
+  def ensure_unique_primary_role
+    LlmModel.where(llm_provider_id: llm_provider_id, role: role)
+             .where.not(id: id)
+             .update_all(role: nil)
   end
 end

@@ -67,6 +67,11 @@
         <% end %>
       </li>
       <li>
+        <%= link_to admin_api_keys_path, class: "sidebar__link #{request.path == '/admin/api_keys' ? 'sidebar__link--active' : ''}" do %>
+          <span class="sidebar__link-icon">&#x1F511;</span> API Keys
+        <% end %>
+      </li>
+      <li>
         <%= link_to admin_llm_interactions_path, class: "sidebar__link #{request.path == '/admin/llm_interactions' ? 'sidebar__link--active' : ''}" do %>
           <span class="sidebar__link-icon">&#x1F916;</span> LLM Logs
         <% end %>
