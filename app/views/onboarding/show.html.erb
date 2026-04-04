@@ -52,6 +52,20 @@
           </div>
         <% end %>
 
+        <div class="text-center my-3">
+          <span class="text-muted small">or</span>
+        </div>
+
+        <%= form_with url: update_step_onboarding_path, method: :post do |f| %>
+          <input type="hidden" name="step" value="resume">
+          <div class="input-group">
+            <span class="input-group-text">&#x1F517;</span>
+            <input type="url" name="linkedin_url" class="form-control" placeholder="https://linkedin.com/in/yourname">
+            <button type="submit" class="btn btn-outline-primary">Import from LinkedIn</button>
+          </div>
+          <div class="form-text text-center">Paste your LinkedIn profile URL to auto-fill your profile</div>
+        <% end %>
+
       <% elsif @step == "profile" %>
         <%# ── STEP 2: Profile (Pre-filled from resume) ── %>
         <h2 class="mb-1">Review your profile</h2>
