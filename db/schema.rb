@@ -10,7 +10,7 @@
 #
 # It's strongly recommended that you check this file into your version control system.
 
-ActiveRecord::Schema[8.1].define(version: 2026_04_04_034735) do
+ActiveRecord::Schema[8.1].define(version: 2026_04_04_035314) do
   # These are extensions that must be enabled in order to support this database
   enable_extension "pg_catalog.plpgsql"
 
@@ -136,6 +136,7 @@ ActiveRecord::Schema[8.1].define(version: 2026_04_04_034735) do
     t.bigint "job_listing_id", null: false
     t.jsonb "metadata", default: {}, null: false
     t.text "notes"
+    t.string "pipeline_stage", default: "applied"
     t.bigint "profile_id", null: false
     t.string "status", default: "queued", null: false
     t.datetime "updated_at", null: false

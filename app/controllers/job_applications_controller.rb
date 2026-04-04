@@ -3,7 +3,7 @@ class JobApplicationsController < ApplicationController
   before_action :authenticate_user!
   layout "dashboard"
 
-  before_action :set_application, only: [ :show, :retry_application ]
+  before_action :set_application, only: [ :show, :retry_application, :update_stage ]
 
   def index
     scope = JobApplication.for_user(current_user)
@@ -12,6 +12,21 @@ class JobApplicationsController < ApplicationController
     scope = apply_sorting(scope, %w[status created_at], default_column: "created_at")
     @pagy, @applications = pagy(scope, limit: per_page_limit)
     @status_counts = JobApplication.for_user(current_user).group(:status).count
+  end
+
+  def board
+    @applications = JobApplication.for_user(current_user).includes(job_listing: :job_source)
+    @stages = JobApplication::PIPELINE_STAGES
+    @grouped = @stages.index_with { |stage| @applications.where(pipeline_stage: stage).recent }
+  end
+
+  def update_stage
+    if JobApplication::PIPELINE_STAGES.include?(params[:pipeline_stage])
+      @application.update!(pipeline_stage: params[:pipeline_stage])
+      head :ok
+    else
+      head :unprocessable_entity
+    end
   end
 
   def show
