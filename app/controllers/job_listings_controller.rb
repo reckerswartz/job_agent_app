@@ -7,15 +7,22 @@ class JobListingsController < ApplicationController
 
   def index
     scope = JobListing.for_user(current_user)
+                      .not_duplicate
                       .search(params[:q])
                       .by_status(params[:status])
+                      .by_remote(params[:remote])
+                      .by_employment(params[:employment])
+                      .by_platform(params[:platform])
+                      .by_match_range(params[:min_match], params[:max_match])
                       .includes(:job_source)
 
     scope = scope.where(job_source_id: params[:source_id]) if params[:source_id].present?
+    scope = scope.easy_apply_only if params[:easy_apply] == "1"
     scope = apply_sorting(scope, %w[title company match_score posted_at created_at], default_column: "created_at")
     @pagy, @listings = pagy(scope, limit: per_page_limit)
-    @status_counts = JobListing.for_user(current_user).group(:status).count
+    @status_counts = JobListing.for_user(current_user).not_duplicate.group(:status).count
     @search_query = params[:q]
+    @filters_active = [params[:remote], params[:employment], params[:platform], params[:easy_apply], params[:min_match], params[:max_match]].any?(&:present?)
   end
 
   def show

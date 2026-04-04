@@ -14,6 +14,16 @@ class JobListing < ApplicationRecord
   scope :high_match, -> { where("match_score >= ?", 70) }
   scope :recommended, -> { where("match_score >= ?", 50).order(match_score: :desc) }
   scope :not_duplicate, -> { where(duplicate_of_id: nil) }
+  scope :by_remote, ->(type) { where(remote_type: type) if type.present? }
+  scope :by_employment, ->(type) { where(employment_type: type) if type.present? }
+  scope :easy_apply_only, -> { where(easy_apply: true) }
+  scope :by_platform, ->(platform) { joins(:job_source).where(job_sources: { platform: platform }) if platform.present? }
+  scope :by_match_range, ->(min, max) {
+    s = all
+    s = s.where("match_score >= ?", min.to_i) if min.present?
+    s = s.where("match_score <= ?", max.to_i) if max.present?
+    s
+  }
 
   belongs_to :duplicate_of, class_name: "JobListing", optional: true
   has_many :duplicates, class_name: "JobListing", foreign_key: :duplicate_of_id
