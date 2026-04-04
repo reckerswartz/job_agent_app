@@ -20,7 +20,8 @@
 
     <div class="source-card__meta mb-3">
       <small class="text-muted">
-        Scan every <strong><%= source.scan_interval_hours %>h</strong>
+        <strong><%= source.job_listings.count %></strong> listings
+        &middot; Scan every <strong><%= source.scan_interval_hours %>h</strong>
         <% if source.last_scanned_at %>
           &middot; Last scanned: <strong><%= time_ago_in_words(source.last_scanned_at) %> ago</strong>
         <% else %>

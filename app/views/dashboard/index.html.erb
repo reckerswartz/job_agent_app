@@ -81,8 +81,10 @@
               <% @upcoming_interviews.each do |interview| %>
                 <tr>
                   <td class="small">
-                    <div class="fw-bold"><%= interview.job_application.job_listing.company %></div>
-                    <div class="text-muted" style="font-size: 0.7rem;"><%= interview.stage_label %> &middot; <%= interview.format&.humanize %></div>
+                    <%= link_to job_application_path(interview.job_application), class: "text-decoration-none" do %>
+                      <div class="fw-bold"><%= interview.job_application.job_listing.company %></div>
+                      <div class="text-muted" style="font-size: 0.7rem;"><%= interview.stage_label %> &middot; <%= interview.format&.humanize %></div>
+                    <% end %>
                   </td>
                   <td class="text-end small text-muted">
                     <% if interview.scheduled_at %>

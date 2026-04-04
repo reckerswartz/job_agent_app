@@ -59,10 +59,13 @@
           </select>
         </div>
         <div class="col-auto">
-          <label class="form-label small mb-0">Match</label>
-          <div class="d-flex gap-1">
-            <input type="number" name="min_match" value="<%= params[:min_match] %>" class="form-control form-control-sm" style="width: 65px;" placeholder="Min" min="0" max="100">
-            <input type="number" name="max_match" value="<%= params[:max_match] %>" class="form-control form-control-sm" style="width: 65px;" placeholder="Max" min="0" max="100">
+          <label class="form-label small mb-0">Match %</label>
+          <div class="d-flex gap-1 align-items-center">
+            <label for="filter_min_match" class="visually-hidden">Min match</label>
+            <input type="number" name="min_match" id="filter_min_match" value="<%= params[:min_match] %>" class="form-control form-control-sm" style="width: 65px;" placeholder="Min" min="0" max="100" aria-label="Minimum match score">
+            <span class="text-muted small">–</span>
+            <label for="filter_max_match" class="visually-hidden">Max match</label>
+            <input type="number" name="max_match" id="filter_max_match" value="<%= params[:max_match] %>" class="form-control form-control-sm" style="width: 65px;" placeholder="Max" min="0" max="100" aria-label="Maximum match score">
           </div>
         </div>
         <div class="col-auto">
