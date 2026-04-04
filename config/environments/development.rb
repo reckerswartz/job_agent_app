@@ -52,9 +52,10 @@ Rails.application.configure do
   # Append comments with runtime information tags to SQL queries in logs.
   config.active_record.query_log_tags_enabled = true
 
-  # Use async adapter in development (runs jobs in-process, no separate queue DB needed).
-  # Switch to :solid_queue for production-like behavior.
-  config.active_job.queue_adapter = :async
+  # Use solid_queue to run jobs out-of-process (prevents browser-based scanners
+  # from starving Puma threads). Start the worker via bin/dev or `bin/jobs`.
+  config.active_job.queue_adapter = :solid_queue
+  config.solid_queue.connects_to = { database: { writing: :queue } }
 
   # Highlight code that enqueued background job in logs.
   config.active_job.verbose_enqueue_logs = true
