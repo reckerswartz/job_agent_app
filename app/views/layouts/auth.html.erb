@@ -17,13 +17,18 @@
     <%= javascript_include_tag "application", "data-turbo-track": "reload", type: "module" %>
   </head>
 
-  <body class="auth-page d-flex align-items-center justify-content-center min-vh-100">
+  <body class="auth-page d-flex align-items-center justify-content-center min-vh-100" data-controller="theme">
     <div class="auth-container">
       <div class="auth-card card">
         <div class="card-body p-4 p-md-5">
           <div class="auth-brand text-center mb-4">
             <i class="bi bi-briefcase-fill auth-brand__icon"></i>
             <h1 class="auth-brand__name">Job Agent</h1>
+          </div>
+          <div class="text-end mb-3">
+            <button class="btn btn-sm btn-outline-secondary border-0" data-action="click->theme#toggle" title="Toggle dark mode">
+              <i class="bi bi-moon-fill" data-theme-target="icon"></i>
+            </button>
           </div>
 
           <% if alert.present? %>

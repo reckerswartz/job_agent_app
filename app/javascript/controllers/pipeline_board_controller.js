@@ -16,17 +16,28 @@ export default class extends Controller {
   dragOver(event) {
     event.preventDefault()
     event.dataTransfer.dropEffect = "move"
-    event.currentTarget.closest("[data-pipeline-stage]")?.classList.add("bg-primary", "bg-opacity-10")
+    const col = event.currentTarget.closest("[data-pipeline-stage]")
+    if (col) {
+      col.classList.add("bg-primary", "bg-opacity-10")
+      col.style.outline = "2px dashed var(--bs-primary, #1E3A5F)"
+      col.style.outlineOffset = "-2px"
+    }
   }
 
   dragLeave(event) {
-    event.currentTarget.closest("[data-pipeline-stage]")?.classList.remove("bg-primary", "bg-opacity-10")
+    const col = event.currentTarget.closest("[data-pipeline-stage]")
+    if (col) {
+      col.classList.remove("bg-primary", "bg-opacity-10")
+      col.style.outline = ""
+      col.style.outlineOffset = ""
+    }
   }
 
   drop(event) {
     event.preventDefault()
     const column = event.currentTarget.closest("[data-pipeline-stage]")
     column?.classList.remove("bg-primary", "bg-opacity-10")
+    if (column) { column.style.outline = ""; column.style.outlineOffset = "" }
 
     const applicationId = event.dataTransfer.getData("application/drag-id")
     const newStage = column?.dataset.pipelineStage
