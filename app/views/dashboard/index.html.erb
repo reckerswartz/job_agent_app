@@ -68,8 +68,35 @@
     </div>
   </div>
 
-  <%# ── Activity Feed ── %>
+  <%# ── Activity Feed + Upcoming Interviews ── %>
   <div class="col-xl-4">
+    <% if @upcoming_interviews.any? %>
+      <div class="card mb-3">
+        <div class="card-header">
+          <h3 class="card-header__title mb-0">Upcoming Interviews</h3>
+        </div>
+        <div class="card-body p-0">
+          <table class="table mb-0">
+            <tbody>
+              <% @upcoming_interviews.each do |interview| %>
+                <tr>
+                  <td class="small">
+                    <div class="fw-bold"><%= interview.job_application.job_listing.company %></div>
+                    <div class="text-muted" style="font-size: 0.7rem;"><%= interview.stage_label %> &middot; <%= interview.format&.humanize %></div>
+                  </td>
+                  <td class="text-end small text-muted">
+                    <% if interview.scheduled_at %>
+                      <%= interview.scheduled_at.strftime("%b %d, %I:%M%p") %>
+                    <% end %>
+                  </td>
+                </tr>
+              <% end %>
+            </tbody>
+          </table>
+        </div>
+      </div>
+    <% end %>
+
     <div class="card activity-card">
       <div class="card-header">
         <h3 class="card-header__title mb-0">Recent Activity</h3>

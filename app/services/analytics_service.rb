@@ -54,6 +54,17 @@ class AnalyticsService
     buckets
   end
 
+  def pipeline_distribution
+    JobApplication.for_user(user).group(:pipeline_stage).count
+  end
+
+  def scan_success_rate
+    runs = JobScanRun.joins(:job_source).where(job_sources: { user_id: user.id })
+    total = runs.count
+    { completed: runs.where(status: "completed").count, failed: runs.where(status: "failed").count, total: total,
+      rate: total > 0 ? (runs.where(status: "completed").count * 100.0 / total).round : 0 }
+  end
+
   def salary_by_source
     JobListing.for_user(user)
               .where.not(salary_min: nil)
