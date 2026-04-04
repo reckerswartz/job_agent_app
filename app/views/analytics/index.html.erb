@@ -62,4 +62,51 @@
       </div>
     </div>
   </div>
+
+  <%# ── Salary Distribution ── %>
+  <div class="col-lg-6">
+    <div class="card">
+      <div class="card-header"><h3 class="card-header__title mb-0">Salary Distribution</h3></div>
+      <div class="card-body">
+        <%= bar_chart @analytics.salary_distribution, colors: ["#10B981"] %>
+      </div>
+    </div>
+  </div>
+
+  <%# ── Salary by Source ── %>
+  <div class="col-lg-6">
+    <div class="card">
+      <div class="card-header"><h3 class="card-header__title mb-0">Avg Salary by Source</h3></div>
+      <div class="card-body">
+        <%= column_chart @analytics.salary_by_source, prefix: "$", colors: ["#F59E0B"] %>
+      </div>
+    </div>
+  </div>
+
+  <%# ── Pipeline Stage Distribution ── %>
+  <div class="col-lg-6">
+    <div class="card">
+      <div class="card-header"><h3 class="card-header__title mb-0">Application Pipeline</h3></div>
+      <div class="card-body">
+        <%= pie_chart @analytics.pipeline_distribution, colors: ["#1E3A5F", "#3B82F6", "#F59E0B", "#10B981", "#10B981", "#EF4444", "#6c757d"] %>
+      </div>
+    </div>
+  </div>
+
+  <%# ── Scan Success Rate ── %>
+  <div class="col-lg-6">
+    <div class="card">
+      <div class="card-header"><h3 class="card-header__title mb-0">Scan Success Rate</h3></div>
+      <div class="card-body text-center">
+        <% sr = @analytics.scan_success_rate %>
+        <div class="fw-bold" style="font-size: 3rem; color: <%= sr[:rate] >= 80 ? '#10B981' : (sr[:rate] >= 50 ? '#F59E0B' : '#EF4444') %>;">
+          <%= sr[:rate] %>%
+        </div>
+        <div class="text-muted small"><%= sr[:completed] %> completed / <%= sr[:total] %> total scans</div>
+        <% if sr[:failed] > 0 %>
+          <div class="text-danger small mt-1"><%= sr[:failed] %> failed</div>
+        <% end %>
+      </div>
+    </div>
+  </div>
 </div>
