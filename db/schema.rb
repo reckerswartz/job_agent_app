@@ -10,7 +10,7 @@
 #
 # It's strongly recommended that you check this file into your version control system.
 
-ActiveRecord::Schema[8.1].define(version: 2026_04_03_184445) do
+ActiveRecord::Schema[8.1].define(version: 2026_04_04_025253) do
   # These are extensions that must be enabled in order to support this database
   enable_extension "pg_catalog.plpgsql"
 
@@ -133,6 +133,7 @@ ActiveRecord::Schema[8.1].define(version: 2026_04_03_184445) do
     t.string "company"
     t.datetime "created_at", null: false
     t.text "description"
+    t.bigint "duplicate_of_id"
     t.boolean "easy_apply", default: false
     t.string "employment_type"
     t.datetime "expires_at"
@@ -152,6 +153,7 @@ ActiveRecord::Schema[8.1].define(version: 2026_04_03_184445) do
     t.string "title", null: false
     t.datetime "updated_at", null: false
     t.string "url"
+    t.index ["duplicate_of_id"], name: "index_job_listings_on_duplicate_of_id"
     t.index ["easy_apply"], name: "index_job_listings_on_easy_apply"
     t.index ["job_source_id", "external_id"], name: "index_job_listings_on_job_source_id_and_external_id", unique: true
     t.index ["job_source_id", "status"], name: "index_job_listings_on_job_source_id_and_status"
