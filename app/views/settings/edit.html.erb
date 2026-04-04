@@ -81,3 +81,22 @@
     <% end %>
   </div>
 </div>
+
+<%# ── Account ── %>
+<div class="card profile-section-card mt-4">
+  <div class="card-header">
+    <h3 class="card-header__title mb-0">Account</h3>
+  </div>
+  <div class="card-body">
+    <p class="text-muted mb-3">Manage your account email and password.</p>
+    <div class="d-flex flex-column gap-2" style="max-width: 400px;">
+      <div>
+        <label class="form-label fw-semibold small text-muted mb-0">Email</label>
+        <div class="fw-bold"><%= current_user.email %></div>
+      </div>
+      <div class="d-flex gap-2 mt-2">
+        <%= link_to "Change Password", edit_user_registration_path, class: "btn btn-outline-secondary btn-sm" %>
+      </div>
+    </div>
+  </div>
+</div>

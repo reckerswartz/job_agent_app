@@ -3,6 +3,7 @@ class AnalyticsController < ApplicationController
   layout "dashboard"
 
   def index
-    @analytics = AnalyticsService.new(current_user)
+    @period = params[:period].presence || "all"
+    @analytics = AnalyticsService.new(current_user, period: @period)
   end
 end

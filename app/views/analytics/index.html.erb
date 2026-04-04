@@ -1,6 +1,13 @@
 <% content_for(:page_title, "Analytics") %>
 
-<%= render "shared/page_header", title: "Analytics", subtitle: "Insights into your job search activity" %>
+<% actions = capture do %>
+  <div class="btn-group btn-group-sm">
+    <% { "7d" => "7 Days", "30d" => "30 Days", "90d" => "90 Days", "all" => "All Time" }.each do |key, label| %>
+      <%= link_to label, analytics_path(period: key), class: "btn btn-#{@period == key ? 'primary' : 'outline-secondary'}" %>
+    <% end %>
+  </div>
+<% end %>
+<%= render "shared/page_header", title: "Analytics", subtitle: "Insights into your job search activity", actions: actions %>
 
 <% if JobListing.for_user(current_user).none? %>
   <div class="empty-state text-center py-5">
