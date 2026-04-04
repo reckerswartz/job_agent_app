@@ -10,7 +10,7 @@
 #
 # It's strongly recommended that you check this file into your version control system.
 
-ActiveRecord::Schema[8.1].define(version: 2026_04_04_030724) do
+ActiveRecord::Schema[8.1].define(version: 2026_04_04_034125) do
   # These are extensions that must be enabled in order to support this database
   enable_extension "pg_catalog.plpgsql"
 
@@ -110,6 +110,22 @@ ActiveRecord::Schema[8.1].define(version: 2026_04_04_030724) do
     t.index ["status"], name: "index_interventions_on_status"
     t.index ["user_id", "status"], name: "index_interventions_on_user_id_and_status"
     t.index ["user_id"], name: "index_interventions_on_user_id"
+  end
+
+  create_table "interviews", force: :cascade do |t|
+    t.datetime "created_at", null: false
+    t.string "format"
+    t.string "interviewer_name"
+    t.bigint "job_application_id", null: false
+    t.string "location"
+    t.text "notes"
+    t.text "prep_questions"
+    t.integer "rating"
+    t.datetime "scheduled_at"
+    t.string "stage", null: false
+    t.string "status", default: "scheduled", null: false
+    t.datetime "updated_at", null: false
+    t.index ["job_application_id"], name: "index_interviews_on_job_application_id"
   end
 
   create_table "job_applications", force: :cascade do |t|
@@ -393,6 +409,7 @@ ActiveRecord::Schema[8.1].define(version: 2026_04_04_030724) do
   add_foreign_key "cover_letters", "job_listings"
   add_foreign_key "cover_letters", "profiles"
   add_foreign_key "interventions", "users"
+  add_foreign_key "interviews", "job_applications"
   add_foreign_key "job_applications", "job_listings"
   add_foreign_key "job_applications", "profiles"
   add_foreign_key "job_listings", "job_sources"

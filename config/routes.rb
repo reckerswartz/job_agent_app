@@ -57,6 +57,9 @@ Rails.application.routes.draw do
     member do
       post :retry_application
     end
+    resources :interviews, only: [:create, :update, :destroy] do
+      member { post :generate_prep }
+    end
   end
 
   # Job Sources & Search Criteria
