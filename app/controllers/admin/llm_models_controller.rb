@@ -76,7 +76,11 @@ module Admin
     private
 
     def model_params
-      params.require(:llm_model).permit(:active, :role, :priority)
+      permitted = params.require(:llm_model).permit(:active, :priority)
+      # Handle role separately — only allow known values (resolves Brakeman mass-assignment warning)
+      role_value = params.dig(:llm_model, :role)
+      permitted[:role] = role_value.in?(LlmModel::ROLES) ? role_value : nil if params[:llm_model].key?(:role)
+      permitted
     end
   end
 end

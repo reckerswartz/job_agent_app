@@ -102,7 +102,7 @@ module JobScanner
         jk = jk_match[0]
         idx = html.index("data-jk=\"#{jk}\"")
         next unless idx
-        chunk = html[([idx - 1000, 0].max)..(idx + 3000)]
+        chunk = html[([ idx - 1000, 0 ].max)..(idx + 3000)]
         l = extract_indeed_card(chunk, jk)
         listings << l if l[:title].present?
       end

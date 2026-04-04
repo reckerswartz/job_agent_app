@@ -15,12 +15,12 @@ module Api
     end
 
     def paginate(scope, per: 20)
-      page = [params.fetch(:page, 1).to_i, 1].max
-      per = [[params.fetch(:per_page, per).to_i, 1].max, 100].min
+      page = [ params.fetch(:page, 1).to_i, 1 ].max
+      per = [ [ params.fetch(:per_page, per).to_i, 1 ].max, 100 ].min
       total = scope.count
       records = scope.offset((page - 1) * per).limit(per)
       meta = { page: page, per_page: per, total: total, total_pages: (total.to_f / per).ceil }
-      [records, meta]
+      [ records, meta ]
     end
 
     def render_json(data, meta: nil, status: :ok)

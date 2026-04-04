@@ -3,7 +3,7 @@ class InterviewsController < ApplicationController
   layout "dashboard"
 
   before_action :set_application
-  before_action :set_interview, only: [:update, :destroy, :generate_prep]
+  before_action :set_interview, only: [ :update, :destroy, :generate_prep ]
 
   def create
     @interview = @application.interviews.build(interview_params)

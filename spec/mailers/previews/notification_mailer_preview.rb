@@ -12,7 +12,7 @@ class NotificationMailerPreview < ActionMailer::Preview
   def new_matches
     user = User.first
     listings = JobListing.high_match.limit(5)
-    listings = [JobListing.new(title: "Senior Rails Dev", company: "Acme", match_score: 85)] if listings.empty?
+    listings = [ JobListing.new(title: "Senior Rails Dev", company: "Acme", match_score: 85) ] if listings.empty?
     NotificationMailer.new_matches(user, listings)
   end
 

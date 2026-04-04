@@ -47,7 +47,7 @@ class AnalyticsService
   def salary_distribution
     listings = JobListing.for_user(user).where.not(salary_min: nil)
     buckets = {}
-    [[0, 50_000], [50_000, 100_000], [100_000, 150_000], [150_000, 200_000], [200_000, nil]].each do |min, max|
+    [ [ 0, 50_000 ], [ 50_000, 100_000 ], [ 100_000, 150_000 ], [ 150_000, 200_000 ], [ 200_000, nil ] ].each do |min, max|
       label = max ? "#{min / 1000}K-#{max / 1000}K" : "#{min / 1000}K+"
       buckets[label] = max ? listings.where("salary_min >= ? AND salary_min < ?", min, max).count : listings.where("salary_min >= ?", min).count
     end

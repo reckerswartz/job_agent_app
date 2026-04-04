@@ -6,7 +6,7 @@ module Pdf
     end
 
     def render
-      Prawn::Document.new(page_size: "LETTER", margin: [54, 54, 54, 54]) do |pdf|
+      Prawn::Document.new(page_size: "LETTER", margin: [ 54, 54, 54, 54 ]) do |pdf|
         render_header(pdf)
         render_summary(pdf)
         render_experience(pdf)
@@ -59,7 +59,7 @@ module Pdf
       section.profile_entries.each do |entry|
         c = entry.content
         pdf.text "#{c['title']}", size: 10, style: :bold
-        dates = [c["start_date"], c["end_date"] || "Present"].compact.join(" – ")
+        dates = [ c["start_date"], c["end_date"] || "Present" ].compact.join(" – ")
         pdf.text "#{c['company']}  |  #{dates}", size: 9, color: "666666"
         pdf.text c["description"].to_s, size: 9, leading: 2 if c["description"].present?
         pdf.move_down 6
@@ -76,7 +76,7 @@ module Pdf
       section.profile_entries.each do |entry|
         c = entry.content
         pdf.text "#{c['degree']} — #{c['field']}", size: 10, style: :bold
-        dates = [c["start_date"], c["end_date"]].compact.join(" – ")
+        dates = [ c["start_date"], c["end_date"] ].compact.join(" – ")
         pdf.text "#{c['institution']}  |  #{dates}", size: 9, color: "666666"
         pdf.move_down 4
       end

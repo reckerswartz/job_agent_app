@@ -7,13 +7,13 @@ module Pdf
     end
 
     def render
-      Prawn::Document.new(page_size: "LETTER", margin: [72, 72, 72, 72]) do |pdf|
+      Prawn::Document.new(page_size: "LETTER", margin: [ 72, 72, 72, 72 ]) do |pdf|
         pdf.font_size 11
 
         # Header: candidate info
         pdf.text profile.display_name, size: 16, style: :bold
         pdf.text profile.headline.to_s, size: 10, color: "666666"
-        contact_line = [profile.contact_field("email"), profile.contact_field("phone")].reject(&:blank?).join(" | ")
+        contact_line = [ profile.contact_field("email"), profile.contact_field("phone") ].reject(&:blank?).join(" | ")
         pdf.text contact_line, size: 9, color: "888888" if contact_line.present?
         pdf.move_down 20
 

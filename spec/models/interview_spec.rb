@@ -80,12 +80,12 @@ RSpec.describe Interview, type: :model do
 
     it "parses valid JSON array" do
       interview.prep_questions = '["Q1", "Q2"]'
-      expect(interview.parsed_prep_questions).to eq(["Q1", "Q2"])
+      expect(interview.parsed_prep_questions).to eq([ "Q1", "Q2" ])
     end
 
     it "falls back to newline splitting on invalid JSON" do
       interview.prep_questions = "Question 1\nQuestion 2\n"
-      expect(interview.parsed_prep_questions).to eq(["Question 1", "Question 2"])
+      expect(interview.parsed_prep_questions).to eq([ "Question 1", "Question 2" ])
     end
   end
 

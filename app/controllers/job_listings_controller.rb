@@ -22,7 +22,7 @@ class JobListingsController < ApplicationController
     @pagy, @listings = pagy(scope, limit: per_page_limit)
     @status_counts = JobListing.for_user(current_user).not_duplicate.group(:status).count
     @search_query = params[:q]
-    @filters_active = [params[:remote], params[:employment], params[:platform], params[:easy_apply], params[:min_match], params[:max_match]].any?(&:present?)
+    @filters_active = [ params[:remote], params[:employment], params[:platform], params[:easy_apply], params[:min_match], params[:max_match] ].any?(&:present?)
   end
 
   def show

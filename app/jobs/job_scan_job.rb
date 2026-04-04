@@ -105,7 +105,7 @@ class JobScanJob < ApplicationJob
 
   def enrich_new_listings(source)
     source.job_listings
-      .where(description: [nil, ""])
+      .where(description: [ nil, "" ])
       .where("created_at > ?", 1.hour.ago)
       .limit(10)
       .each { |l| ListingEnrichJob.perform_later(l.id) }

@@ -11,7 +11,7 @@ module Llm
       return { status: "skipped", message: "Model inactive" } unless model.active?
       return { status: "skipped", message: "Provider unavailable" } unless provider.available?
 
-      messages = [{ role: "user", content: VERIFY_PROMPT }]
+      messages = [ { role: "user", content: VERIFY_PROMPT } ]
 
       start_time = Process.clock_gettime(Process::CLOCK_MONOTONIC)
       result = adapter.chat(messages, model: model)

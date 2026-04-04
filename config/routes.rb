@@ -62,7 +62,7 @@ Rails.application.routes.draw do
       post :retry_application
       patch :update_stage
     end
-    resources :interviews, only: [:create, :update, :destroy] do
+    resources :interviews, only: [ :create, :update, :destroy ] do
       member { post :generate_prep }
     end
   end
@@ -81,10 +81,10 @@ Rails.application.routes.draw do
   end
 
   # Activity
-  resources :activity_logs, only: [:index], path: "activity"
+  resources :activity_logs, only: [ :index ], path: "activity"
 
   # Notifications
-  resources :notifications, only: [:index] do
+  resources :notifications, only: [ :index ] do
     collection { patch :mark_all_read }
     member { patch :mark_read }
   end
@@ -117,19 +117,19 @@ Rails.application.routes.draw do
       end
     end
     resources :scan_runs, only: [ :index, :show ]
-    resources :audit_logs, only: [:index]
+    resources :audit_logs, only: [ :index ]
   end
 
   # API
   namespace :api do
     namespace :v1 do
-      resources :job_listings, only: [:index, :show]
-      resources :job_applications, only: [:index, :show, :create]
-      resources :job_sources, only: [:index, :show] do
+      resources :job_listings, only: [ :index, :show ]
+      resources :job_applications, only: [ :index, :show, :create ]
+      resources :job_sources, only: [ :index, :show ] do
         post :scan, on: :member
       end
-      resource :profile, only: [:show]
-      resources :scan_runs, only: [:index, :show]
+      resource :profile, only: [ :show ]
+      resources :scan_runs, only: [ :index, :show ]
     end
   end
 

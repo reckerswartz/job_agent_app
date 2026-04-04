@@ -52,8 +52,8 @@ RSpec.describe WebhookEndpoint, type: :model do
     end
 
     it ".for_event returns endpoints subscribed to the event" do
-      scan_ep = create(:webhook_endpoint, user: user, events: ["scan.completed"], active: true)
-      create(:webhook_endpoint, user: user, events: ["listing.new"], active: true)
+      scan_ep = create(:webhook_endpoint, user: user, events: [ "scan.completed" ], active: true)
+      create(:webhook_endpoint, user: user, events: [ "listing.new" ], active: true)
       expect(WebhookEndpoint.for_event("scan.completed")).to contain_exactly(scan_ep)
     end
   end

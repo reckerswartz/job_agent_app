@@ -52,7 +52,7 @@ module JobScanner
 
       city = profile.contact_field("city")
       country = profile.contact_field("country")
-      [city, country].reject(&:blank?).join(", ").presence
+      [ city, country ].reject(&:blank?).join(", ").presence
     end
 
     def build_search_url

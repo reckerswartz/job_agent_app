@@ -11,6 +11,6 @@ module DataTableHelper
 
   def per_page_limit
     limit = params.fetch(:per, 20).to_i
-    [[limit, 5].max, 100].min
+    [ [ limit, 5 ].max, 100 ].min
   end
 end

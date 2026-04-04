@@ -116,7 +116,7 @@ module JobScanner
           # Extract surrounding context
           idx = html.index("data-job-id=\"#{jid}\"")
           next unless idx
-          chunk = html[([idx - 2000, 0].max)..(idx + 3000)]
+          chunk = html[([ idx - 2000, 0 ].max)..(idx + 3000)]
           l = extract_naukri_card(chunk)
           l[:external_id] = "naukri_#{jid}"
           listings << l if l[:title].present?

@@ -15,7 +15,7 @@ class LlmModelVerifyJob < ApplicationJob
     )
 
     start_time = Process.clock_gettime(Process::CLOCK_MONOTONIC)
-    result = adapter.chat([{ role: "user", content: VERIFY_PROMPT }], model: model)
+    result = adapter.chat([ { role: "user", content: VERIFY_PROMPT } ], model: model)
     latency = ((Process.clock_gettime(Process::CLOCK_MONOTONIC) - start_time) * 1000).to_i
 
     verification.update!(

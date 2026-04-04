@@ -55,7 +55,7 @@ namespace :llm do
 
     puts "Testing #{model.name} (#{model.identifier})..."
     adapter = Llm::NvidiaAdapter.new(provider)
-    messages = [{ role: "user", content: "Reply with: Hello from Job Agent" }]
+    messages = [ { role: "user", content: "Reply with: Hello from Job Agent" } ]
 
     begin
       result = adapter.chat(messages, model: model)

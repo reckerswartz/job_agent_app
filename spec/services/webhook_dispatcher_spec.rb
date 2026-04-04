@@ -5,8 +5,8 @@ RSpec.describe WebhookDispatcher do
 
   describe ".fire" do
     it "enqueues delivery jobs for matching active endpoints" do
-      endpoint = create(:webhook_endpoint, user: user, events: ["scan.completed"], active: true)
-      create(:webhook_endpoint, user: user, events: ["listing.new"], active: true)
+      endpoint = create(:webhook_endpoint, user: user, events: [ "scan.completed" ], active: true)
+      create(:webhook_endpoint, user: user, events: [ "listing.new" ], active: true)
 
       expect {
         described_class.fire(user, "scan.completed", { listings: 5 })
@@ -14,7 +14,7 @@ RSpec.describe WebhookDispatcher do
     end
 
     it "skips inactive endpoints" do
-      create(:webhook_endpoint, user: user, events: ["scan.completed"], active: false)
+      create(:webhook_endpoint, user: user, events: [ "scan.completed" ], active: false)
 
       expect {
         described_class.fire(user, "scan.completed", {})
@@ -22,7 +22,7 @@ RSpec.describe WebhookDispatcher do
     end
 
     it "does nothing when no endpoints match the event" do
-      create(:webhook_endpoint, user: user, events: ["listing.new"], active: true)
+      create(:webhook_endpoint, user: user, events: [ "listing.new" ], active: true)
 
       expect {
         described_class.fire(user, "scan.completed", {})

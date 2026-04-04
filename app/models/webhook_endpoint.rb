@@ -7,7 +7,7 @@ class WebhookEndpoint < ApplicationRecord
   validates :events, presence: true
 
   scope :active, -> { where(active: true) }
-  scope :for_event, ->(event) { active.where("events @> ?", [event].to_json) }
+  scope :for_event, ->(event) { active.where("events @> ?", [ event ].to_json) }
 
   before_create :generate_secret
 
