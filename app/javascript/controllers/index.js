@@ -33,3 +33,9 @@ application.register("loading-button", LoadingButtonController)
 
 import PipelineBoardController from "./pipeline_board_controller"
 application.register("pipeline-board", PipelineBoardController)
+
+import ToggleSectionController from "./toggle_section_controller"
+application.register("toggle-section", ToggleSectionController)
+
+import ConfirmToggleController from "./confirm_toggle_controller"
+application.register("confirm-toggle", ConfirmToggleController)

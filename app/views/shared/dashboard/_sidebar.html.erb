@@ -1,6 +1,6 @@
 <aside class="sidebar" data-sidebar-target="sidebar" aria-label="Main navigation">
   <%= link_to root_path, class: "sidebar__brand" do %>
-    <span class="sidebar__brand-icon">&#x1F4BC;</span>
+    <i class="bi bi-briefcase-fill sidebar__brand-icon"></i>
     Job Agent
   <% end %>
 
@@ -8,39 +8,39 @@
     <li class="sidebar__heading">Main</li>
     <li>
       <%= link_to dashboard_path, class: "sidebar__link #{current_page?(dashboard_path) ? 'sidebar__link--active' : ''}" do %>
-        <span class="sidebar__link-icon">&#x1F4CA;</span> Dashboard
+        <i class="bi bi-speedometer2 sidebar__link-icon"></i> Dashboard
       <% end %>
     </li>
     <li>
       <%= link_to job_sources_path, class: "sidebar__link #{request.path.start_with?('/job_sources', '/job_search_criteria') ? 'sidebar__link--active' : ''}" do %>
-        <span class="sidebar__link-icon">&#x1F50D;</span> Job Sources
+        <i class="bi bi-search sidebar__link-icon"></i> Job Sources
       <% end %>
     </li>
     <li>
       <%= link_to job_listings_path, class: "sidebar__link #{request.path.start_with?('/job_listings') ? 'sidebar__link--active' : ''}" do %>
-        <span class="sidebar__link-icon">&#x1F4CB;</span> Job Listings
+        <i class="bi bi-list-ul sidebar__link-icon"></i> Job Listings
       <% end %>
     </li>
     <li>
       <%= link_to job_applications_path, class: "sidebar__link #{request.path.start_with?('/job_applications') ? 'sidebar__link--active' : ''}" do %>
-        <span class="sidebar__link-icon">&#x1F4E8;</span> Applications
+        <i class="bi bi-send sidebar__link-icon"></i> Applications
       <% end %>
     </li>
     <li>
       <%= link_to analytics_path, class: "sidebar__link #{current_page?(analytics_path) ? 'sidebar__link--active' : ''}" do %>
-        <span class="sidebar__link-icon">&#x1F4C8;</span> Analytics
+        <i class="bi bi-graph-up sidebar__link-icon"></i> Analytics
       <% end %>
     </li>
 
     <li>
       <% pending_count = user_signed_in? ? current_user.interventions.pending.count : 0 %>
       <%= link_to activity_logs_path, class: "sidebar__link #{request.path == '/activity' ? 'sidebar__link--active' : ''}" do %>
-        <span class="sidebar__link-icon">&#x1F4DD;</span> Activity
+        <i class="bi bi-clock-history sidebar__link-icon"></i> Activity
       <% end %>
     </li>
     <li>
       <%= link_to interventions_path, class: "sidebar__link #{request.path.start_with?('/interventions') ? 'sidebar__link--active' : ''}" do %>
-        <span class="sidebar__link-icon">&#x26A0;</span> Interventions
+        <i class="bi bi-exclamation-triangle sidebar__link-icon"></i> Interventions
         <% if pending_count > 0 %>
           <span class="badge bg-warning text-dark ms-auto"><%= pending_count %></span>
         <% end %>
@@ -50,12 +50,12 @@
     <li class="sidebar__heading">Settings</li>
     <li>
       <%= link_to profile_path, class: "sidebar__link #{current_page?(profile_path) || current_page?(edit_profile_path) ? 'sidebar__link--active' : ''}" do %>
-        <span class="sidebar__link-icon">&#x1F464;</span> Profile
+        <i class="bi bi-person sidebar__link-icon"></i> Profile
       <% end %>
     </li>
     <li>
       <%= link_to edit_settings_path, class: "sidebar__link #{current_page?(edit_settings_path) ? 'sidebar__link--active' : ''}" do %>
-        <span class="sidebar__link-icon">&#x2699;</span> Settings
+        <i class="bi bi-gear sidebar__link-icon"></i> Settings
       <% end %>
     </li>
 
@@ -63,41 +63,41 @@
       <li class="sidebar__heading">Admin</li>
       <li>
         <%= link_to admin_root_path, class: "sidebar__link #{request.path == '/admin' ? 'sidebar__link--active' : ''}" do %>
-          <span class="sidebar__link-icon">&#x1F6E0;</span> Dashboard
+          <i class="bi bi-speedometer sidebar__link-icon"></i> Dashboard
         <% end %>
       </li>
       <li>
         <%= link_to admin_users_path, class: "sidebar__link #{request.path.start_with?('/admin/users') ? 'sidebar__link--active' : ''}" do %>
-          <span class="sidebar__link-icon">&#x1F465;</span> Users
+          <i class="bi bi-people sidebar__link-icon"></i> Users
         <% end %>
       </li>
 
       <li class="sidebar__heading">Configuration</li>
       <li>
         <%= link_to admin_api_keys_path, class: "sidebar__link #{request.path == '/admin/api_keys' ? 'sidebar__link--active' : ''}" do %>
-          <span class="sidebar__link-icon">&#x1F511;</span> API Keys
+          <i class="bi bi-key sidebar__link-icon"></i> API Keys
         <% end %>
       </li>
       <li>
         <%= link_to admin_llm_models_path, class: "sidebar__link #{request.path == '/admin/llm_models' ? 'sidebar__link--active' : ''}" do %>
-          <span class="sidebar__link-icon">&#x2699;</span> LLM Models
+          <i class="bi bi-cpu sidebar__link-icon"></i> LLM Models
         <% end %>
       </li>
 
       <li class="sidebar__heading">Monitoring</li>
       <li>
         <%= link_to admin_llm_interactions_path, class: "sidebar__link #{request.path == '/admin/llm_interactions' ? 'sidebar__link--active' : ''}" do %>
-          <span class="sidebar__link-icon">&#x1F916;</span> LLM Logs
+          <i class="bi bi-robot sidebar__link-icon"></i> LLM Logs
         <% end %>
       </li>
       <li>
         <%= link_to admin_scan_runs_path, class: "sidebar__link #{request.path.start_with?('/admin/scan') ? 'sidebar__link--active' : ''}" do %>
-          <span class="sidebar__link-icon">&#x1F4E1;</span> Scan Monitor
+          <i class="bi bi-broadcast sidebar__link-icon"></i> Scan Monitor
         <% end %>
       </li>
       <li>
         <%= link_to admin_audit_logs_path, class: "sidebar__link #{request.path == '/admin/audit_logs' ? 'sidebar__link--active' : ''}" do %>
-          <span class="sidebar__link-icon">&#x1F4DC;</span> Audit Log
+          <i class="bi bi-journal-text sidebar__link-icon"></i> Audit Log
         <% end %>
       </li>
     <% end %>

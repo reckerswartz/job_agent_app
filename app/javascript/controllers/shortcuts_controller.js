@@ -52,6 +52,12 @@ export default class extends Controller {
     }
   }
 
+  showHelp() {
+    if (this.hasModalTarget) {
+      this.modalTarget.style.display = "block"
+    }
+  }
+
   closeHelp() {
     if (this.hasModalTarget) {
       this.modalTarget.style.display = "none"

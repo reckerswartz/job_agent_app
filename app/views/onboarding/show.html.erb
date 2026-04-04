@@ -34,7 +34,7 @@
           <input type="hidden" name="step" value="resume">
           <div class="onboarding__upload-zone mb-4">
             <div class="onboarding__upload-zone-inner">
-              <div class="onboarding__upload-zone-icon">&#x1F4C4;</div>
+              <div class="onboarding__upload-zone-icon"><i class="bi bi-file-earmark-text"></i></div>
               <p class="onboarding__upload-zone-text fw-semibold mb-1">Drag and drop your resume here</p>
               <p class="text-muted small mb-3">or click to browse files</p>
               <input type="file" name="source_document" class="onboarding__upload-zone-input" accept=".pdf,.txt,.rtf,.jpg,.jpeg,.png,.webp">
@@ -59,7 +59,7 @@
         <%= form_with url: update_step_onboarding_path, method: :post do |f| %>
           <input type="hidden" name="step" value="resume">
           <div class="input-group">
-            <span class="input-group-text">&#x1F517;</span>
+            <span class="input-group-text"><i class="bi bi-link-45deg"></i></span>
             <input type="url" name="linkedin_url" class="form-control" placeholder="https://linkedin.com/in/yourname">
             <button type="submit" class="btn btn-outline-primary">Import from LinkedIn</button>
           </div>
@@ -130,13 +130,13 @@
 
           <%# ── Platform Cards ── %>
           <div class="row g-3 mb-4">
-            <% platforms = { "linkedin" => ["&#x1F4BC;", "LinkedIn", "Professional network jobs"], "indeed" => ["&#x1F50D;", "Indeed", "Largest job board"], "naukri" => ["&#x1F4CB;", "Naukri", "India's top job site"] } %>
+            <% platforms = { "linkedin" => ["bi-briefcase", "LinkedIn", "Professional network jobs"], "indeed" => ["bi-search", "Indeed", "Largest job board"], "naukri" => ["bi-list-ul", "Naukri", "India's top job site"] } %>
             <% platforms.each do |key, (icon, label, desc)| %>
               <div class="col-md-4">
                 <label class="onboarding__platform-card">
                   <input type="radio" name="job_source[platform]" value="<%= key %>" class="d-none" <%= 'checked' if key == 'linkedin' %>>
                   <div class="onboarding__platform-card-inner">
-                    <div class="onboarding__platform-card-icon"><%= raw icon %></div>
+                    <div class="onboarding__platform-card-icon"><i class="bi <%= icon %>"></i></div>
                     <div class="fw-semibold"><%= label %></div>
                     <div class="text-muted small"><%= desc %></div>
                   </div>
@@ -171,7 +171,7 @@
       <% elsif @step == "complete" %>
         <%# ── STEP 4: Done ── %>
         <div class="text-center py-3">
-          <div class="mb-3" style="font-size: 3.5rem;">&#x1F389;</div>
+          <div class="mb-3" style="font-size: 3.5rem;"><i class="bi bi-check-circle-fill text-success"></i></div>
           <h2 class="mb-2">You're all set!</h2>
           <p class="text-muted mb-4">Your account is ready. We'll start finding jobs that match your profile.</p>
           <%= form_with url: update_step_onboarding_path, method: :post do %>

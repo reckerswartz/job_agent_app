@@ -18,7 +18,7 @@ export default class extends Controller {
   applyTheme(theme) {
     document.documentElement.setAttribute("data-theme", theme)
     if (this.hasIconTarget) {
-      this.iconTarget.textContent = theme === "dark" ? "☀️" : "🌙"
+      this.iconTarget.className = theme === "dark" ? "bi bi-sun-fill" : "bi bi-moon-fill"
     }
   }
 }

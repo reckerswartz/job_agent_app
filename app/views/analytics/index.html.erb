@@ -2,6 +2,14 @@
 
 <%= render "shared/page_header", title: "Analytics", subtitle: "Insights into your job search activity" %>
 
+<% if JobListing.for_user(current_user).none? %>
+  <div class="empty-state text-center py-5">
+    <div class="empty-state__icon mb-3" style="font-size: 2.5rem;"><i class="bi bi-graph-up"></i></div>
+    <h3 class="empty-state__title">No analytics data yet</h3>
+    <p class="text-muted">Analytics will populate as you add job sources, run scans, and apply to jobs.</p>
+    <%= link_to "Set Up Job Sources", job_sources_path, class: "btn btn-primary" %>
+  </div>
+<% else %>
 <div class="row g-4">
   <%# ── Listings Over Time ── %>
   <div class="col-lg-8">
@@ -110,3 +118,4 @@
     </div>
   </div>
 </div>
+<% end %>

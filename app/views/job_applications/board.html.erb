@@ -46,7 +46,11 @@
 
           <% if apps.empty? %>
             <div class="text-center text-muted small py-4" style="font-size: 0.7rem;">
-              Drop here
+              <% if @applications.empty? %>
+                No applications yet
+              <% else %>
+                Drag cards here
+              <% end %>
             </div>
           <% end %>
         </div>

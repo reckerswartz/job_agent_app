@@ -37,6 +37,36 @@
   color: rgba($dark, 0.45);
   text-align: center;
   background-color: #fff;
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  flex-wrap: wrap;
+  gap: 0.5rem;
+
+  &__links {
+    display: flex;
+    align-items: center;
+    gap: 0.375rem;
+  }
+
+  &__link {
+    color: rgba($dark, 0.45);
+    text-decoration: none;
+    transition: color 0.15s;
+
+    &:hover {
+      color: $primary;
+      text-decoration: underline;
+    }
+  }
+
+  &__sep {
+    color: rgba($dark, 0.25);
+  }
+
+  @media (max-width: 575.98px) {
+    flex-direction: column;
+  }
 }
 
 // Page header area

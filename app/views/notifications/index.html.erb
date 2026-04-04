@@ -46,6 +46,6 @@
   </div>
   <%= render "shared/pagination", pagy: @pagy %>
 <% else %>
-  <%= render "shared/empty_state", icon: "&#x1F514;", title: "No notifications yet",
+  <%= render "shared/empty_state", icon: "bi-bell", title: "No notifications yet",
       message: "You'll see notifications here when scans complete, applications are submitted, or actions are needed." %>
 <% end %>

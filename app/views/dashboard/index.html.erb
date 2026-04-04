@@ -4,10 +4,10 @@
 
 <%# ── Stats Row ── %>
 <% user_stats = [
-  { value: @jobs_found, label: "Jobs Found", icon: "&#x1F50D;", color: "primary" },
-  { value: @high_matches, label: "High Matches", icon: "&#x2705;", color: "success" },
-  { value: @applied, label: "Applied", icon: "&#x1F4E8;", color: "info" },
-  { value: @pending_interventions, label: "Needs Attention", icon: "&#x26A0;", color: "warning" }
+  { value: @jobs_found, label: "Jobs Found", icon: "bi-search", color: "primary" },
+  { value: @high_matches, label: "High Matches", icon: "bi-check-circle", color: "success" },
+  { value: @applied, label: "Applied", icon: "bi-send", color: "info" },
+  { value: @pending_interventions, label: "Needs Attention", icon: "bi-exclamation-triangle", color: "warning" }
 ] %>
 <div class="row g-3 mb-4">
   <% user_stats.each do |s| %>
@@ -105,8 +105,8 @@
         <ul class="activity-feed">
           <% @recent_activity.each do |event| %>
             <li class="activity-feed__item">
-              <% icon_char = { "search" => "&#x1F50D;", "match" => "&#x2B50;", "applied" => "&#x1F4E8;", "alert" => "&#x26A0;" }[event[:icon]] || "&#x26A0;" %>
-              <div class="activity-feed__icon activity-feed__icon--<%= event[:icon] %>"><%= raw icon_char %></div>
+              <% icon_class = { "search" => "bi-search", "match" => "bi-star-fill", "applied" => "bi-send", "alert" => "bi-exclamation-triangle" }[event[:icon]] || "bi-exclamation-triangle" %>
+              <div class="activity-feed__icon activity-feed__icon--<%= event[:icon] %>"><i class="bi <%= icon_class %>"></i></div>
               <div class="activity-feed__body">
                 <p class="activity-feed__text"><%= raw event[:text] %></p>
                 <div class="activity-feed__time"><%= time_ago_in_words(event[:time]) %> ago</div>

@@ -14,7 +14,7 @@
     <% end %>
   </div>
 <% else %>
-  <%= render "shared/empty_state", icon: "&#x1F50D;", title: "No job sources yet",
+  <%= render "shared/empty_state", icon: "bi-search", title: "No job sources yet",
       message: "Add a job board to start searching for jobs automatically.",
       cta_text: "Add Your First Source", cta_path: new_job_source_path %>
 <% end %>

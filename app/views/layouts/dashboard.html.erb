@@ -1,7 +1,7 @@
 <!DOCTYPE html>
 <html>
   <head>
-    <title><%= content_for(:title) || "Dashboard — Job Agent" %></title>
+    <title><%= content_for?(:page_title) ? "#{content_for(:page_title)} — Job Agent" : "Dashboard — Job Agent" %></title>
     <meta name="viewport" content="width=device-width,initial-scale=1">
     <meta name="apple-mobile-web-app-capable" content="yes">
     <meta name="application-name" content="Job Agent App">
@@ -58,7 +58,14 @@
 
         <%# ── Footer ── %>
         <div class="dashboard-footer">
-          &copy; <%= Date.today.year %> Job Agent App
+          <span>&copy; <%= Date.today.year %> Job Agent App</span>
+          <span class="dashboard-footer__links">
+            <a href="/health" class="dashboard-footer__link">Status</a>
+            <span class="dashboard-footer__sep">&middot;</span>
+            <a href="https://github.com/reckerswartz/job_agent_app" target="_blank" rel="noopener" class="dashboard-footer__link">GitHub</a>
+            <span class="dashboard-footer__sep">&middot;</span>
+            <button type="button" class="dashboard-footer__link" data-action="click->shortcuts#showHelp" style="background:none;border:none;cursor:pointer;color:inherit;padding:0;font:inherit;">Shortcuts <kbd>?</kbd></button>
+          </span>
         </div>
       </div>
     </div>

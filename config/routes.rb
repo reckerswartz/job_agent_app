@@ -17,6 +17,9 @@ Rails.application.routes.draw do
     sign_up: "sign_up"
   }
 
+  # Gracefully handle GET /sign_out (Devise uses DELETE)
+  get "sign_out", to: redirect("/")
+
   # Onboarding
   resource :onboarding, only: [ :show ], controller: "onboarding" do
     post :update_step

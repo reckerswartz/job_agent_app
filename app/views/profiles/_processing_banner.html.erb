@@ -17,13 +17,13 @@
         <meta http-equiv="refresh" content="5">
       <% elsif profile.processing_status == "complete" %>
         <div class="d-flex align-items-center gap-2 text-success">
-          <span>&#x2705;</span>
+          <i class="bi bi-check-circle-fill"></i>
           <strong>Processing complete!</strong>
           <span class="text-muted small">Your profile sections have been populated.</span>
         </div>
       <% elsif profile.processing_status == "failed" %>
         <div class="d-flex align-items-center gap-2 text-danger">
-          <span>&#x26A0;</span>
+          <i class="bi bi-exclamation-triangle-fill"></i>
           <strong>Processing failed</strong>
           <span class="text-muted small">There was an issue processing your resume. Try uploading again.</span>
         </div>

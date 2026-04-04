@@ -2,6 +2,26 @@
 
 <%= render "shared/page_header", title: "LLM Interactions", subtitle: "#{LlmInteraction.count} total interactions" %>
 
+<div class="d-flex gap-2 mb-3">
+  <%= form_tag admin_llm_interactions_path, method: :get, class: "d-flex gap-2 align-items-center" do %>
+    <select name="feature" class="form-select form-select-sm" style="width: auto;" onchange="this.form.submit()">
+      <option value="">All Features</option>
+      <% LlmInteraction.distinct.pluck(:feature_name).compact.sort.each do |f| %>
+        <option value="<%= f %>" <%= 'selected' if params[:feature] == f %>><%= f.humanize %></option>
+      <% end %>
+    </select>
+    <select name="status" class="form-select form-select-sm" style="width: auto;" onchange="this.form.submit()">
+      <option value="">All Statuses</option>
+      <% %w[completed failed pending].each do |s| %>
+        <option value="<%= s %>" <%= 'selected' if params[:status] == s %>><%= s.capitalize %></option>
+      <% end %>
+    </select>
+    <% if params[:feature].present? || params[:status].present? %>
+      <%= link_to "Clear", admin_llm_interactions_path, class: "btn btn-sm btn-outline-secondary" %>
+    <% end %>
+  <% end %>
+</div>
+
 <div class="card dash-table-card">
   <div class="table-responsive">
     <table class="table">

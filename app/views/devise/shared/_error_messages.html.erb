@@ -1,15 +1,17 @@
 <% if resource.errors.any? %>
-  <div id="error_explanation" data-turbo-temporary>
-    <h2>
-      <%= I18n.t("errors.messages.not_saved",
-                 count: resource.errors.count,
-                 resource: resource.class.model_name.human.downcase)
-       %>
-    </h2>
-    <ul>
-      <% resource.errors.full_messages.each do |message| %>
-        <li><%= message %></li>
+  <div class="alert alert-danger d-flex align-items-start mb-3" role="alert" data-turbo-temporary>
+    <i class="bi bi-exclamation-triangle me-2"></i>
+    <div>
+      <% if resource.errors.count == 1 %>
+        <span><%= resource.errors.full_messages.first %></span>
+      <% else %>
+        <strong><%= resource.errors.count %> errors:</strong>
+        <ul class="mb-0 mt-1 ps-3">
+          <% resource.errors.full_messages.each do |message| %>
+            <li><%= message %></li>
+          <% end %>
+        </ul>
       <% end %>
-    </ul>
+    </div>
   </div>
 <% end %>

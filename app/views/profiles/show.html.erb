@@ -55,16 +55,16 @@
 
     <div class="profile-card__contact">
       <% if @profile.contact_field("email").present? %>
-        <span class="profile-card__contact-item">&#x2709; <%= @profile.contact_field("email") %></span>
+        <span class="profile-card__contact-item"><i class="bi bi-envelope"></i> <%= @profile.contact_field("email") %></span>
       <% end %>
       <% if @profile.contact_field("phone").present? %>
-        <span class="profile-card__contact-item">&#x260E; <%= @profile.contact_field("phone") %></span>
+        <span class="profile-card__contact-item"><i class="bi bi-telephone"></i> <%= @profile.contact_field("phone") %></span>
       <% end %>
       <% if @profile.contact_field("city").present? || @profile.contact_field("country").present? %>
-        <span class="profile-card__contact-item">&#x1F4CD; <%= [@profile.contact_field("city"), @profile.contact_field("country")].reject(&:blank?).join(", ") %></span>
+        <span class="profile-card__contact-item"><i class="bi bi-geo-alt"></i> <%= [@profile.contact_field("city"), @profile.contact_field("country")].reject(&:blank?).join(", ") %></span>
       <% end %>
       <% if @profile.contact_field("linkedin").present? %>
-        <span class="profile-card__contact-item">&#x1F517; <%= link_to "LinkedIn", @profile.contact_field("linkedin"), target: "_blank" %></span>
+        <span class="profile-card__contact-item"><i class="bi bi-link-45deg"></i> <%= link_to "LinkedIn", @profile.contact_field("linkedin"), target: "_blank" %></span>
       <% end %>
     </div>
   </div>
@@ -98,12 +98,19 @@
   </div>
 <% end %>
 
-<%# ── Extracted Text ── %>
+<%# ── Extracted Text (collapsible) ── %>
 <% if @profile.source_text.present? %>
   <div class="card mb-4">
-    <div class="card-header"><h3 class="card-header__title mb-0">Extracted Resume Text</h3></div>
-    <div class="card-body">
-      <pre class="profile-extracted-text"><%= @profile.source_text %></pre>
+    <div class="card-header d-flex justify-content-between align-items-center">
+      <h3 class="card-header__title mb-0">Extracted Resume Text</h3>
+      <button class="btn btn-sm btn-outline-secondary" type="button" data-bs-toggle="collapse" data-bs-target="#extractedText" aria-expanded="false" aria-controls="extractedText">
+        Show / Hide
+      </button>
+    </div>
+    <div class="collapse" id="extractedText">
+      <div class="card-body">
+        <pre class="profile-extracted-text" style="max-height: 400px; overflow-y: auto; white-space: pre-wrap; word-wrap: break-word; font-size: 0.8rem;"><%= @profile.source_text %></pre>
+      </div>
     </div>
   </div>
 <% end %>

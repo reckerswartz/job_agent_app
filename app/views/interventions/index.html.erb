@@ -50,6 +50,6 @@
   </div>
   <%= render "shared/pagination", pagy: @pagy %>
 <% else %>
-  <%= render "shared/empty_state", icon: "&#x2705;", title: "No pending interventions",
+  <%= render "shared/empty_state", icon: "bi-check-circle", title: "No pending interventions",
       message: "Everything is running smoothly. No manual action needed." %>
 <% end %>

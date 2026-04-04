@@ -53,7 +53,7 @@
   </div>
   <%= render "shared/pagination", pagy: @pagy %>
 <% else %>
-  <%= render "shared/empty_state", icon: "&#x1F4E8;", title: "No applications yet",
+  <%= render "shared/empty_state", icon: "bi-send", title: "No applications yet",
       message: "Apply to jobs from the listings page to start tracking your applications.",
       cta_text: "Browse Job Listings", cta_path: job_listings_path %>
 <% end %>

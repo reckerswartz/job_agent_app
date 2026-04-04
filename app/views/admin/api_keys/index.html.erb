@@ -15,9 +15,9 @@
       <div class="card">
         <div class="card-body d-flex align-items-center gap-3">
           <% if provider.available? %>
-            <span class="badge bg-success" style="font-size: 1.1rem;">&#x2713;</span>
+            <span class="badge bg-success" style="font-size: 1.1rem;"><i class="bi bi-check-lg"></i></span>
           <% else %>
-            <span class="badge bg-warning text-dark" style="font-size: 1.1rem;">&#x26A0;</span>
+            <span class="badge bg-warning text-dark" style="font-size: 1.1rem;"><i class="bi bi-exclamation-triangle"></i></span>
           <% end %>
           <div>
             <div class="fw-bold"><%= provider.name %></div>
@@ -62,7 +62,7 @@
                    placeholder="<%= setting.persisted? && setting.encrypted_value.present? ? setting.masked_value : 'Enter API key...' %>"
                    autocomplete="off">
             <% if setting.persisted? && setting.encrypted_value.present? %>
-              <span class="input-group-text bg-success text-white">&#x2713; Set</span>
+              <span class="input-group-text bg-success text-white"><i class="bi bi-check-lg"></i> Set</span>
             <% else %>
               <span class="input-group-text text-muted">Not set</span>
             <% end %>

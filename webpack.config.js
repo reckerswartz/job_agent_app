@@ -43,6 +43,20 @@ module.exports = {
             }
           }
         ]
+      },
+      {
+        test: /\.css$/,
+        use: [
+          MiniCssExtractPlugin.loader,
+          { loader: "css-loader" }
+        ]
+      },
+      {
+        test: /\.(woff2?|ttf|eot|svg)(\?.*)?$/,
+        type: "asset/resource",
+        generator: {
+          filename: "fonts/[name][ext]"
+        }
       }
     ]
   },

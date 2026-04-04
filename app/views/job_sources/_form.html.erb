@@ -32,18 +32,22 @@
       </div>
 
       <hr class="my-4">
-      <h5 class="mb-3">Credentials <small class="text-muted">(optional — for boards that require login)</small></h5>
-      <div class="row g-3">
-        <div class="col-md-6">
-          <label for="job_source_credentials_username" class="form-label">Username / Email</label>
-          <input type="text" name="job_source[credentials][username]" id="job_source_credentials_username"
-                 value="<%= job_source.credentials&.dig("username") %>"
-                 class="form-control" placeholder="your@email.com" autocomplete="off">
-        </div>
-        <div class="col-md-6">
-          <label for="job_source_credentials_password" class="form-label">Password</label>
-          <input type="password" name="job_source[credentials][password]" id="job_source_credentials_password"
-                 class="form-control" placeholder="<%= job_source.credentials&.dig("username").present? ? '••••••••' : 'Optional' %>" autocomplete="off">
+      <div data-controller="toggle-section"
+           data-toggle-section-show-for-value="linkedin,naukri,indeed,glassdoor,wellfound"
+           data-toggle-section-watch-value="job_source_platform">
+        <h5 class="mb-3">Credentials <small class="text-muted">(optional — for boards that require login)</small></h5>
+        <div class="row g-3">
+          <div class="col-md-6">
+            <label for="job_source_credentials_username" class="form-label">Username / Email</label>
+            <input type="text" name="job_source[credentials][username]" id="job_source_credentials_username"
+                   value="<%= job_source.credentials&.dig("username") %>"
+                   class="form-control" placeholder="your@email.com" autocomplete="off">
+          </div>
+          <div class="col-md-6">
+            <label for="job_source_credentials_password" class="form-label">Password</label>
+            <input type="password" name="job_source[credentials][password]" id="job_source_credentials_password"
+                   class="form-control" placeholder="<%= job_source.credentials&.dig("username").present? ? '••••••••' : 'Optional' %>" autocomplete="off">
+          </div>
         </div>
       </div>
 

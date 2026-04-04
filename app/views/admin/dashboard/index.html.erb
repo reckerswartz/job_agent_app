@@ -5,18 +5,18 @@
 <%# ── Stats Row ── %>
 <div class="row g-3 mb-4">
   <% stats = [
-    { value: @total_users, label: "Users", icon: "&#x1F465;", color: "primary" },
-    { value: @total_listings, label: "Listings", icon: "&#x1F4CB;", color: "info" },
-    { value: @total_applications, label: "Applications", icon: "&#x1F4E8;", color: "success" },
-    { value: @total_scans, label: "Scans", icon: "&#x1F50D;", color: "secondary" },
-    { value: @pending_interventions, label: "Pending", icon: "&#x26A0;", color: "warning" },
-    { value: @llm_stats[:total], label: "LLM Calls", icon: "&#x1F916;", color: "danger" }
+    { value: @total_users, label: "Users", icon: "bi-people", color: "primary" },
+    { value: @total_listings, label: "Listings", icon: "bi-list-ul", color: "info" },
+    { value: @total_applications, label: "Applications", icon: "bi-send", color: "success" },
+    { value: @total_scans, label: "Scans", icon: "bi-search", color: "secondary" },
+    { value: @pending_interventions, label: "Pending", icon: "bi-exclamation-triangle", color: "warning" },
+    { value: @llm_stats[:total], label: "LLM Calls", icon: "bi-robot", color: "danger" }
   ] %>
   <% stats.each do |s| %>
     <div class="col-sm-6 col-xl-2">
       <div class="card stat-card">
         <div class="card-body">
-          <div class="stat-card__icon stat-card__icon--<%= s[:color] %>"><%= raw s[:icon] %></div>
+          <div class="stat-card__icon stat-card__icon--<%= s[:color] %>"><i class="bi <%= s[:icon] %>"></i></div>
           <div class="stat-card__body">
             <div class="stat-card__value"><%= s[:value] %></div>
             <div class="stat-card__label"><%= s[:label] %></div>

@@ -11,12 +11,14 @@
     <p class="text-muted mb-4">Configure automatic actions. Auto-apply will submit Easy Apply applications for high-match listings.</p>
 
     <%= form_with url: settings_path, method: :patch do |f| %>
-      <div class="form-check form-switch mb-3">
+      <div class="form-check form-switch mb-3" data-controller="confirm-toggle" data-confirm-toggle-message-value="Enable auto-apply? This will automatically submit Easy Apply applications for listings matching your threshold.">
         <input type="hidden" name="notifications[auto_apply_enabled]" value="false">
         <input type="checkbox" class="form-check-input" role="switch"
                name="notifications[auto_apply_enabled]" id="auto_apply_enabled"
                value="true"
-               <%= "checked" if current_user.auto_apply_enabled? %>>
+               <%= "checked" if current_user.auto_apply_enabled? %>
+               data-confirm-toggle-target="checkbox"
+               data-action="change->confirm-toggle#confirm">
         <label class="form-check-label" for="auto_apply_enabled">
           <strong>Auto-Apply to Easy Apply Jobs</strong>
           <div class="form-text">Automatically apply to new Easy Apply listings that meet your match threshold.</div>

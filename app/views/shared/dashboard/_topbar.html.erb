@@ -3,28 +3,28 @@
     <button class="topbar__toggle"
             data-action="click->sidebar#toggle"
             aria-label="Toggle sidebar">
-      &#x2630;
+      <i class="bi bi-list"></i>
     </button>
     <h1 class="topbar__title"><%= yield(:page_title) || "Dashboard" %></h1>
   </div>
 
   <div class="topbar__right">
     <div class="topbar__search" data-controller="topbar-search">
-      <span class="topbar__search-icon">&#x1F50D;</span>
+      <i class="bi bi-search topbar__search-icon"></i>
       <input type="text" class="form-control form-control-sm" placeholder="Search jobs..."
              data-topbar-search-target="input"
              data-action="keydown->topbar-search#submit">
     </div>
     <div data-controller="theme">
       <button class="btn btn-sm btn-outline-secondary border-0" data-action="click->theme#toggle" title="Toggle dark mode">
-        <span data-theme-target="icon">&#x1F319;</span>
+        <i class="bi bi-moon-fill" data-theme-target="icon"></i>
       </button>
     </div>
     <% if user_signed_in? %>
       <% unread_count = current_user.notifications.unread.count %>
       <div class="dropdown">
         <button class="btn btn-sm btn-outline-secondary border-0 position-relative" data-bs-toggle="dropdown" title="Notifications" aria-label="Notifications">
-          &#x1F514;
+          <i class="bi bi-bell"></i>
           <% if unread_count > 0 %>
             <span class="position-absolute top-0 start-100 translate-middle badge rounded-pill bg-danger" style="font-size: 0.6rem;">
               <%= unread_count > 99 ? "99+" : unread_count %>
