@@ -121,6 +121,8 @@ class JobScanJob < ApplicationJob
     when "linkedin"  then JobScanner::LinkedinScanner.new(source, criteria)
     when "indeed"    then JobScanner::IndeedScanner.new(source, criteria)
     when "naukri"    then JobScanner::NaukriScanner.new(source, criteria)
+    when "glassdoor" then JobScanner::GlassdoorScanner.new(source, criteria)
+    when "wellfound" then JobScanner::WellfoundScanner.new(source, criteria)
     else JobScanner::GenericScanner.new(source, criteria)
     end
   end
