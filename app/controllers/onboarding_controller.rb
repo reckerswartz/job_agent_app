@@ -22,7 +22,8 @@ class OnboardingController < ApplicationController
       save_source
     when "complete"
       current_user.update!(onboarding_completed: true)
-      redirect_to dashboard_path, notice: "Welcome to Job Agent! Your dashboard is ready."
+      trigger_first_scan
+      redirect_to dashboard_path, notice: "Welcome to Job Agent! Your first job scan has started."
       return
     end
 
@@ -43,12 +44,53 @@ class OnboardingController < ApplicationController
     STEPS.include?(step) ? step : STEPS.first
   end
 
+  def trigger_first_scan
+    sources = current_user.job_sources.enabled
+    return if sources.none?
+
+    criteria = current_user.job_search_criteria.where(is_default: true).first
+    sources.each do |source|
+      JobScanJob.perform_later(source.id, criteria&.id)
+    end
+  end
+
   def save_resume
     if params[:source_document].present?
       @profile.source_document.attach(params[:source_document])
       @profile.update!(source_mode: "upload")
       ResumeParseJob.perform_later(@profile.id)
+    elsif params[:linkedin_url].present?
+      import_linkedin_profile(params[:linkedin_url])
     end
+  end
+
+  def import_linkedin_profile(url)
+    data = LinkedInProfileScraper.new(url).scrape
+    return unless data
+
+    updates = {}
+    if data[:name].present?
+      parts = data[:name].split(" ", 2)
+      contact = @profile.contact_details.merge(
+        "first_name" => parts[0].to_s.strip,
+        "surname" => parts[1].to_s.strip,
+        "linkedin" => data[:linkedin_url]
+      )
+      updates[:contact_details] = contact
+    end
+    updates[:headline] = data[:headline] if data[:headline].present?
+    updates[:summary] = data[:summary] if data[:summary].present?
+
+    if data[:location].present?
+      loc_parts = data[:location].split(",").map(&:strip)
+      contact = (updates[:contact_details] || @profile.contact_details).merge(
+        "city" => loc_parts[0].to_s,
+        "country" => loc_parts[-1].to_s
+      )
+      updates[:contact_details] = contact
+    end
+
+    @profile.update!(updates) if updates.any?
   end
 
   def save_profile
