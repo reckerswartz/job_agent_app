@@ -13,6 +13,14 @@ class JobListing < ApplicationRecord
   scope :recent, -> { order(posted_at: :desc, created_at: :desc) }
   scope :high_match, -> { where("match_score >= ?", 70) }
   scope :recommended, -> { where("match_score >= ?", 50).order(match_score: :desc) }
+  scope :not_duplicate, -> { where(duplicate_of_id: nil) }
+
+  belongs_to :duplicate_of, class_name: "JobListing", optional: true
+  has_many :duplicates, class_name: "JobListing", foreign_key: :duplicate_of_id
+
+  def duplicate?
+    duplicate_of_id.present?
+  end
   scope :for_user, ->(user) { joins(:job_source).where(job_sources: { user_id: user.id }) }
   scope :search, ->(query) {
     return all if query.blank?

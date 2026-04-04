@@ -79,6 +79,11 @@ class JobScanJob < ApplicationJob
         description: "Scanned #{source.name}: #{found_count} found, #{new_count} new",
         trackable: scan_run, metadata: { found: found_count, new_count: new_count })
 
+      # Post-scan pipeline: enrich → deduplicate → LLM analysis
+      enrich_new_listings(source)
+      ListingDeduplicator.new(source.user).deduplicate
+      auto_analyze_top_listings(source, profile)
+
     rescue => e
       Rails.logger.error("[JobScanJob] Failed for source #{source.id}: #{e.message}")
       scan_run.mark_failed!(e)
@@ -86,6 +91,30 @@ class JobScanJob < ApplicationJob
   end
 
   private
+
+  def enrich_new_listings(source)
+    source.job_listings
+      .where(description: [nil, ""])
+      .where("created_at > ?", 1.hour.ago)
+      .limit(10)
+      .each { |l| ListingEnrichJob.perform_later(l.id) }
+  end
+
+  def auto_analyze_top_listings(source, profile)
+    return unless profile
+    return unless LlmProvider.active.any?(&:available?)
+
+    source.job_listings
+      .where("match_score >= ?", 50)
+      .where("created_at > ?", 1.hour.ago)
+      .order(match_score: :desc)
+      .limit(3)
+      .each do |listing|
+        Llm::Pipeline::JobMatch.new(listing, profile).analyze
+      rescue => e
+        Rails.logger.warn("[JobScanJob] LLM analysis failed for #{listing.id}: #{e.message}")
+      end
+  end
 
   def scanner_for(source, criteria)
     case source.platform
