@@ -3,6 +3,13 @@ module JobScanner
     INDEED_BASE = "https://www.indeed.com/jobs".freeze
     MAX_DETAIL_SCRAPES = 10
 
+    def scan
+      listings = try_browser_scan
+      listings = try_http_scan if listings.empty?
+      Rails.logger.info("[IndeedScanner] Total: #{listings.size} listings")
+      listings
+    end
+
     protected
 
     def build_search_url
@@ -29,12 +36,8 @@ module JobScanner
           const linkEl = card.querySelector('a[href*="/viewjob"], a[href*="/rc/clk"], h2 a, .jobTitle a');
           const salaryEl = card.querySelector('.salary-snippet, .estimated-salary, [data-testid="attribute_snippet_testid"], .salary-snippet-container');
           const dateEl = card.querySelector('.date, .myJobsState, [data-testid="myJobsStateDate"]');
-
           const easyApplyEl = card.querySelector('.iaLabel, .indeedApply, [data-testid="indeedApply"]');
-          const easyApply = !!easyApplyEl;
-
           const jk = card.getAttribute('data-jk') || card.closest('[data-jk]')?.getAttribute('data-jk');
-
           return {
             title: titleEl ? titleEl.textContent.trim() : null,
             company: companyEl ? companyEl.textContent.trim() : null,
@@ -42,7 +45,7 @@ module JobScanner
             url: linkEl ? (linkEl.href.startsWith('http') ? linkEl.href : 'https://www.indeed.com' + linkEl.getAttribute('href')) : null,
             salary_range: salaryEl ? salaryEl.textContent.trim() : null,
             posted_at: dateEl ? dateEl.textContent.trim() : null,
-            easy_apply: easyApply,
+            easy_apply: !!easyApplyEl,
             external_id: jk ? ('indeed_' + jk) : null
           };
         }).filter(item => item.title && item.title.length > 0)
@@ -77,6 +80,60 @@ module JobScanner
     rescue => e
       Rails.logger.error("[IndeedScanner] fetch_next_page failed: #{e.message}")
       nil
+    end
+
+    private
+
+    def try_http_scan
+      url = build_search_url
+      Rails.logger.info("[IndeedScanner] HTTP fallback: #{url}")
+      html = fetch_html(url)
+      return [] unless html
+
+      listings = parse_indeed_cards(html)
+      listings.map { |l| normalize_listing(l.merge(source_platform: "indeed")) }
+    end
+
+    def parse_indeed_cards(html)
+      listings = []
+
+      # Indeed renders job cards with data-jk attributes
+      html.scan(/<a[^>]*data-jk="([^"]+)"[^>]*>/).each do |jk_match|
+        jk = jk_match[0]
+        idx = html.index("data-jk=\"#{jk}\"")
+        next unless idx
+        chunk = html[([idx - 1000, 0].max)..(idx + 3000)]
+        l = extract_indeed_card(chunk, jk)
+        listings << l if l[:title].present?
+      end
+
+      # Fallback: look for jobTitle spans/links
+      if listings.empty?
+        html.scan(/<h2[^>]*class="[^"]*jobTitle[^"]*"[^>]*>(.*?)<\/h2>/mi).each do |match|
+          title_html = match[0]
+          title = title_html.gsub(/<[^>]+>/, "").strip
+          next if title.blank?
+          listings << { title: title, company: nil, location: nil, url: nil, external_id: nil }
+        end
+      end
+
+      listings.uniq { |l| l[:external_id] || l[:title] }.first(25)
+    end
+
+    def extract_indeed_card(chunk, jk)
+      title = chunk[/class="[^"]*jobTitle[^"]*"[^>]*>.*?<span[^>]*>([^<]+)/mi, 1]&.strip ||
+              chunk[/title="([^"]+)"/i, 1]&.strip ||
+              chunk[/<h2[^>]*>.*?<a[^>]*>.*?<span>([^<]+)/mi, 1]&.strip
+      company = chunk[/class="[^"]*companyName[^"]*"[^>]*>([^<]+)/i, 1]&.strip ||
+                chunk[/data-testid="company-name"[^>]*>([^<]+)/i, 1]&.strip
+      location = chunk[/class="[^"]*companyLocation[^"]*"[^>]*>([^<]+)/i, 1]&.strip ||
+                 chunk[/data-testid="text-location"[^>]*>([^<]+)/i, 1]&.strip
+      salary = chunk[/class="[^"]*salary[^"]*"[^>]*>([^<]+)/i, 1]&.strip
+      ea = chunk.include?("indeedApply") || chunk.include?("iaLabel")
+      url = "https://www.indeed.com/viewjob?jk=#{jk}" if jk.present?
+
+      { title: title, company: company, location: location, url: url,
+        salary_range: salary, easy_apply: ea, external_id: jk ? "indeed_#{jk}" : nil }
     end
   end
 end
