@@ -9,10 +9,16 @@ module JobScanner
     end
 
     def scan
+      listings = try_browser_scan
+      Rails.logger.info("[#{self.class.name}] Total: #{listings.size} listings")
+      listings
+    end
+
+    def try_browser_scan
       listings = []
       search_url = build_search_url
 
-      @session = BrowserSession.new
+      @session = Timeout.timeout(10) { BrowserSession.new }
       page_data = fetch_page(search_url)
       return listings if page_data.nil?
 
@@ -38,6 +44,9 @@ module JobScanner
       end
 
       listings
+    rescue Errno::ENOENT, IOError, RuntimeError, Timeout::Error => e
+      Rails.logger.warn("[#{self.class.name}] Browser unavailable: #{e.message}")
+      []
     ensure
       @session&.close
     end
@@ -109,6 +118,26 @@ module JobScanner
         application_url: raw[:application_url].to_s.strip.presence,
         raw_data: raw
       }
+    end
+
+    def fetch_html(url)
+      uri = URI(url)
+      http = Net::HTTP.new(uri.host, uri.port)
+      http.use_ssl = uri.scheme == "https"
+      http.read_timeout = 30
+      http.open_timeout = 15
+
+      req = Net::HTTP::Get.new(uri)
+      req["User-Agent"] = "Mozilla/5.0 (X11; Linux x86_64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/120.0.0.0 Safari/537.36"
+      req["Accept"] = "text/html,application/xhtml+xml"
+      req["Accept-Language"] = "en-US,en;q=0.5"
+
+      resp = http.request(req)
+      Rails.logger.info("[#{self.class.name}] HTTP #{resp.code} for #{uri.host}")
+      resp.code.to_i == 200 ? resp.body : nil
+    rescue => e
+      Rails.logger.error("[#{self.class.name}] HTTP failed: #{e.message}")
+      nil
     end
 
     private

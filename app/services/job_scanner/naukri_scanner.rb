@@ -2,6 +2,13 @@ module JobScanner
   class NaukriScanner < Base
     NAUKRI_BASE = "https://www.naukri.com/".freeze
 
+    def scan
+      listings = try_browser_scan
+      listings = try_http_scan if listings.empty?
+      Rails.logger.info("[NaukriScanner] Total: #{listings.size} listings")
+      listings
+    end
+
     protected
 
     def build_search_url
@@ -29,12 +36,8 @@ module JobScanner
           const linkEl = card.querySelector('a.title, a[href*="/job-listings"], a.jobTitle') || card.querySelector('a');
           const salaryEl = card.querySelector('.sal-wrap .ni-job-tuple-icon-srp-rupee, .salary, .sal');
           const expEl = card.querySelector('.exp-wrap .expwdth, .experience, .exp');
-
           const easyApplyEl = card.querySelector('.easyApply, .applyButton .easy-apply, [data-is-easy-apply]');
-          const easyApply = !!easyApplyEl;
-
           const jobId = card.getAttribute('data-job-id') || card.getAttribute('data-jobid');
-
           return {
             title: titleEl ? titleEl.textContent.trim() : null,
             company: companyEl ? companyEl.textContent.trim() : null,
@@ -42,7 +45,7 @@ module JobScanner
             url: linkEl ? linkEl.href : null,
             salary_range: salaryEl ? salaryEl.textContent.trim() : null,
             experience: expEl ? expEl.textContent.trim() : null,
-            easy_apply: easyApply,
+            easy_apply: !!easyApplyEl,
             external_id: jobId ? ('naukri_' + jobId) : null
           };
         }).filter(item => item.title && item.title.length > 0)
@@ -77,6 +80,68 @@ module JobScanner
     rescue => e
       Rails.logger.error("[NaukriScanner] fetch_next_page failed: #{e.message}")
       nil
+    end
+
+    private
+
+    def try_http_scan
+      # Naukri is a JavaScript SPA — server-rendered HTML contains no job cards.
+      # HTTP fallback cannot work for Naukri. A real browser (Playwright) is required.
+      Rails.logger.warn("[NaukriScanner] HTTP fallback unavailable — Naukri requires a browser (JavaScript SPA)")
+      []
+    end
+
+    def parse_naukri_cards(html)
+      listings = []
+      # Naukri renders job cards in article tags or divs with job data
+      html.scan(/<article[^>]*class="[^"]*jobTuple[^"]*"[^>]*>(.*?)<\/article>/mi).each do |match|
+        card = match[0]
+        l = extract_naukri_card(card)
+        listings << l if l[:title].present?
+      end
+
+      # Fallback: try srp-jobtuple-wrapper pattern
+      if listings.empty?
+        html.scan(/<div[^>]*class="[^"]*srp-jobtuple-wrapper[^"]*"[^>]*>(.*?)<\/div>\s*<\/div>\s*<\/div>/mi).each do |match|
+          card = match[0]
+          l = extract_naukri_card(card)
+          listings << l if l[:title].present?
+        end
+      end
+
+      # Fallback: try any element with data-job-id
+      if listings.empty?
+        html.scan(/data-job-id="(\d+)"/).each do |jid_match|
+          jid = jid_match[0]
+          # Extract surrounding context
+          idx = html.index("data-job-id=\"#{jid}\"")
+          next unless idx
+          chunk = html[([idx - 2000, 0].max)..(idx + 3000)]
+          l = extract_naukri_card(chunk)
+          l[:external_id] = "naukri_#{jid}"
+          listings << l if l[:title].present?
+        end
+      end
+
+      listings.uniq { |l| l[:external_id] || l[:title] }.first(25)
+    end
+
+    def extract_naukri_card(card)
+      title = card[/<a[^>]*class="[^"]*title[^"]*"[^>]*>([^<]+)/i, 1]&.strip ||
+              card[/<a[^>]*title="([^"]+)"/i, 1]&.strip
+      company = card[/class="[^"]*comp-name[^"]*"[^>]*>([^<]+)/i, 1]&.strip ||
+                card[/class="[^"]*companyInfo[^"]*"[^>]*>.*?<a[^>]*>([^<]+)/mi, 1]&.strip
+      location = card[/class="[^"]*loc(?:Wdth|ation|n)[^"]*"[^>]*>([^<]+)/i, 1]&.strip ||
+                 card[/class="[^"]*locWdth[^"]*"[^>]*>([^<]+)/i, 1]&.strip
+      url = card[/href="(https:\/\/www\.naukri\.com\/job-listings[^"]+)"/i, 1] ||
+            card[/href="(\/job-listings[^"]+)"/i, 1]
+      url = "https://www.naukri.com#{url}" if url&.start_with?("/")
+      salary = card[/class="[^"]*sal[^"]*"[^>]*>([^<]+)/i, 1]&.strip
+      jid = card[/data-job-id="(\d+)"/i, 1]
+      ea = card.include?("easyApply") || card.include?("easy-apply")
+
+      { title: title, company: company, location: location, url: url,
+        salary_range: salary, easy_apply: ea, external_id: jid ? "naukri_#{jid}" : nil }
     end
   end
 end
