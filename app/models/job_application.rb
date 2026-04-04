@@ -1,5 +1,6 @@
 class JobApplication < ApplicationRecord
   STATUSES = %w[queued in_progress submitted failed needs_intervention].freeze
+  PIPELINE_STAGES = %w[applied screening interviewing offered accepted rejected withdrawn].freeze
 
   belongs_to :job_listing
   belongs_to :profile
@@ -8,6 +9,7 @@ class JobApplication < ApplicationRecord
   has_many :interventions, as: :interventionable, dependent: :destroy
 
   validates :status, inclusion: { in: STATUSES }
+  validates :pipeline_stage, inclusion: { in: PIPELINE_STAGES }, allow_nil: true
   validates :job_listing_id, uniqueness: { message: "already has an application" }
 
   scope :by_status, ->(status) { where(status: status) if status.present? }

@@ -54,8 +54,10 @@ Rails.application.routes.draw do
 
   # Job Applications
   resources :job_applications, only: [ :index, :show, :create ] do
+    collection { get :board }
     member do
       post :retry_application
+      patch :update_stage
     end
     resources :interviews, only: [:create, :update, :destroy] do
       member { post :generate_prep }

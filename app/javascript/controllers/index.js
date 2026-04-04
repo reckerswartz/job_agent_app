@@ -30,3 +30,6 @@ application.register("data-table", DataTableController)
 
 import LoadingButtonController from "./loading_button_controller"
 application.register("loading-button", LoadingButtonController)
+
+import PipelineBoardController from "./pipeline_board_controller"
+application.register("pipeline-board", PipelineBoardController)

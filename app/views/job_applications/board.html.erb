@@ -1,0 +1,56 @@
+<% content_for(:page_title, "Pipeline Board") %>
+
+<% actions = capture do %>
+  <%= link_to "Table View", job_applications_path, class: "btn btn-outline-secondary btn-sm" %>
+<% end %>
+<%= render "shared/page_header", title: "Pipeline Board", subtitle: "#{@applications.size} applications", actions: actions %>
+
+<div data-controller="pipeline-board" class="d-flex gap-3 overflow-auto pb-3" style="min-height: 500px;">
+  <% @stages.each do |stage| %>
+    <% apps = @grouped[stage] || [] %>
+    <% stage_color = { "applied" => "primary", "screening" => "info", "interviewing" => "warning", "offered" => "success", "accepted" => "success", "rejected" => "danger", "withdrawn" => "secondary" }[stage] || "secondary" %>
+
+    <div class="flex-shrink-0" style="width: 260px;"
+         data-pipeline-stage="<%= stage %>"
+         data-pipeline-board-target="column"
+         data-action="dragover->pipeline-board#dragOver dragleave->pipeline-board#dragLeave drop->pipeline-board#drop">
+
+      <div class="card border-0 bg-light h-100">
+        <div class="card-header bg-transparent border-0 d-flex justify-content-between align-items-center py-2 px-3">
+          <span class="fw-bold small text-uppercase"><%= stage.humanize %></span>
+          <span class="badge bg-<%= stage_color %>" data-count><%= apps.size %></span>
+        </div>
+
+        <div class="card-body p-2 overflow-auto" style="max-height: 600px;" data-pipeline-board-target="cardContainer">
+          <% apps.each do |app| %>
+            <div class="card mb-2 shadow-sm border-0" style="cursor: grab;"
+                 draggable="true"
+                 data-application-id="<%= app.id %>"
+                 data-action="dragstart->pipeline-board#dragStart dragend->pipeline-board#dragEnd">
+              <div class="card-body p-2">
+                <div class="fw-bold small">
+                  <%= link_to app.job_listing.title.truncate(40), job_application_path(app), class: "text-decoration-none text-dark" %>
+                </div>
+                <div class="text-muted" style="font-size: 0.7rem;"><%= app.job_listing.company %></div>
+                <div class="d-flex justify-content-between align-items-center mt-1">
+                  <% if app.job_listing.match_score %>
+                    <span class="match-score <%= app.job_listing.match_badge_class %>" style="font-size: 0.65rem;"><%= app.job_listing.match_score %>%</span>
+                  <% end %>
+                  <span class="text-muted" style="font-size: 0.65rem;">
+                    <%= app.applied_at ? time_ago_in_words(app.applied_at) : time_ago_in_words(app.created_at) %>
+                  </span>
+                </div>
+              </div>
+            </div>
+          <% end %>
+
+          <% if apps.empty? %>
+            <div class="text-center text-muted small py-4" style="font-size: 0.7rem;">
+              Drop here
+            </div>
+          <% end %>
+        </div>
+      </div>
+    </div>
+  <% end %>
+</div>
