@@ -1,0 +1,16 @@
+Action Needed: <%= @intervention.type_label %>
+
+Hi <%= @user.display_name %>,
+
+An automated task requires your attention.
+
+Type: <%= @intervention.type_label %>
+Related To: <%= @intervention.parent_description %>
+<% if @intervention.context["page_url"].present? %>
+Page: <%= @intervention.context["page_url"] %>
+<% end %>
+
+Resolve this intervention: <%= intervention_url(@intervention) %>
+
+--
+Manage notifications: <%= edit_settings_url %>

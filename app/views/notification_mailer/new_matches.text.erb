@@ -1,0 +1,15 @@
+<%= @listings.size %> New High-Match Jobs
+
+Hi <%= @user.display_name %>,
+
+We found <%= @listings.size %> new job listings that are a great match for your profile:
+
+<% @listings.each do |listing| %>
+- <%= listing.title %> at <%= listing.company %> (<%= listing.match_score %>% match)
+  <%= job_listing_url(listing) %>
+<% end %>
+
+View all listings: <%= job_listings_url %>
+
+--
+Manage notifications: <%= edit_settings_url %>

@@ -1,0 +1,16 @@
+Scan Complete: <%= @source.name %>
+
+Hi <%= @user.display_name %>,
+
+Your scan of <%= @source.name %> (<%= @source.platform.capitalize %>) has completed.
+
+Listings Found: <%= @scan_run.listings_found %>
+New Listings: <%= @scan_run.new_listings %>
+Duration: <%= @scan_run.duration_display %>
+<% if @scan_run.new_listings > 0 %>
+
+View your job listings: <%= job_listings_url %>
+<% end %>
+
+--
+Manage notifications: <%= edit_settings_url %>
