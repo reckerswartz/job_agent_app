@@ -1,105 +1,139 @@
 # Job Agent App
 
-A browser automation-powered application that finds relevant jobs for users by searching across multiple job boards, extracting listings, and ranking matches against user preferences.
+An AI-powered job search automation platform that scans LinkedIn, Indeed, and Naukri for relevant listings, matches them against your profile, and auto-applies to high-match Easy Apply jobs.
 
-## Getting Started
+## Features
 
-* **Ruby version:** See `.ruby-version`
-* **Node version:** See `.node-version`
+- **Multi-Source Scanning** — LinkedIn (HTTP), Indeed (HTTP), Naukri (browser) with auto-enrichment
+- **AI Match Scoring** — Keyword + LLM semantic analysis with skill gap detection
+- **Auto-Apply** — Configurable threshold for Easy Apply jobs
+- **Resume & Cover Letters** — AI tailoring per job, PDF export (Prawn)
+- **Real-Time Notifications** — Action Cable bell + branded email + webhooks (HMAC signed)
+- **REST API** — 11 endpoints with Bearer token auth
+- **Admin Panel** — Users, LLM models (sync/verify), API keys, scan monitor, audit log
+- **Dark Mode** — Full theme support with accessibility (WCAG focus states, skip link, ARIA)
 
-### Setup
+## Quick Start
+
+### Prerequisites
+
+- Ruby 3.4.2, Node 24, PostgreSQL 17, Yarn
+
+### Native Setup
 
 ```bash
-bundle install
-yarn install
+bundle install && yarn install
 bin/rails db:setup
+bin/dev                          # Starts Rails + Webpack + CSS watcher
 ```
 
-### Development
+### Docker Compose
 
 ```bash
-bin/dev
+docker compose up               # Starts web + PostgreSQL + Redis
+docker compose exec web bin/rails db:setup
 ```
 
-### Tests
+### Test Users (from seeds)
+
+| Email | Password | Role |
+|-------|----------|------|
+| `admin@jobagent.dev` | `password123` | Admin |
+| `demo@jobagent.dev` | `password123` | User (full profile) |
+
+## Tests
 
 ```bash
-bundle exec rspec          # Ruby specs
-bundle exec rubocop        # Linter
-bin/brakeman --no-pager    # Security scan
-bin/bundler-audit           # Dependency CVE audit
-npx playwright test        # E2E browser tests
-```
-
-## GitHub Workflow
-
-All development follows a branch-based workflow. See [docs/github-workflow.md](docs/github-workflow.md) for the full guide.
-
-**Quick reference:**
-- Never commit directly to `main` — always use a branch + PR
-- Branch naming: `feature/x`, `fix/y`, `chore/z`
-- PRs use a standardized template (`.github/pull_request_template.md`)
-- Issues use templates for bugs, features, and tasks (`.github/ISSUE_TEMPLATE/`)
-- CI runs Brakeman, bundler-audit, and RuboCop on every push and PR
-
-### GitHub CLI Shortcuts
-
-```bash
-source scripts/gh-helpers.sh    # Load shortcuts
-gh-feature my-feature           # Create feature branch
-gh-ship "Add new feature"       # Commit + push + open PR
-gh-done                         # Merge current PR + sync back to main
-gh-status                       # View open PRs, issues, CI
+bundle exec rspec              # 319 RSpec specs
+bundle exec rubocop            # Linter
+bin/brakeman --no-pager        # Security scan
+bin/bundler-audit              # Dependency CVE audit
+npx playwright test            # 11 E2E spec files
 ```
 
 ## Architecture
 
 ```
-User Profile (from resume PDF/text)
+Resume Upload / LinkedIn URL Import
     ↓
-Job Sources (LinkedIn, Indeed, Naukri, etc.)
+AI Profile Structuring (NVIDIA LLM)
     ↓
-Job Scanner (Playwright browser automation)
+Job Sources (LinkedIn, Indeed, Naukri)
     ↓
-Job Listings (deduplicated, scored 0-100)
+Scan → Enrich (HTTP) → Deduplicate → LLM Match Analysis
     ↓
-Job Applications (auto-fill forms, track steps)
+Job Listings (filtered, sorted, scored 0-100)
     ↓
-Interventions (login/CAPTCHA → manual resolution → auto-retry)
+Auto-Apply (Easy Apply) / Manual Application
     ↓
-Dashboard (live stats, activity feed)
+Notifications + Webhooks + Activity Log
 ```
 
-### Key Components
+### Tech Stack
 
 | Layer | Tech |
 |-------|------|
-| **Auth** | Devise (database_authenticatable, trackable, recoverable) |
-| **Browser Automation** | playwright-ruby-client (headless Chromium) |
-| **Background Jobs** | Solid Queue (scanning, applying, parsing queues) |
-| **LLM** | NVIDIA Build API (vision + text + verification pipeline) |
-| **Frontend** | Webpack + Bootstrap 5 Sass + Stimulus |
-| **Database** | PostgreSQL + Active Storage |
+| **Framework** | Rails 8.1, Ruby 3.4.2 |
+| **Auth** | Devise (trackable, recoverable) |
+| **Frontend** | Webpack + Bootstrap 5 Sass + Stimulus (10 controllers) |
+| **LLM** | NVIDIA Build API (186 models, primary/vision/verification roles) |
+| **Background Jobs** | Solid Queue (async in dev) |
+| **Real-Time** | Action Cable (async dev, Solid Cable prod) |
+| **Browser Automation** | Playwright Ruby (headless Chromium) |
+| **PDF** | Prawn + prawn-table |
+| **Database** | PostgreSQL 17 + Active Storage |
+| **Deployment** | Docker + Kamal (SSL, PostgreSQL, Redis accessories) |
 
-## CI/CD
+## API
 
-CI runs automatically on pushes to `main` and on all pull requests:
+Bearer token auth. See [docs/api.md](docs/api.md) for full reference.
 
-| Job | Tool | Purpose |
-|-----|------|---------|
-| `scan_ruby` | Brakeman | Static security analysis |
-| `scan_ruby` | bundler-audit | Gem CVE scanning |
-| `lint` | RuboCop | Code style enforcement |
-| `test` | RSpec (222 specs) | Full test suite with PostgreSQL |
+```bash
+curl -H "Authorization: Bearer YOUR_TOKEN" http://localhost:3000/api/v1/job_listings
+```
 
-Dependabot keeps Ruby gems and GitHub Actions up to date weekly.
+| Endpoint | Method | Description |
+|----------|--------|-------------|
+| `/api/v1/job_listings` | GET | Paginated listings (filterable) |
+| `/api/v1/job_applications` | GET/POST | List or create applications |
+| `/api/v1/job_sources/:id/scan` | POST | Trigger a scan |
+| `/api/v1/profile` | GET | User profile |
+| `/api/v1/scan_runs` | GET | Scan history |
+
+## Deployment
+
+### Kamal (Production)
+
+```bash
+cp .kamal/secrets.example .kamal/secrets   # Fill in secrets
+bin/kamal setup                             # First deploy
+bin/kamal deploy                            # Subsequent deploys
+```
+
+### Health Check
+
+```bash
+curl http://localhost:3000/health           # JSON system status
+```
 
 ## Environment Variables
-
-See `.env.example` for all required environment variables. Key ones:
 
 | Variable | Purpose |
 |----------|---------|
 | `NVIDIA_API_KEY` | NVIDIA Build API for LLM features |
+| `DATABASE_URL` | PostgreSQL connection string |
+| `REDIS_URL` | Redis for Action Cable + Solid Queue |
+| `RAILS_MASTER_KEY` | Decrypts credentials |
 | `ACTIVE_RECORD_ENCRYPTION_*` | Encryption keys for AppSetting |
-| `DATABASE_URL` | PostgreSQL connection (production/CI) |
+
+## CI/CD
+
+CI runs on all pushes and PRs: Brakeman, bundler-audit, RuboCop, RSpec (319 specs).
+
+## Design System
+
+See [docs/design-system.md](docs/design-system.md) for colors, components, helpers, and SCSS architecture.
+
+## License
+
+Private. All rights reserved.
