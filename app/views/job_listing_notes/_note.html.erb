@@ -1,0 +1,9 @@
+<div id="<%= dom_id(note) %>" class="d-flex justify-content-between align-items-start mb-3 pb-3 border-bottom">
+  <div class="small"><%= simple_format(note.content) %></div>
+  <div class="flex-shrink-0 ms-2">
+    <span class="text-muted" style="font-size: 0.7rem;"><%= time_ago_in_words(note.created_at) %> ago</span>
+    <%= button_to job_listing_note_path(note.job_listing, note), method: :delete, class: "btn btn-sm btn-outline-danger ms-1", data: { turbo_confirm: "Delete this note?" } do %>
+      <i class="bi bi-trash" aria-hidden="true"></i>
+    <% end %>
+  </div>
+</div>

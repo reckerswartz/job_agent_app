@@ -1,0 +1,12 @@
+<%= turbo_stream.prepend "notes_list" do %>
+  <%= render partial: "job_listing_notes/note", locals: { note: @note } %>
+<% end %>
+
+<%= turbo_stream.replace "new_note_form" do %>
+  <%= form_with url: job_listing_notes_path(@listing), class: "d-flex gap-2", id: "new_note_form" do |f| %>
+    <textarea name="job_listing_note[content]" class="form-control form-control-sm" rows="2" placeholder="Add a note about this listing..." required></textarea>
+    <button type="submit" class="btn btn-sm btn-primary align-self-end flex-shrink-0">
+      <i class="bi bi-plus-lg" aria-hidden="true"></i> Add
+    </button>
+  <% end %>
+<% end %>

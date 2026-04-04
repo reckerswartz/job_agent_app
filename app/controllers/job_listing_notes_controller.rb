@@ -9,7 +9,10 @@ class JobListingNotesController < ApplicationController
     @note.user = current_user
 
     if @note.save
-      redirect_to job_listing_path(@listing), notice: "Note added."
+      respond_to do |format|
+        format.turbo_stream
+        format.html { redirect_to job_listing_path(@listing), notice: "Note added." }
+      end
     else
       redirect_to job_listing_path(@listing), alert: "Failed to add note: #{@note.errors.full_messages.join(', ')}"
     end
@@ -18,7 +21,11 @@ class JobListingNotesController < ApplicationController
   def destroy
     @note = @listing.job_listing_notes.where(user: current_user).find(params[:id])
     @note.destroy
-    redirect_to job_listing_path(@listing), notice: "Note removed."
+
+    respond_to do |format|
+      format.turbo_stream
+      format.html { redirect_to job_listing_path(@listing), notice: "Note removed." }
+    end
   end
 
   private

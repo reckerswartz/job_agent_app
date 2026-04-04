@@ -75,19 +75,11 @@
         <h3 class="card-header__title mb-0">Notes</h3>
       </div>
       <div class="card-body">
-        <% @listing.job_listing_notes.where(user: current_user).recent.each do |note| %>
-          <div class="d-flex justify-content-between align-items-start mb-3 pb-3 border-bottom">
-            <div class="small"><%= simple_format(note.content) %></div>
-            <div class="flex-shrink-0 ms-2">
-              <span class="text-muted" style="font-size: 0.7rem;"><%= time_ago_in_words(note.created_at) %> ago</span>
-              <%= button_to job_listing_note_path(@listing, note), method: :delete, class: "btn btn-sm btn-outline-danger ms-1", data: { turbo_confirm: "Delete this note?" } do %>
-                <i class="bi bi-trash" aria-hidden="true"></i>
-              <% end %>
-            </div>
-          </div>
-        <% end %>
+        <div id="notes_list">
+          <%= render partial: "job_listing_notes/note", collection: @listing.job_listing_notes.where(user: current_user).recent, as: :note %>
+        </div>
 
-        <%= form_with url: job_listing_notes_path(@listing), class: "d-flex gap-2" do |f| %>
+        <%= form_with url: job_listing_notes_path(@listing), class: "d-flex gap-2", id: "new_note_form" do |f| %>
           <textarea name="job_listing_note[content]" class="form-control form-control-sm" rows="2" placeholder="Add a note about this listing..." required></textarea>
           <button type="submit" class="btn btn-sm btn-primary align-self-end flex-shrink-0">
             <i class="bi bi-plus-lg" aria-hidden="true"></i> Add
