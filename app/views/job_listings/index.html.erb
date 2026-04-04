@@ -19,6 +19,62 @@
   <% end %>
 </div>
 
+<%# ── Advanced Filters ── %>
+<div class="card mb-3">
+  <div class="card-body py-2 px-3">
+    <%= form_with url: job_listings_path, method: :get, class: "row g-2 align-items-end" do %>
+      <input type="hidden" name="status" value="<%= params[:status] %>">
+      <input type="hidden" name="q" value="<%= params[:q] %>">
+      <div class="col-auto">
+        <label class="form-label small mb-0">Remote</label>
+        <select name="remote" class="form-select form-select-sm" style="width: 120px;">
+          <option value="">Any</option>
+          <% %w[remote hybrid onsite].each do |r| %>
+            <option value="<%= r %>" <%= 'selected' if params[:remote] == r %>><%= r.capitalize %></option>
+          <% end %>
+        </select>
+      </div>
+      <div class="col-auto">
+        <label class="form-label small mb-0">Type</label>
+        <select name="employment" class="form-select form-select-sm" style="width: 130px;">
+          <option value="">Any</option>
+          <% %w[full_time part_time contract internship].each do |t| %>
+            <option value="<%= t %>" <%= 'selected' if params[:employment] == t %>><%= t.humanize %></option>
+          <% end %>
+        </select>
+      </div>
+      <div class="col-auto">
+        <label class="form-label small mb-0">Source</label>
+        <select name="platform" class="form-select form-select-sm" style="width: 120px;">
+          <option value="">All</option>
+          <% JobSource::PLATFORMS.each do |p| %>
+            <option value="<%= p %>" <%= 'selected' if params[:platform] == p %>><%= p.capitalize %></option>
+          <% end %>
+        </select>
+      </div>
+      <div class="col-auto">
+        <label class="form-label small mb-0">Match</label>
+        <div class="d-flex gap-1">
+          <input type="number" name="min_match" value="<%= params[:min_match] %>" class="form-control form-control-sm" style="width: 65px;" placeholder="Min" min="0" max="100">
+          <input type="number" name="max_match" value="<%= params[:max_match] %>" class="form-control form-control-sm" style="width: 65px;" placeholder="Max" min="0" max="100">
+        </div>
+      </div>
+      <div class="col-auto">
+        <div class="form-check form-check-inline mb-0">
+          <input type="checkbox" name="easy_apply" value="1" class="form-check-input" id="filter_easy_apply" <%= 'checked' if params[:easy_apply] == '1' %>>
+          <label class="form-check-label small" for="filter_easy_apply">Easy Apply</label>
+        </div>
+      </div>
+      <div class="col-auto">
+        <button type="submit" class="btn btn-sm btn-primary">Filter</button>
+        <% if @filters_active %>
+          <%= link_to "Clear", job_listings_path(status: params[:status], q: params[:q]), class: "btn btn-sm btn-outline-secondary" %>
+        <% end %>
+      </div>
+    <% end %>
+  </div>
+</div>
+
 <%# ── Status Filter Tabs ── %>
 <% listing_tabs = [{ label: "All", count: @status_counts.values.sum, path: job_listings_path, active: params[:status].blank? }] %>
 <% JobListing::STATUSES.each do |s| %>

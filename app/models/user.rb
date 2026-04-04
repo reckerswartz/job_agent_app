@@ -9,6 +9,7 @@ class User < ApplicationRecord
   has_many :notifications, dependent: :destroy
   has_many :webhook_endpoints, dependent: :destroy
   has_many :activity_logs, dependent: :destroy
+  has_many :saved_searches, dependent: :destroy
 
   enum :role, { user: 0, admin: 1 }, validate: true
 
