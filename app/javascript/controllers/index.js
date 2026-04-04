@@ -39,3 +39,6 @@ application.register("toggle-section", ToggleSectionController)
 
 import ConfirmToggleController from "./confirm_toggle_controller"
 application.register("confirm-toggle", ConfirmToggleController)
+
+import DirtyFormController from "./dirty_form_controller"
+application.register("dirty-form", DirtyFormController)

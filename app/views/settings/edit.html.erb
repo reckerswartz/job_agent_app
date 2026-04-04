@@ -10,7 +10,8 @@
   <div class="card-body">
     <p class="text-muted mb-4">Configure automatic actions. Auto-apply will submit Easy Apply applications for high-match listings.</p>
 
-    <%= form_with url: settings_path, method: :patch do |f| %>
+    <%= form_with url: settings_path, method: :patch, data: { controller: "dirty-form" } do |f| %>
+      <span class="badge bg-warning text-dark ms-2 small" style="display:none;" data-dirty-form-target="indicator">Unsaved changes</span>
       <div class="form-check form-switch mb-3" data-controller="confirm-toggle" data-confirm-toggle-message-value="Enable auto-apply? This will automatically submit Easy Apply applications for listings matching your threshold.">
         <input type="hidden" name="notifications[auto_apply_enabled]" value="false">
         <input type="checkbox" class="form-check-input" role="switch"
@@ -51,7 +52,8 @@
   <div class="card-body">
     <p class="text-muted mb-4">Choose which email notifications you'd like to receive.</p>
 
-    <%= form_with url: settings_path, method: :patch do |f| %>
+    <%= form_with url: settings_path, method: :patch, data: { controller: "dirty-form" } do |f| %>
+      <span class="badge bg-warning text-dark ms-2 small" style="display:none;" data-dirty-form-target="indicator">Unsaved changes</span>
       <% notification_options = {
         "email_scan_completed" => "Scan completed — when a job board scan finishes with new listings",
         "email_new_matches" => "Daily digest — high-match listings found in the last 24 hours",

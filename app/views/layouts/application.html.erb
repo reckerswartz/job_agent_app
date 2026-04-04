@@ -73,8 +73,13 @@
     </main>
 
     <footer class="site-footer">
-      <div class="container text-center">
-        <p class="site-footer__text">&copy; <%= Date.today.year %> Job Agent App</p>
+      <div class="container d-flex justify-content-between align-items-center flex-wrap gap-2">
+        <span class="site-footer__text">&copy; <%= Date.today.year %> Job Agent App</span>
+        <span class="site-footer__links">
+          <a href="/health" class="site-footer__link">Status</a>
+          <span class="text-muted">&middot;</span>
+          <a href="https://github.com/reckerswartz/job_agent_app" target="_blank" rel="noopener" class="site-footer__link">GitHub</a>
+        </span>
       </div>
     </footer>
   </body>
