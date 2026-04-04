@@ -46,3 +46,21 @@
     padding-top: 0.25rem;
   }
 }
+
+// Pipeline Board — mobile responsive
+.pipeline-board {
+  @media (max-width: 767.98px) {
+    flex-direction: column !important;
+    overflow: visible !important;
+    min-height: auto !important;
+
+    > .flex-shrink-0 {
+      width: 100% !important;
+      flex-shrink: 1 !important;
+    }
+
+    .card-body[data-pipeline-board-target="cardContainer"] {
+      max-height: none !important;
+    }
+  }
+}

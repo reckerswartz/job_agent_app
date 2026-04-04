@@ -5,7 +5,7 @@
 <% end %>
 <%= render "shared/page_header", title: "Pipeline Board", subtitle: "#{@applications.size} applications", actions: actions %>
 
-<div data-controller="pipeline-board" class="d-flex gap-3 overflow-auto pb-3" style="min-height: 500px;">
+<div data-controller="pipeline-board" class="pipeline-board d-flex gap-3 overflow-auto pb-3" style="min-height: 500px;">
   <% @stages.each do |stage| %>
     <% apps = @grouped[stage] || [] %>
     <% stage_color = { "applied" => "primary", "screening" => "info", "interviewing" => "warning", "offered" => "success", "accepted" => "success", "rejected" => "danger", "withdrawn" => "secondary" }[stage] || "secondary" %>

@@ -44,7 +44,7 @@ docker compose exec web bin/rails db:setup
 ## Tests
 
 ```bash
-bundle exec rspec              # 319 RSpec specs
+bundle exec rspec              # 416 RSpec specs
 bundle exec rubocop            # Linter
 bin/brakeman --no-pager        # Security scan
 bin/bundler-audit              # Dependency CVE audit

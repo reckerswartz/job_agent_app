@@ -24,7 +24,8 @@ class User < ApplicationRecord
   end
 
   def auto_apply_threshold
-    notification_settings.fetch("auto_apply_threshold", 80).to_i
+    value = notification_settings.fetch("auto_apply_threshold", 80)
+    Integer(value, exception: false) || 80
   end
 
   def display_name
