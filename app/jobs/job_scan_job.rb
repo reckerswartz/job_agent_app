@@ -49,6 +49,17 @@ class JobScanJob < ApplicationJob
           listing.match_score = JobMatcherService.new(listing, profile).call
         end
 
+        # Parse salary range into structured fields
+        if listing.salary_range.present? && listing.salary_min.blank?
+          parsed = SalaryParser.new.parse(listing.salary_range)
+          if parsed
+            listing.salary_min = parsed[:min]
+            listing.salary_max = parsed[:max]
+            listing.salary_currency = parsed[:currency]
+            listing.salary_period = parsed[:period]
+          end
+        end
+
         listing.save!
         new_count += 1 if was_new
       end

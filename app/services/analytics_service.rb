@@ -44,6 +44,26 @@ class AnalyticsService
               .count
   end
 
+  def salary_distribution
+    listings = JobListing.for_user(user).where.not(salary_min: nil)
+    buckets = {}
+    [[0, 50_000], [50_000, 100_000], [100_000, 150_000], [150_000, 200_000], [200_000, nil]].each do |min, max|
+      label = max ? "#{min / 1000}K-#{max / 1000}K" : "#{min / 1000}K+"
+      buckets[label] = max ? listings.where("salary_min >= ? AND salary_min < ?", min, max).count : listings.where("salary_min >= ?", min).count
+    end
+    buckets
+  end
+
+  def salary_by_source
+    JobListing.for_user(user)
+              .where.not(salary_min: nil)
+              .joins(:job_source)
+              .group("job_sources.platform")
+              .average(:salary_min)
+              .transform_keys(&:capitalize)
+              .transform_values { |v| v.to_i }
+  end
+
   private
 
   attr_reader :user

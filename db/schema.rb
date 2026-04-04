@@ -10,7 +10,7 @@
 #
 # It's strongly recommended that you check this file into your version control system.
 
-ActiveRecord::Schema[8.1].define(version: 2026_04_04_034125) do
+ActiveRecord::Schema[8.1].define(version: 2026_04_04_034735) do
   # These are extensions that must be enabled in order to support this database
   enable_extension "pg_catalog.plpgsql"
 
@@ -164,6 +164,10 @@ ActiveRecord::Schema[8.1].define(version: 2026_04_04_034125) do
     t.string "remote_type"
     t.text "requirements"
     t.boolean "resume_upload_supported", default: false
+    t.string "salary_currency"
+    t.integer "salary_max"
+    t.integer "salary_min"
+    t.string "salary_period"
     t.string "salary_range"
     t.string "status", default: "new", null: false
     t.string "title", null: false
