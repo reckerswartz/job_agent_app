@@ -121,3 +121,4 @@ icon: "bi-search"                    <%# passed to stat_card / empty_state parti
 | `pipeline-board` | Kanban drag-and-drop between pipeline stages |
 | `toggle-section` | Show/hide section based on another field's value |
 | `confirm-toggle` | Native confirm dialog when enabling a checkbox |
+| `dirty-form` | Show "Unsaved changes" badge when form inputs change |
