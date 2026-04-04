@@ -30,7 +30,7 @@
     </div>
 
     <div class="d-flex gap-2 flex-wrap">
-      <%= button_to "Scan Now", job_source_scan_runs_path(source), method: :post, class: "btn btn-sm btn-primary" %>
+      <%= button_to "Scan Now", job_source_scan_runs_path(source), method: :post, class: "btn btn-sm btn-primary", form: { data: { controller: "loading-button", action: "submit->loading-button#submit", loading_button_text_value: "Scanning..." } } %>
       <%= link_to "History", job_source_scan_runs_path(source), class: "btn btn-sm btn-outline-secondary" %>
       <%= button_to source.enabled? ? "Disable" : "Enable",
           toggle_job_source_path(source), method: :patch,

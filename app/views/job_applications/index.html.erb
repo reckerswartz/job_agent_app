@@ -1,6 +1,9 @@
 <% content_for(:page_title, "Applications") %>
 
-<%= render "shared/page_header", title: "Applications", subtitle: "#{@applications.size} applications" %>
+<% actions = capture do %>
+  <%= link_to "Board View", board_job_applications_path, class: "btn btn-outline-secondary btn-sm" %>
+<% end %>
+<%= render "shared/page_header", title: "Applications", subtitle: "#{@applications.size} applications", actions: actions %>
 
 <%# ── Status Filter Tabs ── %>
 <% app_tabs = [{ label: "All", count: @status_counts.values.sum, path: job_applications_path, active: params[:status].blank? }] %>

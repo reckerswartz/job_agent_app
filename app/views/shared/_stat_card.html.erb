@@ -1,9 +1,21 @@
-<div class="card stat-card">
-  <div class="card-body">
-    <div class="stat-card__icon stat-card__icon--<%= color %>"><i class="bi <%= icon %>"></i></div>
-    <div class="stat-card__body">
-      <div class="stat-card__value"><%= value %></div>
-      <div class="stat-card__label"><%= label %></div>
+<% if local_assigns[:link] %>
+  <%= link_to link, class: "card stat-card stat-card--clickable text-decoration-none" do %>
+    <div class="card-body">
+      <div class="stat-card__icon stat-card__icon--<%= color %>"><i class="bi <%= icon %>" aria-hidden="true"></i></div>
+      <div class="stat-card__body">
+        <div class="stat-card__value"><%= value %></div>
+        <div class="stat-card__label"><%= label %></div>
+      </div>
+    </div>
+  <% end %>
+<% else %>
+  <div class="card stat-card">
+    <div class="card-body">
+      <div class="stat-card__icon stat-card__icon--<%= color %>"><i class="bi <%= icon %>" aria-hidden="true"></i></div>
+      <div class="stat-card__body">
+        <div class="stat-card__value"><%= value %></div>
+        <div class="stat-card__label"><%= label %></div>
+      </div>
     </div>
   </div>
-</div>
+<% end %>

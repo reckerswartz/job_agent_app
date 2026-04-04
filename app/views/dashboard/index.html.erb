@@ -4,15 +4,15 @@
 
 <%# ── Stats Row ── %>
 <% user_stats = [
-  { value: @jobs_found, label: "Jobs Found", icon: "bi-search", color: "primary" },
-  { value: @high_matches, label: "High Matches", icon: "bi-check-circle", color: "success" },
-  { value: @applied, label: "Applied", icon: "bi-send", color: "info" },
-  { value: @pending_interventions, label: "Needs Attention", icon: "bi-exclamation-triangle", color: "warning" }
+  { value: @jobs_found, label: "Jobs Found", icon: "bi-search", color: "primary", link: job_listings_path },
+  { value: @high_matches, label: "High Matches", icon: "bi-check-circle", color: "success", link: job_listings_path(min_match: 70) },
+  { value: @applied, label: "Applied", icon: "bi-send", color: "info", link: job_listings_path(status: "applied") },
+  { value: @pending_interventions, label: "Needs Attention", icon: "bi-exclamation-triangle", color: "warning", link: interventions_path }
 ] %>
 <div class="row g-3 mb-4">
   <% user_stats.each do |s| %>
     <div class="col-sm-6 col-xl-3">
-      <%= render "shared/stat_card", value: s[:value], label: s[:label], icon: s[:icon], color: s[:color] %>
+      <%= render "shared/stat_card", **s %>
     </div>
   <% end %>
 </div>
@@ -100,6 +100,7 @@
     <div class="card activity-card">
       <div class="card-header">
         <h3 class="card-header__title mb-0">Recent Activity</h3>
+        <%= link_to "View All", activity_logs_path, class: "btn btn-sm btn-outline-primary" %>
       </div>
       <% if @recent_activity.any? %>
         <ul class="activity-feed">
