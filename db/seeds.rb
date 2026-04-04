@@ -375,6 +375,25 @@ if demo.interventions.empty?
   puts "  Interventions: #{demo.interventions.count} (#{demo.interventions.pending.count} pending)"
 end
 
+# ── Job Listing Notes ──
+if demo.job_listing_notes.empty?
+  listings_with_notes = JobListing.for_user(demo).where(status: %w[applied saved reviewed]).limit(5).to_a
+  notes_data = [
+    "Great tech stack — matches my experience with Rails + PostgreSQL perfectly.",
+    "Salary range looks competitive. Should negotiate for the upper end based on 8 years experience.",
+    "Company culture seems strong based on Glassdoor reviews. Worth preparing behavioral questions.",
+    "Remote-first is a big plus. Check if they cover home office setup costs.",
+    "Interviewer mentioned they use microservices — prepare examples from TechCorp project."
+  ]
+  listings_with_notes.each_with_index do |listing, i|
+    demo.job_listing_notes.create!(
+      job_listing: listing,
+      content: notes_data[i] || "Interesting opportunity — follow up next week."
+    )
+  end
+  puts "  Job Listing Notes: #{demo.job_listing_notes.count}"
+end
+
 # ── LLM Provider (NVIDIA Build API) ──
 # Models are synced dynamically via Admin > LLM Models > Sync, or `rails llm:sync`
 nvidia = LlmProvider.find_or_create_by!(slug: "nvidia") do |p|

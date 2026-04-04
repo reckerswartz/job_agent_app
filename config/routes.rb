@@ -124,7 +124,9 @@ Rails.application.routes.draw do
   # API
   namespace :api do
     namespace :v1 do
-      resources :job_listings, only: [ :index, :show ]
+      resources :job_listings, only: [ :index, :show ] do
+        resources :notes, controller: "job_listing_notes", only: [ :index, :create, :destroy ]
+      end
       resources :job_applications, only: [ :index, :show, :create ]
       resources :job_sources, only: [ :index, :show ] do
         post :scan, on: :member
