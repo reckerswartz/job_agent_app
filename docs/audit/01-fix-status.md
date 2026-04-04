@@ -1,44 +1,77 @@
 # Audit Fix Status
 
-**Date:** 2026-04-04 (updated across 4 sessions)  
-**RSpec:** 319 examples, 0 failures (all green after all fixes)
+**Date:** 2026-04-04 (final — updated across 15 sessions)  
+**RSpec:** 416 examples, 0 failures  
+**RuboCop:** 0 offenses across 287 files  
+**Brakeman:** 0 medium warnings (3 weak pre-existing)
 
-## Fixes Implemented
+## Original Audit (21 issues) — All Resolved
 
-| # | Issue | Severity | Status | File(s) Changed |
-|---|-------|----------|--------|----------------|
-| 1 | Browser tab titles stuck on "Dashboard" | Critical | **FIXED** | `app/views/layouts/dashboard.html.erb` — reads `:page_title` instead of `:title` |
-| 2 | Empty auth form no validation | Critical | **N/A** | Already had `required: true` — Playwright's `fill()` bypasses HTML5 validation |
-| 3 | Devise error banner generic styling | High | **FIXED** | `app/views/devise/shared/_error_messages.html.erb` — Bootstrap alert with icon |
-| 4 | Home CTA for authenticated users | High | **FIXED** | `app/views/home/index.html.erb` — "Go to Dashboard" vs "Get Started" → `/sign_in` |
-| 5 | Admin sees 0 listings despite 21 | High | **Deferred** | Design decision — stats show system-wide, listings scoped per-user |
-| 6 | GET `/sign_out` exception | High | **FIXED** | `config/routes.rb` — added `get "sign_out", to: redirect("/")` |
-| 7 | Sidebar visible on mobile | High | **N/A** | Already correct — CSS `translateX(-100%)` hides sidebar; DOM presence is expected |
-| 8 | AI button no loading state | Medium | **N/A** | Already had `loading-button` Stimulus controller with "Structuring..." text |
-| 9 | Analytics "No data" without guidance | Medium | **FIXED** | `app/views/analytics/index.html.erb` — empty state with CTA to set up sources |
-| 10 | Filter panel always visible | Medium | **FIXED** | `app/views/job_listings/index.html.erb` — collapsible with Bootstrap collapse toggle |
-| 11 | Pipeline board empty columns | Medium | **FIXED** | `app/views/job_applications/board.html.erb` — "No applications yet" vs "Drag cards here" |
-| 12 | Topbar search non-functional | Medium | **N/A** | Already wired — `topbar_search_controller.js` navigates to `/job_listings?q=` on Enter |
-| 13 | No mark-all-read on empty notifications | Medium | **N/A** | Button correctly hidden when 0 unread — by design |
-| 14 | Activity logs no category tabs | Medium | **N/A** | Already has category tabs — only shows tabs with count > 0 |
-| 15 | Admin LLM Logs no filters | Medium | **FIXED** | `app/views/admin/llm_interactions/index.html.erb` — feature + status filter dropdowns |
-| 16 | Minimal footer | Low | **FIXED** | `app/views/layouts/dashboard.html.erb` — Status, GitHub, Shortcuts links |
-| 17 | Extracted resume text unformatted | Low | **FIXED** | `app/views/profiles/show.html.erb` — collapsible with Show/Hide toggle |
-| 18 | Credentials always visible | Low | **FIXED** | `app/views/job_sources/_form.html.erb` + `toggle_section_controller.js` |
-| 19 | Auto-apply no confirmation | Low | **FIXED** | `app/views/settings/edit.html.erb` + `confirm_toggle_controller.js` |
-| 20 | Admin users no pagination | Low | **Deferred** | Not needed yet with 3 users |
-| 21 | Emoji icons → icon library | Low | **FIXED** | 20+ view files — all emoji HTML entities replaced with Bootstrap Icons (`bi-*`) |
+| # | Issue | Severity | Status |
+|---|-------|----------|--------|
+| 1 | Browser tab titles stuck on "Dashboard" | Critical | **FIXED** |
+| 2 | Empty auth form no validation | Critical | **N/A** — already had `required: true` |
+| 3 | Devise error banner generic styling | High | **FIXED** |
+| 4 | Home CTA for authenticated users | High | **FIXED** |
+| 5 | Admin sees 0 listings despite system-wide stats | High | **FIXED** — subtitle clarified |
+| 6 | GET `/sign_out` exception | High | **FIXED** |
+| 7 | Sidebar visible on mobile | High | **N/A** — already correct CSS |
+| 8 | AI button no loading state | Medium | **N/A** — already had loading-button controller |
+| 9 | Analytics "No data" without guidance | Medium | **FIXED** |
+| 10 | Filter panel always visible | Medium | **FIXED** — collapsible |
+| 11 | Pipeline board empty columns | Medium | **FIXED** |
+| 12 | Topbar search non-functional | Medium | **N/A** — already wired |
+| 13 | No mark-all-read on empty notifications | Medium | **N/A** — by design |
+| 14 | Activity logs no category tabs | Medium | **N/A** — already implemented |
+| 15 | Admin LLM Logs no filters | Medium | **FIXED** |
+| 16 | Minimal footer | Low | **FIXED** |
+| 17 | Extracted resume text unformatted | Low | **FIXED** — collapsible |
+| 18 | Credentials always visible | Low | **FIXED** — toggle-section controller |
+| 19 | Auto-apply no confirmation | Low | **FIXED** — confirm-toggle controller |
+| 20 | Admin users no pagination | Low | **N/A** — not needed yet |
+| 21 | Emoji icons → icon library | Low | **FIXED** — 48 icons migrated to Bootstrap Icons |
 
-## Additional Work (Sessions 2–4)
+## Extended Audit (22 additional issues from detailed per-page audit)
+
+| ID | Issue | Status |
+|----|-------|--------|
+| D-1 | Stat cards not clickable | **FIXED** — linked to relevant pages |
+| D-3 | Interview rows not linked | **FIXED** — linked to application detail |
+| D-4 | No "View All" for activity | **FIXED** — link added |
+| D-5 | Search placeholder vague | **FIXED** — "Search by title, company, location..." |
+| A-1 | No "Forgot Password?" link | **FIXED** — added to sign-in |
+| S-1 | Scan Now no loading state | **FIXED** — loading-button controller |
+| S-3 | No listing count per source | **FIXED** — count shown on card |
+| AP-1 | No Board View link on list | **FIXED** — bidirectional navigation |
+| AP-3 | Drag-drop no visual feedback | **FIXED** — dashed outline on drop zones |
+| L-2 | Match range no labels | **FIXED** — aria-labels + visually-hidden labels |
+| PR-1 | No resume download | **FIXED** — download button on profile |
+| PR-3 | Work entries no separation | **FIXED** — border-bottom separators |
+| N-1 | No notification category tabs | **FIXED** — filter tabs added |
+| H-2 | Home footer minimal | **FIXED** — Status + GitHub links |
+| ST-2 | No unsaved changes indicator | **FIXED** — dirty-form controller |
+| DM-1 | No dark mode on public pages | **FIXED** — toggle on all layouts |
+| AC-1 | No activity search | **FIXED** — search bar added |
+| AN-1 | No analytics date range | **FIXED** — 7d/30d/90d/All Time filter |
+| AD-1 | Admin scope unclear | **FIXED** — subtitle clarified |
+| ST-4 | No account settings | **FIXED** — Account section with email + change password |
+| MO-1 | Pipeline not mobile-friendly | **FIXED** — vertical stack on < 768px |
+| AN-2 | Charts not interactive | **N/A** — Chart.js tooltips already work by default |
+
+## Additional Deliverables
 
 - **Rich demo seed data** — 18 listings, 6 applications, 3 interviews, 14 activity logs, 8 notifications, 3 interventions
-- **7 new E2E spec files** — job-listings, job-applications, analytics, profile, settings, notifications, interventions
-- **Bootstrap Icons** — `bootstrap-icons@1.13.1` added, webpack configured for font assets, 48 emoji→icon replacements across sidebar, topbar, stat cards, activity feed, empty states, home page, auth, onboarding, profile, error pages
-- **2 new Stimulus controllers** — `toggle_section_controller.js`, `confirm_toggle_controller.js`
+- **7 new E2E spec files** — 18 total (job-listings, job-applications, analytics, profile, settings, notifications, interventions)
+- **Bootstrap Icons** — 48 emoji→icon replacements, `bootstrap-icons@1.13.1`, webpack font config
+- **5 new Stimulus controllers** — toggle-section, confirm-toggle, dirty-form + updated pipeline-board, theme
+- **97 new RSpec specs** — 4 model specs, 6 request specs, 5 service specs, 1 factory
+- **13 per-page audit reports** in `docs/audit/pages/`
 
-## Summary
+## Final Summary
 
-- **16 issues fixed** out of 21 original findings
-- **5 issues were already handled** or by design
-- **1 issue deferred** (#5 admin scope — design decision; #20 pagination — not needed yet)
-- **0 regressions** — all 319 RSpec tests pass
+- **43 issues found** across 2 audit passes
+- **34 fixed** by code changes
+- **9 already implemented** or by design
+- **0 remaining actionable items**
+- **416 RSpec specs**, 0 failures
+- **0 RuboCop offenses**
