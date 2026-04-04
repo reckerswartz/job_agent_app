@@ -10,7 +10,7 @@
 #
 # It's strongly recommended that you check this file into your version control system.
 
-ActiveRecord::Schema[8.1].define(version: 2026_04_04_035314) do
+ActiveRecord::Schema[8.1].define(version: 2026_04_04_100454) do
   # These are extensions that must be enabled in order to support this database
   enable_extension "pg_catalog.plpgsql"
 
@@ -143,6 +143,16 @@ ActiveRecord::Schema[8.1].define(version: 2026_04_04_035314) do
     t.index ["job_listing_id"], name: "index_job_applications_on_job_listing_id", unique: true
     t.index ["profile_id"], name: "index_job_applications_on_profile_id"
     t.index ["status"], name: "index_job_applications_on_status"
+  end
+
+  create_table "job_listing_notes", force: :cascade do |t|
+    t.text "content"
+    t.datetime "created_at", null: false
+    t.bigint "job_listing_id", null: false
+    t.datetime "updated_at", null: false
+    t.bigint "user_id", null: false
+    t.index ["job_listing_id"], name: "index_job_listing_notes_on_job_listing_id"
+    t.index ["user_id"], name: "index_job_listing_notes_on_user_id"
   end
 
   create_table "job_listings", force: :cascade do |t|
@@ -417,6 +427,8 @@ ActiveRecord::Schema[8.1].define(version: 2026_04_04_035314) do
   add_foreign_key "interviews", "job_applications"
   add_foreign_key "job_applications", "job_listings"
   add_foreign_key "job_applications", "profiles"
+  add_foreign_key "job_listing_notes", "job_listings"
+  add_foreign_key "job_listing_notes", "users"
   add_foreign_key "job_listings", "job_sources"
   add_foreign_key "job_scan_runs", "job_search_criteria", column: "job_search_criteria_id"
   add_foreign_key "job_scan_runs", "job_sources"

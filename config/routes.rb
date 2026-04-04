@@ -53,6 +53,7 @@ Rails.application.routes.draw do
       post :bulk_update
       get :export
     end
+    resources :notes, controller: "job_listing_notes", only: [ :create, :destroy ]
   end
 
   # Job Applications
