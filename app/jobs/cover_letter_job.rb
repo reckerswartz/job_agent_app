@@ -5,9 +5,9 @@ class CoverLetterJob < ApplicationJob
     listing = JobListing.find(job_listing_id)
     profile = Profile.find(profile_id)
 
-    cover_letter = CoverLetterGenerator.new(listing, profile).call
-    if cover_letter.present?
-      listing.update!(metadata: listing.metadata.merge("cover_letter" => cover_letter))
+    content = CoverLetterGenerator.new(listing, profile).call
+    if content.present?
+      listing.cover_letters.create!(profile: profile, content: content, tone: "professional", status: "draft")
     end
   end
 end

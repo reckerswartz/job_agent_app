@@ -37,7 +37,7 @@ RSpec.describe "JobSources", type: :request do
       post job_sources_path, params: {
         job_source: { name: "Bad", platform: "invalid" }
       }
-      expect(response).to have_http_status(:unprocessable_entity)
+      expect(response).to have_http_status(:unprocessable_content)
     end
   end
 
