@@ -1,0 +1,27 @@
+FROM ruby:3.4.2-slim
+
+WORKDIR /rails
+
+RUN apt-get update -qq && \
+    apt-get install --no-install-recommends -y \
+    build-essential curl git libpq-dev libyaml-dev node-gyp pkg-config \
+    postgresql-client python-is-python3 libvips && \
+    rm -rf /var/lib/apt/lists /var/cache/apt/archives
+
+ARG NODE_VERSION=24.14.0
+ENV PATH=/usr/local/node/bin:$PATH
+RUN curl -sL https://github.com/nodenv/node-build/archive/master.tar.gz | tar xz -C /tmp/ && \
+    /tmp/node-build-master/bin/node-build "${NODE_VERSION}" /usr/local/node && \
+    npm install -g yarn@1.22.22 && \
+    rm -rf /tmp/node-build-master
+
+COPY Gemfile Gemfile.lock ./
+RUN bundle install
+
+COPY package.json yarn.lock ./
+RUN yarn install
+
+COPY . .
+
+EXPOSE 3000
+CMD ["bin/rails", "server", "-b", "0.0.0.0"]

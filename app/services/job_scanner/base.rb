@@ -8,10 +8,15 @@ module JobScanner
       @session = nil
     end
 
+    BROWSER_SCAN_TIMEOUT = 60 # seconds – hard cap on browser-based scanning
+
     def scan
-      listings = try_browser_scan
+      listings = Timeout.timeout(BROWSER_SCAN_TIMEOUT) { try_browser_scan }
       Rails.logger.info("[#{self.class.name}] Total: #{listings.size} listings")
       listings
+    rescue Timeout::Error
+      Rails.logger.warn("[#{self.class.name}] Browser scan timed out after #{BROWSER_SCAN_TIMEOUT}s")
+      []
     end
 
     def try_browser_scan
