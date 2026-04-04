@@ -1,0 +1,16 @@
+Application <%= @application.status.humanize %>: <%= @listing.title %>
+
+Hi <%= @user.display_name %>,
+
+Your application for <%= @listing.title %> at <%= @listing.company %> has been updated.
+
+Status: <%= @application.status.humanize %>
+<% if @application.applied_at %>
+Applied: <%= @application.applied_at.strftime("%Y-%m-%d %H:%M") %>
+<% end %>
+Steps: <%= @application.application_steps.count %>
+
+View application details: <%= job_application_url(@application) %>
+
+--
+Manage notifications: <%= edit_settings_url %>
