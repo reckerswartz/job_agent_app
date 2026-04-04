@@ -30,7 +30,7 @@ RSpec.describe "Registrations", type: :request do
           }
         }.not_to change(User, :count)
 
-        expect(response).to have_http_status(:unprocessable_entity)
+        expect(response).to have_http_status(:unprocessable_content)
       end
 
       it "does not create a user with mismatched passwords" do

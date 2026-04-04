@@ -22,7 +22,7 @@ RSpec.describe "Sessions", type: :request do
     context "with invalid credentials" do
       it "re-renders sign in with error" do
         post user_session_path, params: { user: { email: user.email, password: "wrongpassword" } }
-        expect(response).to have_http_status(:unprocessable_entity)
+        expect(response).to have_http_status(:unprocessable_content)
       end
     end
   end
