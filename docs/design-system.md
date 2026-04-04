@@ -97,14 +97,27 @@ pages/
   _dashboard.scss          # Dashboard page specific
 ```
 
+## Icons
+
+All UI icons use [Bootstrap Icons](https://icons.getbootstrap.com/) (`bi-*` classes). The font is loaded via webpack (`bootstrap-icons/font/bootstrap-icons.css`).
+
+```erb
+<i class="bi bi-search"></i>        <%# inline icon %>
+icon: "bi-search"                    <%# passed to stat_card / empty_state partials %>
+```
+
 ## Stimulus Controllers
 
 | Controller | Purpose |
 |-----------|---------|
-| `sidebar` | Toggle sidebar on mobile |
-| `theme` | Dark mode toggle (localStorage) |
+| `sidebar` | Toggle sidebar on mobile, swipe-to-close |
+| `theme` | Dark mode toggle (localStorage), `bi-moon-fill` / `bi-sun-fill` |
 | `toast` | Auto-dismiss flash notifications |
-| `shortcuts` | Keyboard shortcuts (g+d, g+l, etc.) |
+| `shortcuts` | Keyboard shortcuts (g+d, g+l, etc.) + help modal |
 | `topbar-search` | Enter key → navigate to /job_listings?q=... |
 | `data-table` | Debounced search, per-page, sort header clicks |
 | `bulk-select` | Checkbox selection + bulk status update |
+| `loading-button` | Disable button + show custom text on form submit |
+| `pipeline-board` | Kanban drag-and-drop between pipeline stages |
+| `toggle-section` | Show/hide section based on another field's value |
+| `confirm-toggle` | Native confirm dialog when enabling a checkbox |

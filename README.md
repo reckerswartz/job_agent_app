@@ -48,7 +48,7 @@ bundle exec rspec              # 319 RSpec specs
 bundle exec rubocop            # Linter
 bin/brakeman --no-pager        # Security scan
 bin/bundler-audit              # Dependency CVE audit
-npx playwright test            # 11 E2E spec files
+npx playwright test            # 18 E2E spec files
 ```
 
 ## Architecture
@@ -75,7 +75,7 @@ Notifications + Webhooks + Activity Log
 |-------|------|
 | **Framework** | Rails 8.1, Ruby 3.4.2 |
 | **Auth** | Devise (trackable, recoverable) |
-| **Frontend** | Webpack + Bootstrap 5 Sass + Stimulus (10 controllers) |
+| **Frontend** | Webpack + Bootstrap 5 Sass + Bootstrap Icons + Stimulus (12 controllers) |
 | **LLM** | NVIDIA Build API (186 models, primary/vision/verification roles) |
 | **Background Jobs** | Solid Queue (async in dev) |
 | **Real-Time** | Action Cable (async dev, Solid Cable prod) |
